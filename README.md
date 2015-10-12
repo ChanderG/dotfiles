@@ -9,3 +9,7 @@ Vanilla urxvt is quite unpleasant. .Xresources contains a set of "settings" to g
 ### tmux
 
 See included tmux conf file.
+
+### emacs
+
+I use emacs exclusively for the wonderful org-mode. 
