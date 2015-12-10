@@ -13,3 +13,7 @@ See included tmux conf file.
 ### emacs
 
 I use emacs exclusively for the wonderful org-mode. 
+
+### mutt
+
+Setup for use with gmail.
