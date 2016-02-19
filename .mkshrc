@@ -1,0 +1,10 @@
+# custom config for mksh
+
+# same file for aliases
+source ~/.bash_aliases
+
+# gen options
+source ~/.shell_options
+
+SHELL='mksh'
+export SHELL
