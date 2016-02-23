@@ -1,0 +1,12 @@
+[http]
+	proxy = 10.3.100.207:8080
+[user]
+	name = ChanderG
+	email = chandergovind@gmail.com
+[alias]
+[alias]
+	s = status
+	b = branch
+	serve = daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/
+[core]
+	editor = vim
