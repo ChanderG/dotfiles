@@ -5,8 +5,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes (quote (misterioso)))
  '(menu-bar-mode nil)
- '(org-agenda-files (quote ("~/Todo/todo.org")))
  '(tool-bar-mode nil))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -35,3 +35,7 @@
 
 ;; font and size
 (set-default-font "Monospace 18")
+
+;; set browser to use for opening
+(setq browse-url-browser-function 'browse-url-generic
+            browse-url-generic-program "opera")
