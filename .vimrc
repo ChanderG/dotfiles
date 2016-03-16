@@ -81,8 +81,8 @@ map [6^ <C-PageDown>
 """ Tabs management
 
 """switching between tabs
-map <C-PageUp> ;tabnext<CR>
-map <C-PageDown> ;tabprevious<CR>
+map <C-PageUp> ;tabprevious<CR>
+map <C-PageDown> ;tabnext<CR>
 
 """ new tab creation
 map tn <Esc>;tabnew<CR>
