@@ -58,6 +58,12 @@ Plugin 'antoyo/vim-licenses'
 """racket highlighting
 Plugin 'wlangstroth/vim-racket'
 
+"""find ideal positions to jump to
+Plugin 'unblevable/quick-scope'
+
+"""select jump destination easily
+Plugin 'easymotion/vim-easymotion'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -86,3 +92,10 @@ map <C-PageDown> ;tabnext<CR>
 
 """ new tab creation
 map tn <Esc>;tabnew<CR>
+
+
+""" QuickScope plugin
+
+""" toggle with 
+nmap <leader>q <plug>(QuickScopeToggle)
+vmap <leader>q <plug>(QuickScopeToggle)
