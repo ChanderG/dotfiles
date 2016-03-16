@@ -35,7 +35,6 @@ set tabstop=8
 
 "Use Enter/Shift-Enter to introduce new lines above/below w/o leaving normal mode
 map <Enter> o<ESC>
-map <S-Enter> O<ESC>
 
 """setup vundle
 set nocompatible
@@ -70,3 +69,20 @@ let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -
 """For the License Adder
 let g:licenses_authors_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
 let g:licenses_copyright_holders_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
+
+""" set terminal mode
+set term=rxvt-unicode
+""" this way, by using tmux (with xterm keys on) also works
+
+""" for urxvt
+map [5^ <C-PageUp>
+map [6^ <C-PageDown>
+
+""" Tabs management
+
+"""switching between tabs
+map <C-PageUp> ;tabnext<CR>
+map <C-PageDown> ;tabprevious<CR>
+
+""" new tab creation
+map tn <Esc>;tabnew<CR>
