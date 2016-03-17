@@ -123,3 +123,18 @@ set ttimeout
 
 """ Show partial commands
 set showcmd
+
+""" Allow project specific vimrc
+set exrc
+set secure
+
+""" QuickFix window options
+
+""" direct move to next
+nmap cn ;cn<CR>
+" no mapping for prev -- as I rarely need it
+
+" In the quickfix window, <CR> is used to jump to the error under the
+" cursor, so undefine the mapping there.
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+" required to counter the effect of our mapping of <CR> in clist window
