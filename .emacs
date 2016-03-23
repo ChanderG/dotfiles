@@ -39,3 +39,20 @@
 ;; set browser to use for opening
 (setq browse-url-browser-function 'browse-url-generic
             browse-url-generic-program "opera")
+
+;; for pomodoro in orgmode clocks
+(defun pomodoro-start ()
+  "Starts and automatically clocks out a Pomodoro unit of 20 minutes."
+  (interactive)
+  (org-clock-in)
+  (message "Starting pomodoro cycle of 20 minutes.")
+  (set-process-sentinel (start-process "sleep" nil "sleep" "20m") 'pomodoro-end)
+)
+
+(defun pomodoro-end (process event)
+  (org-clock-out)
+  (message "Stopping pomodoro cycle of 20 minutes.")
+  (start-process "slock" nil "slock")
+)
+
+(global-set-key '[f4] 'pomodoro-start)
