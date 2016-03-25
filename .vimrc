@@ -58,13 +58,25 @@ Plugin 'antoyo/vim-licenses'
 """racket highlighting
 Plugin 'wlangstroth/vim-racket'
 
+"""find ideal positions to jump to
+Plugin 'unblevable/quick-scope'
+
+"""select jump destination easily
+Plugin 'easymotion/vim-easymotion'
+
+"""list of tags
+Plugin 'majutsushi/tagbar'
+
 call vundle#end()
 filetype plugin indent on
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
-"set runtimepath^=~/.vim/bundle/ctrlp.vim
 "for quick indexing by using git file listing => no files from gitignore, but untracked files
 let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+
+""" search through tags
+let g:ctrlp_extensions = ['tag']
+nmap <leader>p ;CtrlPTag<CR>
 
 """For the License Adder
 let g:licenses_authors_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
@@ -81,8 +93,33 @@ map [6^ <C-PageDown>
 """ Tabs management
 
 """switching between tabs
-map <C-PageUp> ;tabnext<CR>
-map <C-PageDown> ;tabprevious<CR>
+map <C-PageUp> ;tabprevious<CR>
+map <C-PageDown> ;tabnext<CR>
 
 """ new tab creation
 map tn <Esc>;tabnew<CR>
+
+
+""" QuickScope plugin
+
+""" toggle with 
+nmap <leader>q <plug>(QuickScopeToggle)
+vmap <leader>q <plug>(QuickScopeToggle)
+
+""" EasyMotion plugin
+
+""" one stop jump within line
+""" note that this does not allow prefixing action
+nmap <leader>s <plug>(easymotion-sl)
+
+""" tagbar plugin
+
+""" easy toggle
+nmap <F8> ;TagbarToggle<CR>
+
+""" Timeouts for commands
+set notimeout
+set ttimeout
+
+""" Show partial commands
+set showcmd
