@@ -138,3 +138,9 @@ nmap cn ;cn<CR>
 " cursor, so undefine the mapping there.
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 " required to counter the effect of our mapping of <CR> in clist window
+
+""" A better escape
+inoremap <silent> <Up> <ESC><Up>
+inoremap <silent> <Down> <ESC><Down>
+inoremap <silent> <Left> <ESC><Left>
+inoremap <silent> <Right> <ESC><Right>
