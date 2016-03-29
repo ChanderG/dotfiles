@@ -62,3 +62,11 @@
 ;; simplifying clock-in / clock-out
 (global-set-key '[f5] 'org-clock-in)
 (global-set-key '[f6] 'org-clock-out)
+
+;; export to html; don't open
+(global-set-key '[f7] (lambda () 
+			(interactive)
+			(org-export-dispatch '("h" "h"))))
+
+;;syntax highlight code blocks
+(setq org-src-fontify-natively t)
