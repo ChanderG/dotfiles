@@ -8,5 +8,6 @@
 	s = status
 	b = branch
 	serve = daemon --verbose --export-all --base-path=.git --reuseaddr --strict-paths .git/
+	co = checkout
 [core]
 	editor = vim
