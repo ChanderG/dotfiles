@@ -70,3 +70,28 @@
 
 ;;syntax highlight code blocks
 (setq org-src-fontify-natively t)
+
+(setq url-proxy-services '(
+			  ("http" . "127.0.0.1:8888") 
+			  ("https" . "127.0.0.1:8888") 
+			   ))
+
+;; setup melpa
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
+
+;; vi keybindings
+(require 'evil)
+(evil-mode 1)
+
+;; ctrlp like features
+(require 'ido)
+(ido-mode t)
+
+;; cool theme
+(enable-theme 'kooten)
+
+;; ctrl arrow based buffer navigation
+(global-set-key '[C-left] 'next-buffer)
+(global-set-key '[C-right] 'previous-buffer)
