@@ -6,8 +6,34 @@
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
  '(custom-enabled-themes (quote (tango-dark)))
+ '(custom-safe-themes
+   (quote
+    ("4f5bb895d88b6fe6a983e63429f154b8d939b4a8c581956493783b2515e22d6d" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "9ab634dcc9131f79016c96c4955298409649f6538908c743a8a9d2c6bc8321ef" default)))
+ '(fci-rule-color "#14151E")
  '(menu-bar-mode nil)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#d54e53")
+     (40 . "goldenrod")
+     (60 . "#e7c547")
+     (80 . "mediumspringgreen")
+     (100 . "#70c0b1")
+     (120 . "DeepSkyBlue1")
+     (140 . "goldenrod")
+     (160 . "#d54e53")
+     (180 . "goldenrod")
+     (200 . "#e7c547")
+     (220 . "mediumspringgreen")
+     (240 . "#70c0b1")
+     (260 . "DeepSkyBlue1")
+     (280 . "goldenrod")
+     (300 . "#d54e53")
+     (320 . "goldenrod")
+     (340 . "#e7c547")
+     (360 . "mediumspringgreen"))))
+ '(vc-annotate-very-old-color nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -95,3 +121,11 @@
 ;; ctrl arrow based buffer navigation
 (global-set-key '[C-left] 'next-buffer)
 (global-set-key '[C-right] 'previous-buffer)
+
+;; quick buffer specific agends
+(global-set-key '[f8] (lambda () 
+			(interactive)
+			(org-agenda-set-restriction-lock "file")
+			(org-agenda-list)
+			(org-agenda-remove-restriction-lock "file")
+			))
