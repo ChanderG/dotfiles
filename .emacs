@@ -116,6 +116,7 @@
 (ido-mode t)
 
 ;; cool theme
+(require 'kooten-theme)
 (enable-theme 'kooten)
 
 ;; ctrl arrow based buffer navigation
