@@ -123,10 +123,14 @@
 (global-set-key '[C-left] 'next-buffer)
 (global-set-key '[C-right] 'previous-buffer)
 
-;; quick buffer specific agends
+;; quick buffer specific todos
 (global-set-key '[f8] (lambda () 
 			(interactive)
 			(org-agenda-set-restriction-lock "file")
-			(org-agenda-list)
+			(org-todo-list)
 			(org-agenda-remove-restriction-lock "file")
 			))
+
+;; swap : and ; in evil
+(define-key evil-motion-state-map ";" 'evil-ex)
+(define-key evil-motion-state-map ":" 'evil-repeat-find-char)
