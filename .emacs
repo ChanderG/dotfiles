@@ -81,7 +81,8 @@
   (start-process "slock" nil "slock")
 )
 
-(global-set-key '[f4] 'pomodoro-start)
+;; diabled for now
+;(global-set-key '[f4] 'pomodoro-start)
 
 ;; simplifying clock-in / clock-out
 (global-set-key '[f5] 'org-clock-in)
