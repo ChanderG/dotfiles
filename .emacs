@@ -10,8 +10,6 @@
    (quote
     ("4f5bb895d88b6fe6a983e63429f154b8d939b4a8c581956493783b2515e22d6d" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "9ab634dcc9131f79016c96c4955298409649f6538908c743a8a9d2c6bc8321ef" default)))
  '(fci-rule-color "#14151E")
- '(menu-bar-mode nil)
- '(tool-bar-mode nil)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -66,7 +64,7 @@
 
 ;; set browser to use for opening
 (setq browse-url-browser-function 'browse-url-generic
-            browse-url-generic-program "opera")
+            browse-url-generic-program "firefox")
 
 ;; for pomodoro in orgmode clocks
 (defun pomodoro-start ()
@@ -97,28 +95,6 @@
 ;;syntax highlight code blocks
 (setq org-src-fontify-natively t)
 
-(setq url-proxy-services '(
-			  ("http" . "127.0.0.1:8888") 
-			  ("https" . "127.0.0.1:8888") 
-			   ))
-
-;; setup melpa
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(package-initialize)
-
-;; vi keybindings
-(require 'evil)
-(evil-mode 1)
-
-;; ctrlp like features
-(require 'ido)
-(ido-mode t)
-
-;; cool theme
-(require 'kooten-theme)
-(enable-theme 'kooten)
-
 ;; ctrl arrow based buffer navigation
 (global-set-key '[C-left] 'next-buffer)
 (global-set-key '[C-right] 'previous-buffer)
@@ -131,6 +107,9 @@
 			(org-agenda-remove-restriction-lock "file")
 			))
 
-;; swap : and ; in evil
-(define-key evil-motion-state-map ";" 'evil-ex)
-(define-key evil-motion-state-map ":" 'evil-repeat-find-char)
+;; go into Column View
+(global-set-key '[f9] (lambda () 
+			(interactive)
+			(beginning-of-buffer)
+			(org-columns)
+			))
