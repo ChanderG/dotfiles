@@ -101,18 +101,20 @@
 (global-set-key '[C-right] 'previous-buffer)
 
 ;; quick buffer specific todos
+;; list todos with keyword TODO (assumed first in TODOS property)
+;; use column view
 (global-set-key '[f8] (lambda () 
 			(interactive)
 			(org-agenda-set-restriction-lock "file")
-			(org-todo-list)
-			(org-agenda-remove-restriction-lock "file")
+			(org-todo-list 1)
+			(org-agenda-columns)
 			))
 
-;; go into Column View
-(global-set-key '[f9] (lambda () 
+;; dismiss custom todos view
+(global-set-key '[f9] (lambda ()
 			(interactive)
-			(beginning-of-buffer)
-			(org-columns)
+			(execute-kbd-macro (kbd "q"))
+			(execute-kbd-macro (kbd "q"))
 			))
 
 ;; for melpa
