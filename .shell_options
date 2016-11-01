@@ -4,10 +4,10 @@ export LS_COLORS
 alias ls='ls --color'
 
 # proxy settings
-export http_proxy="http://localhost:8888/"
-export https_proxy="http://localhost:8888/"
-export HTTP_PROXY="http://localhost:8888/"
-export HTTPS_PROXY="http://localhost:8888/"
+# export http_proxy="http://localhost:8888/"
+# export https_proxy="http://localhost:8888/"
+# export HTTP_PROXY="http://localhost:8888/"
+# export HTTPS_PROXY="http://localhost:8888/"
 
 #Adding ~/bin to PATH for use
-export PATH="/home/chanderg/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+export PATH="/home/chanderg/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/sbin"
