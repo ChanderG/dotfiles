@@ -126,5 +126,17 @@
     (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
-;; add post save hook to update dynamic blocks
+;; add post save hook to update dynamic blocks and clocks
 (add-hook 'before-save-hook 'org-update-all-dblocks)
+(add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
+
+;; do the same on autosaves;
+(add-hook 'auto-save-hook 'org-update-all-dblocks)
+(add-hook 'auto-save-hook 'org-table-recalculate-buffer-tables)
+
+;; save automatically 
+;; runs on tab switch etc
+(add-hook 'focus-out-hook (lambda ()
+			    (interactive)
+			    (save-buffer)
+				  ))
