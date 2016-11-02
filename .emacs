@@ -88,11 +88,6 @@
 (global-set-key '[f5] 'org-clock-in)
 (global-set-key '[f6] 'org-clock-out)
 
-;; export to html; don't open
-(global-set-key '[f7] (lambda () 
-			(interactive)
-			(org-export-dispatch '("h" "h"))))
-
 ;;syntax highlight code blocks
 (setq org-src-fontify-natively t)
 
@@ -101,12 +96,20 @@
 (global-set-key '[C-right] 'previous-buffer)
 
 ;; quick buffer specific todos
-;; list todos with keyword TODO (assumed first in TODOS property)
+;; list waiting stuff in column view
+(global-set-key '[f7] (lambda () 
+			(interactive)
+			(org-agenda-set-restriction-lock "file")
+			(org-todo-list 1)
+			(org-agenda-columns)
+			))
+
+;; list todos with keyword TODO (assumed second in TODOS property)
 ;; use column view
 (global-set-key '[f8] (lambda () 
 			(interactive)
 			(org-agenda-set-restriction-lock "file")
-			(org-todo-list 1)
+			(org-todo-list 2)
 			(org-agenda-columns)
 			))
 
