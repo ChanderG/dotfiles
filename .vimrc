@@ -61,14 +61,14 @@ Plugin 'wlangstroth/vim-racket'
 """find ideal positions to jump to
 Plugin 'unblevable/quick-scope'
 
-"""select jump destination easily
-Plugin 'easymotion/vim-easymotion'
-
 """list of tags
 Plugin 'majutsushi/tagbar'
 
 """comment toggle
 Plugin 'tpope/vim-commentary'
+
+"""for auto git diffs
+Plugin 'airblade/vim-gitgutter'
 
 call vundle#end()
 filetype plugin indent on
@@ -108,12 +108,6 @@ map tn <Esc>;tabnew<CR>
 """ toggle with 
 nmap <leader>q <plug>(QuickScopeToggle)
 vmap <leader>q <plug>(QuickScopeToggle)
-
-""" EasyMotion plugin
-
-""" one stop jump within line
-""" note that this does not allow prefixing action
-nmap <leader>s <plug>(easymotion-sl)
 
 """ tagbar plugin
 
@@ -172,3 +166,7 @@ set breakindent
 nnoremap Y y$
 
 """ End courtesy
+
+""" vim-gitgutter
+""" toggle diff signs
+noremap <silent> <F4> :GitGutterSignsToggle<CR>
