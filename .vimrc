@@ -70,6 +70,12 @@ Plugin 'tpope/vim-commentary'
 """for auto git diffs
 Plugin 'airblade/vim-gitgutter'
 
+"""syntax based code folding for python
+Plugin 'tmhedberg/SimpylFold'
+
+"""slime for vim
+Plugin 'jpalardy/vim-slime'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -167,6 +173,5 @@ nnoremap Y y$
 
 """ End courtesy
 
-""" vim-gitgutter
-""" toggle diff signs
-noremap <silent> <F4> :GitGutterSignsToggle<CR>
+""" slime configuration
+let g:slime_target = "tmux"
