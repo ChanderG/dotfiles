@@ -67,6 +67,9 @@ Plugin 'easymotion/vim-easymotion'
 """list of tags
 Plugin 'majutsushi/tagbar'
 
+"""comment toggle
+Plugin 'tpope/vim-commentary'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -144,3 +147,28 @@ inoremap <silent> <Up> <ESC><Up>
 inoremap <silent> <Down> <ESC><Down>
 inoremap <silent> <Left> <ESC><Left>
 inoremap <silent> <Right> <ESC><Right>
+
+""" remove highlighting till next search
+nnoremap <silent> <esc> :noh<return><esc>
+
+""" Courtesy of nvie/vimrc
+
+""" to paste without mass auto indendation
+set pastetoggle=<F2>
+
+""" fold using syntax
+set foldmethod=syntax
+set foldclose=all "automatically reclose after navigating out
+set foldlevel=0
+
+""" underline current line
+set cursorline
+noremap <silent> <F3> :set nocursorline!<CR>
+
+""" keep para indentation when wrapping text
+set breakindent
+
+" Quick yanking to the end of the line
+nnoremap Y y$
+
+""" End courtesy
