@@ -9,6 +9,7 @@ redshift -O 3700K
 
 # run syspom - homegrown pomodoro timer with analytics dashboard
 syspom &>/dev/null &
+# multi process problem
 
 # start dwm
 exec dwm

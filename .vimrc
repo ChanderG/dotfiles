@@ -175,3 +175,4 @@ nnoremap Y y$
 
 """ slime configuration
 let g:slime_target = "tmux"
+noremap <silent> X :SlimeSendCurrentLine<CR>
