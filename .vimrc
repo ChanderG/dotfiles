@@ -76,6 +76,12 @@ Plugin 'tmhedberg/SimpylFold'
 """slime for vim
 Plugin 'jpalardy/vim-slime'
 
+"""zeavim - access zeal docs from vim
+Plugin 'kabbamine/zeavim.vim'
+
+""" Online docs
+Plugin 'keith/investigate.vim'
+
 call vundle#end()
 filetype plugin indent on
 
