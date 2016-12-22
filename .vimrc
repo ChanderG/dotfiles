@@ -1,4 +1,4 @@
-syntax on 
+syntax on
 
 "line numbering that toggles between normal and relative
 autocmd InsertEnter * :set number
@@ -38,7 +38,7 @@ map <Enter> o<ESC>
 
 """setup vundle
 set nocompatible
-filetype off 
+filetype off
 
 set rtp^=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -47,7 +47,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 """CtrlP plugin
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 """scala highlighting
 Plugin 'derekwyatt/vim-scala'
@@ -81,6 +81,23 @@ Plugin 'kabbamine/zeavim.vim'
 
 """ Online docs
 Plugin 'keith/investigate.vim'
+
+""" Neocomplete - general purpose auto complete frontend
+Plugin 'Shougo/neocomplete.vim'
+
+""" Python autocomplete engine
+" Requires jedi(pip)
+Plugin 'davidhalter/jedi-vim'
+
+""" Syntax checking
+Plugin 'scrooloose/syntastic'
+
+""" Auto formatting
+Plugin 'chiel92/vim-autoformat'
+
+""" Build/Tests: not fully setup
+Plugin 'tpope/vim-dispatch'
+Plugin 'janko-m/vim-test'
 
 call vundle#end()
 filetype plugin indent on
@@ -117,7 +134,7 @@ map tn <Esc>;tabnew<CR>
 
 """ QuickScope plugin
 
-""" toggle with 
+""" toggle with
 nmap <leader>q <plug>(QuickScopeToggle)
 vmap <leader>q <plug>(QuickScopeToggle)
 
@@ -133,10 +150,6 @@ set ttimeout
 """ Show partial commands
 set showcmd
 
-""" Allow project specific vimrc
-set exrc
-set secure
-
 """ QuickFix window options
 
 """ direct move to next
@@ -147,6 +160,8 @@ nmap cn ;cn<CR>
 " cursor, so undefine the mapping there.
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 " required to counter the effect of our mapping of <CR> in clist window
+
+"" location list
 
 """ A better escape
 inoremap <silent> <Up> <ESC><Up>
@@ -182,3 +197,22 @@ nnoremap Y y$
 """ slime configuration
 let g:slime_target = "tmux"
 noremap <silent> X :SlimeSendCurrentLine<CR>
+
+""" Neocomplete settings
+set completeopt=longest,menu,menuone
+let g:neocomplete#enable_at_startup=1
+" have selection on first option
+let g:neocomplete#enable_auto_select = 1
+
+""" Syntastic configuration
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+
+"" python checkers
+" Require: pylint (apt-get)
+let g:syntastic_python_checkers = ['pylint']
+
+""" Auto formatting
+" format on save
+au BufWrite * :Autoformat
+" python: formatting requries python-autopep8 (apt-get)
