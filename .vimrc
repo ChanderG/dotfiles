@@ -99,6 +99,15 @@ Plugin 'chiel92/vim-autoformat'
 Plugin 'tpope/vim-dispatch'
 Plugin 'janko-m/vim-test'
 
+""" Snippets
+" engine
+Plugin 'SirVer/ultisnips'
+" snippets
+Plugin 'honza/vim-snippets'
+
+""" extra objects
+Plugin 'michaeljsmith/vim-indent-object'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -206,7 +215,6 @@ let g:neocomplete#enable_auto_select = 1
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
 
 "" python checkers
 " Require: pylint (apt-get)
@@ -216,3 +224,8 @@ let g:syntastic_python_checkers = ['pylint']
 " format on save
 au BufWrite * :Autoformat
 " python: formatting requries python-autopep8 (apt-get)
+
+" snippets
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
