@@ -108,8 +108,8 @@ Plugin 'honza/vim-snippets'
 """ extra objects
 Plugin 'michaeljsmith/vim-indent-object'
 
-""" C/C++ Omnicomplete with ctags
-Plugin 'OmniCppComplete'
+""" C/C++ completion engine based on clang
+Plugin 'Rip-Rip/clang_complete'
 
 call vundle#end()
 filetype plugin indent on
@@ -224,23 +224,21 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_python_checkers = ['pylint']
 
 "" c/cpp checkers
-" Require: gcc , cppcheck (apt-get), splint(apt-get)
-let g:syntastic_c_checkers = ['gcc','cppcheck','splint']
-let g:syntastic_cpp_checkers = ['gcc','cppcheck']
+" Require: gcc , cppcheck (apt-get), splint(apt-get), clang(apt-get)
+let g:syntastic_c_checkers = ['gcc','cppcheck','splint','clang_check','clang_tidy']
+let g:syntastic_cpp_checkers = ['gcc','cppcheck','clang_check','clang_tidy']
 
 """ Auto formatting
 " format on save
 au BufWrite * :Autoformat
 " python: formatting requries python-autopep8 (apt-get)
+" c/c++ : clangformat, comes with clang (apt-get)
 
 " snippets
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
-""" OmniCppComplete - probably only for c++
-" c/c++: ctags generation for omnicppcomplete
-au BufWrite *.cpp,*.c,*.h :Dispatch ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
-" search across included files
-let OmniCpp_NamespaceSearch = 2
-let OmniCpp_ShowPrototypeInAbbr = 1 "show prototype in popup
+""" clang_complete
+" Require: clang (apt-get), exact path needs to be put here
+let g:clang_library_path='/usr/lib/llvm-3.6/lib/libclang-3.6.so.1'
