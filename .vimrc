@@ -108,6 +108,9 @@ Plugin 'honza/vim-snippets'
 """ extra objects
 Plugin 'michaeljsmith/vim-indent-object'
 
+""" C/C++ Omnicomplete with ctags
+Plugin 'OmniCppComplete'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -220,6 +223,11 @@ let g:syntastic_always_populate_loc_list = 1
 " Require: pylint (apt-get)
 let g:syntastic_python_checkers = ['pylint']
 
+"" c/cpp checkers
+" Require: gcc , cppcheck (apt-get), splint(apt-get)
+let g:syntastic_c_checkers = ['gcc','cppcheck','splint']
+let g:syntastic_cpp_checkers = ['gcc','cppcheck']
+
 """ Auto formatting
 " format on save
 au BufWrite * :Autoformat
@@ -229,3 +237,10 @@ au BufWrite * :Autoformat
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+""" OmniCppComplete - probably only for c++
+" c/c++: ctags generation for omnicppcomplete
+au BufWrite *.cpp,*.c,*.h :Dispatch ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .
+" search across included files
+let OmniCpp_NamespaceSearch = 2
+let OmniCpp_ShowPrototypeInAbbr = 1 "show prototype in popup
