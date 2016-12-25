@@ -242,3 +242,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 """ clang_complete
 " Require: clang (apt-get), exact path needs to be put here
 let g:clang_library_path='/usr/lib/llvm-3.6/lib/libclang-3.6.so.1'
+
+""" jedi-vim
+let g:jedi#show_call_signatures = "1"
+let g:jedi#popup_select_first = 0
