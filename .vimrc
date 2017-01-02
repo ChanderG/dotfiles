@@ -111,6 +111,12 @@ Plugin 'michaeljsmith/vim-indent-object'
 """ C/C++ completion engine based on clang
 Plugin 'Rip-Rip/clang_complete'
 
+""" More text objects
+Bundle 'wellle/targets.vim'
+
+""" Sneak - medium distance motion
+Plugin 'justinmk/vim-sneak'
+
 call vundle#end()
 filetype plugin indent on
 
@@ -176,8 +182,6 @@ autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 "" location list
 
 """ A better escape
-inoremap <silent> <Up> <ESC><Up>
-inoremap <silent> <Down> <ESC><Down>
 inoremap <silent> <Left> <ESC><Left>
 inoremap <silent> <Right> <ESC><Right>
 
@@ -230,7 +234,7 @@ let g:syntastic_cpp_checkers = ['gcc','cppcheck','clang_check','clang_tidy']
 
 """ Auto formatting
 " format on save
-au BufWrite * :Autoformat
+au BufWrite *.py *.c *.cpp :Autoformat
 " python: formatting requries python-autopep8 (apt-get)
 " c/c++ : clangformat, comes with clang (apt-get)
 
@@ -246,3 +250,57 @@ let g:clang_library_path='/usr/lib/llvm-3.6/lib/libclang-3.6.so.1'
 """ jedi-vim
 let g:jedi#show_call_signatures = "1"
 let g:jedi#popup_select_first = 0
+
+""" Disable use of hjkl without number prefix =======================>
+" courtesy of https://gist.github.com/jeetsukumaran/96474ebbd00b874f0865
+
+function! DisableIfNonCounted(move) range
+  if v:count
+    return a:move
+  else
+    " You can make this do something annoying like:
+    " echoerr "Count required!"
+    " sleep 2
+    return ""
+  endif
+endfunction
+
+function! SetDisablingOfBasicMotionsIfNonCounted(on)
+  let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h", "<UP>", "<DOWN>"])
+  if a:on
+    for key in keys_to_disable
+      execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
+    endfor
+    let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
+    let g:is_non_counted_basic_motions_disabled = 1
+  else
+    for key in keys_to_disable
+      try
+	execute "unmap " . key
+      catch /E31:/
+      endtry
+    endfor
+    let g:is_non_counted_basic_motions_disabled = 0
+  endif
+endfunction
+
+function! ToggleDisablingOfBasicMotionsIfNonCounted()
+  let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
+  if is_disabled
+    call SetDisablingOfBasicMotionsIfNonCounted(0)
+  else
+    call SetDisablingOfBasicMotionsIfNonCounted(1)
+  endif
+endfunction
+
+command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
+command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
+command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
+
+DisableNonCountedBasicMotions
+
+""" End code for disable.
+
+" automatically leave insert mode after 'updatetime' milliseconds of inaction
+set updatetime=10000
+au CursorHoldI * stopinsert
