@@ -1,8 +1,6 @@
-[http]
-	proxy = 10.3.100.207:8080
 [user]
 	name = ChanderG
-	email = chandergovind@gmail.com
+	email = chanderg@chandergovind.org
 [alias]
 [alias]
 	s = status
@@ -11,3 +9,5 @@
 	co = checkout
 [core]
 	editor = vim
+[push]
+	default = matching
