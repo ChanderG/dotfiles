@@ -36,88 +36,79 @@ set tabstop=8
 "Use Enter/Shift-Enter to introduce new lines above/below w/o leaving normal mode
 map <Enter> o<ESC>
 
-"""setup vundle
-set nocompatible
-filetype off
-
-set rtp^=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-"""manage vundle
-Plugin 'VundleVim/Vundle.vim'
+call plug#begin('~/.vim/bundle')
 
 """CtrlP plugin
-Plugin 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 
 """scala highlighting
-Plugin 'derekwyatt/vim-scala'
+Plug 'derekwyatt/vim-scala'
 
 """License adder
-Plugin 'antoyo/vim-licenses'
+Plug 'antoyo/vim-licenses'
 
 """racket highlighting
-Plugin 'wlangstroth/vim-racket'
+Plug 'wlangstroth/vim-racket'
 
 """find ideal positions to jump to
-Plugin 'unblevable/quick-scope'
+Plug 'unblevable/quick-scope'
 
 """list of tags
-Plugin 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 
 """comment toggle
-Plugin 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary'
 
 """for auto git diffs
-Plugin 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter'
 
 """syntax based code folding for python
-Plugin 'tmhedberg/SimpylFold'
+Plug 'tmhedberg/SimpylFold'
 
 """slime for vim
-Plugin 'jpalardy/vim-slime'
+Plug 'jpalardy/vim-slime'
 
 """zeavim - access zeal docs from vim
-Plugin 'kabbamine/zeavim.vim'
+Plug 'kabbamine/zeavim.vim'
 
 """ Online docs
-Plugin 'keith/investigate.vim'
+Plug 'keith/investigate.vim'
 
 """ Neocomplete - general purpose auto complete frontend
-Plugin 'Shougo/neocomplete.vim'
+Plug 'Shougo/neocomplete.vim'
 
 """ Python autocomplete engine
 " Requires jedi(pip)
-Plugin 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim'
 
 """ Syntax checking
-Plugin 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 
 """ Auto formatting
-Plugin 'chiel92/vim-autoformat'
+Plug 'chiel92/vim-autoformat'
 
 """ Snippets
 " engine
-Plugin 'SirVer/ultisnips'
+Plug 'SirVer/ultisnips'
 " snippets
-Plugin 'honza/vim-snippets'
+Plug 'honza/vim-snippets'
 
 """ extra objects
-Plugin 'michaeljsmith/vim-indent-object'
+Plug 'michaeljsmith/vim-indent-object'
 
 """ C/C++ completion engine based on clang
-Plugin 'Rip-Rip/clang_complete'
+Plug 'Rip-Rip/clang_complete'
 
 """ More text objects
-Bundle 'wellle/targets.vim'
+Plug 'wellle/targets.vim'
 
 """ Sneak - medium distance motion
-Plugin 'justinmk/vim-sneak'
+Plug 'justinmk/vim-sneak'
 
 """ Avoid repeated movements
-Plugin 'takac/vim-hardtime'
+Plug 'takac/vim-hardtime'
 
-call vundle#end()
-filetype plugin indent on
+call plug#end()
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
 "for quick indexing by using git file listing => no files from gitignore, but untracked files
