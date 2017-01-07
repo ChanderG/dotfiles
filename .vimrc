@@ -44,7 +44,7 @@ set rtp^=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 """manage vundle
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
 """CtrlP plugin
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -95,10 +95,6 @@ Plugin 'scrooloose/syntastic'
 """ Auto formatting
 Plugin 'chiel92/vim-autoformat'
 
-""" Build/Tests: not fully setup
-Plugin 'tpope/vim-dispatch'
-Plugin 'janko-m/vim-test'
-
 """ Snippets
 " engine
 Plugin 'SirVer/ultisnips'
@@ -116,6 +112,9 @@ Bundle 'wellle/targets.vim'
 
 """ Sneak - medium distance motion
 Plugin 'justinmk/vim-sneak'
+
+""" Avoid repeated movements
+Plugin 'takac/vim-hardtime'
 
 call vundle#end()
 filetype plugin indent on
@@ -234,7 +233,9 @@ let g:syntastic_cpp_checkers = ['gcc','cppcheck','clang_check','clang_tidy']
 
 """ Auto formatting
 " format on save
-au BufWrite *.py *.c *.cpp :Autoformat
+au BufWrite *.py :Autoformat
+au BufWrite *.c :Autoformat
+au BufWrite *.cpp :Autoformat
 " python: formatting requries python-autopep8 (apt-get)
 " c/c++ : clangformat, comes with clang (apt-get)
 
@@ -253,54 +254,19 @@ let g:jedi#popup_select_first = 0
 
 """ Disable use of hjkl without number prefix =======================>
 " courtesy of https://gist.github.com/jeetsukumaran/96474ebbd00b874f0865
+" NOT included to test hardtime
 
-function! DisableIfNonCounted(move) range
-  if v:count
-    return a:move
-  else
-    " You can make this do something annoying like:
-    " echoerr "Count required!"
-    " sleep 2
-    return ""
-  endif
-endfunction
-
-function! SetDisablingOfBasicMotionsIfNonCounted(on)
-  let keys_to_disable = get(g:, "keys_to_disable_if_not_preceded_by_count", ["j", "k", "l", "h", "<UP>", "<DOWN>"])
-  if a:on
-    for key in keys_to_disable
-      execute "noremap <expr> <silent> " . key . " DisableIfNonCounted('" . key . "')"
-    endfor
-    let g:keys_to_disable_if_not_preceded_by_count = keys_to_disable
-    let g:is_non_counted_basic_motions_disabled = 1
-  else
-    for key in keys_to_disable
-      try
-	execute "unmap " . key
-      catch /E31:/
-      endtry
-    endfor
-    let g:is_non_counted_basic_motions_disabled = 0
-  endif
-endfunction
-
-function! ToggleDisablingOfBasicMotionsIfNonCounted()
-  let is_disabled = get(g:, "is_non_counted_basic_motions_disabled", 0)
-  if is_disabled
-    call SetDisablingOfBasicMotionsIfNonCounted(0)
-  else
-    call SetDisablingOfBasicMotionsIfNonCounted(1)
-  endif
-endfunction
-
-command! ToggleDisablingOfNonCountedBasicMotions :call ToggleDisablingOfBasicMotionsIfNonCounted()
-command! DisableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(1)
-command! EnableNonCountedBasicMotions :call SetDisablingOfBasicMotionsIfNonCounted(0)
-
-DisableNonCountedBasicMotions
-
-""" End code for disable.
+""" vim-hardtime: avoid repeated movement keys
+let g:hardtime_default_on = 1
+let g:list_of_normal_keys = ["<UP>", "<DOWN>"]
+let g:hardtime_timeout = 2000
+let g:hardtime_maxcount = 2
 
 " automatically leave insert mode after 'updatetime' milliseconds of inaction
-set updatetime=10000
-au CursorHoldI * stopinsert
+" set updatetime=5000
+" au CursorHoldI * stopinsert
+" Need a suitable value
+
+""" Use TAB like in Orgmode
+" Toggles between all open and all closed fully
+" TODO
