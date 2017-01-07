@@ -1,6 +1,8 @@
 xterm*faceName: Liberation Mono:size=15:antialias=false
 
-URxvt*transparent: 
+urxvt*transparent: true
+urxvt*shading: 50
+
 URxvt.scrollBar: false
 URxvt.font: xft:monospace:size=18:antialias-false
 URxvt.letterSpace: -1
