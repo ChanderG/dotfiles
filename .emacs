@@ -1,3 +1,6 @@
+;;; -*- lexical-binding: t -*-
+; for evil key binding
+
 ;; The following lines are always needed.  Choose your own keys.
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -115,6 +118,33 @@
 ;Use space to toggle between normal mode and emacs mode
 (define-key evil-normal-state-map " " 'evil-emacs-state)
 (define-key evil-emacs-state-map " " 'evil-exit-emacs-state)
+
+;; semi-colon to colon
+(define-key evil-normal-state-map (kbd ";") 'evil-ex)
+
+;; normal map key translations
+
+;; Note: lexical-binding must be t in order for this to work correctly.
+(defun make-conditional-key-translation (key-from key-to translate-keys-p)
+  "Make a Key Translation such that if the translate-keys-p function returns true,
+  key-from translates to key-to, else key-from translates to itself.  translate-keys-p
+  takes key-from as an argument. "
+  (define-key key-translation-map key-from
+	      (lambda (prompt)
+		(if (funcall translate-keys-p key-from) key-to key-from))))
+
+(defun my-translate-keys-p (key-from)
+  "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
+  (and
+    ;; Only allow a non identity translation if we're beginning a Key Sequence.
+    (equal key-from (this-command-keys))
+    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
+
+(define-key evil-normal-state-map "c" nil)
+(define-key evil-motion-state-map "cu" 'universal-argument)
+(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
+(make-conditional-key-translation (kbd "m") (kbd "M-x")'my-translate-keys-p)
 
 ;; active Babel languages
 (org-babel-do-load-languages
