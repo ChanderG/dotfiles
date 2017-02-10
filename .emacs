@@ -1,45 +1,3 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(custom-enabled-themes (quote (tango-dark)))
- '(custom-safe-themes
-   (quote
-    ("4f5bb895d88b6fe6a983e63429f154b8d939b4a8c581956493783b2515e22d6d" "28ec8ccf6190f6a73812df9bc91df54ce1d6132f18b4c8fcc85d45298569eb53" "40c66989886b3f05b0c4f80952f128c6c4600f85b1f0996caa1fa1479e20c082" "9ab634dcc9131f79016c96c4955298409649f6538908c743a8a9d2c6bc8321ef" default)))
- '(fci-rule-color "#14151E")
- '(vc-annotate-background nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#d54e53")
-     (40 . "goldenrod")
-     (60 . "#e7c547")
-     (80 . "mediumspringgreen")
-     (100 . "#70c0b1")
-     (120 . "DeepSkyBlue1")
-     (140 . "goldenrod")
-     (160 . "#d54e53")
-     (180 . "goldenrod")
-     (200 . "#e7c547")
-     (220 . "mediumspringgreen")
-     (240 . "#70c0b1")
-     (260 . "DeepSkyBlue1")
-     (280 . "goldenrod")
-     (300 . "#d54e53")
-     (320 . "goldenrod")
-     (340 . "#e7c547")
-     (360 . "mediumspringgreen"))))
- '(vc-annotate-very-old-color nil))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 ;; The following lines are always needed.  Choose your own keys.
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
@@ -82,7 +40,10 @@
 )
 
 ;; diabled for now
-;(global-set-key '[f4] 'pomodoro-start)
+(global-set-key '[f4] (lambda () 
+		       (interactive)
+		       (org-columns)
+		       ))
 
 ;; simplifying clock-in / clock-out
 (global-set-key '[f5] 'org-clock-in)
@@ -143,3 +104,51 @@
 			    (interactive)
 			    (save-buffer)
 				  ))
+
+(load (expand-file-name "~/Documents/Dabblings/CL/slime-helper.el"))
+;; Replace "sbcl" with the path to your implementation
+(setq inferior-lisp-program "sbcl")
+
+(require 'evil)
+(evil-mode 1)
+
+;Use space to toggle between normal mode and emacs mode
+(define-key evil-normal-state-map " " 'evil-emacs-state)
+(define-key evil-emacs-state-map " " 'evil-exit-emacs-state)
+
+;; active Babel languages
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (sh . t)
+   (lisp . t)
+   (emacs-lisp . nil)
+   ))
+
+;; disable confirmation upon C-c C-c in org-babel
+(setq org-confirm-babel-evaluate nil)
+
+;; zoom in and out of headings in orgmode
+(global-set-key (kbd "C-<next>") (lambda ()
+				   (interactive)
+				   (outline-next-visible-heading 0)
+				   (org-narrow-to-subtree)))
+
+(global-set-key (kbd "C-<prior>") (lambda ()
+				    (interactive)
+				    (widen)
+				    (outline-up-heading 1)
+				    (org-narrow-to-subtree)))
+
+(defun read-clocks ()
+  (with-current-buffer (find-file "~/orgmode/time.org")
+    (let* ((entries (nth 2 (org-clock-get-table-data "~/orgmode/time.org" nil)))
+	   (no (position "Sprints" entries :test (lambda (x y) (string= x (nth 1 y)))))
+	   (e (nthcdr no entries)))
+      (with-temp-file "~/orgmode/clockinfo"
+	(insert (mapconcat
+		 (lambda (x) (concat (number-to-string (nth 3 x)) "," (nth 1 x)))
+		 e
+		 "\n"))))))
+
+
