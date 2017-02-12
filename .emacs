@@ -112,15 +112,23 @@
 ;; Replace "sbcl" with the path to your implementation
 (setq inferior-lisp-program "sbcl")
 
+;; disable menu bar
+(menu-bar-mode 0)
+
 (require 'evil)
 (evil-mode 1)
+
+; helm
+(require 'helm-config)
+(helm-mode 1)
 
 ;Use space to toggle between normal mode and emacs mode
 (define-key evil-normal-state-map " " 'evil-emacs-state)
 (define-key evil-emacs-state-map " " 'evil-exit-emacs-state)
 
-;; semi-colon to colon
-(define-key evil-normal-state-map (kbd ";") 'evil-ex)
+;; easy to access commands
+(define-key evil-normal-state-map (kbd ";") 'helm-M-x)
+(define-key evil-emacs-state-map (kbd ";") 'helm-M-x)
 
 ;; normal map key translations
 
@@ -140,11 +148,29 @@
     (equal key-from (this-command-keys))
     (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
 
-(define-key evil-normal-state-map "c" nil)
-(define-key evil-motion-state-map "cu" 'universal-argument)
-(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
+;(define-key evil-normal-state-map "c" nil)
+;(define-key evil-motion-state-map "cu" 'universal-argument)
+;(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
 (make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "m") (kbd "M-x")'my-translate-keys-p)
+;(make-conditional-key-translation (kbd ";") (kbd "M-x")'my-translate-keys-p)
+
+;;; esc quits
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark  t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
 ;; active Babel languages
 (org-babel-do-load-languages
@@ -180,5 +206,3 @@
 		 (lambda (x) (concat (number-to-string (nth 3 x)) "," (nth 1 x)))
 		 e
 		 "\n"))))))
-
-
