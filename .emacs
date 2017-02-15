@@ -130,7 +130,14 @@
 (define-key evil-normal-state-map (kbd ";") 'helm-M-x)
 (define-key evil-emacs-state-map (kbd ";") 'helm-M-x)
 
-;; normal map key translations
+;; normal map single key translations for orgmode
+; life saver
+(define-key evil-normal-state-map (kbd "TAB") 'org-cycle)
+(define-key evil-normal-state-map (kbd "<") 'org-metaleft)
+(define-key evil-normal-state-map (kbd ">") 'org-metaright)
+(define-key evil-normal-state-map (kbd "O") 'org-insert-heading)
+
+;; multi key translation setup in normal mode
 
 ;; Note: lexical-binding must be t in order for this to work correctly.
 (defun make-conditional-key-translation (key-from key-to translate-keys-p)
