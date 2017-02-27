@@ -22,7 +22,8 @@ xmodmap -e "keysym Caps_Lock = Escape"
 #  right ctrl -> left_alt + right -> go to next dwm tag
 #  Print Screen -> left_alt + 8 -> go to 8th tag
 #  right shift -> left_alt + tab -> go to previous tag
-flock -n /tmp/xcape.lockfile xcape -e 'Control_L=Alt_L|o;Super_L=Alt_L|Shift_L|u;Control_R=Alt_L|Right;Alt_R=Alt_L|Left;Print=Alt_L|8;Shift_R=Alt_L|Tab'
+# left shift -> left_alt + j -> cycle in current tag
+flock -n /tmp/xcape.lockfile xcape -e 'Control_L=Alt_L|o;Super_L=Alt_L|Shift_L|u;Control_R=Alt_L|Right;Alt_R=Alt_L|Left;Print=Alt_L|8;Shift_R=Alt_L|Tab;Shift_L=Alt_L|j'
 
 # set the background
 sh ~/.fehbg &
