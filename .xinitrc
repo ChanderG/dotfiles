@@ -10,10 +10,6 @@ redshift -O 3700K
 # run syspom - homegrown pomodoro timer with analytics dashboard
 flock -n /tmp/syspom.lockfile syspom &>/dev/null &
 
-# setup capslock as an additional escape; mainly for use as emacs meta
-xmodmap -e "remove Lock = Caps_Lock"
-xmodmap -e "keysym Caps_Lock = Escape"
-
 # use modifiers on their own as well
 # mapping here mean
 #  left ctrl -> left_alt + o -> tdrop
@@ -23,7 +19,7 @@ xmodmap -e "keysym Caps_Lock = Escape"
 #  Print Screen -> left_alt + 8 -> go to 8th tag
 #  right shift -> left_alt + tab -> go to previous tag
 # left shift -> left_alt + j -> cycle in current tag
-flock -n /tmp/xcape.lockfile xcape -e 'Control_L=Alt_L|o;Super_L=Alt_L|Shift_L|u;Control_R=Alt_L|Right;Alt_R=Alt_L|Left;Print=Alt_L|8;Shift_R=Alt_L|Tab;Shift_L=Alt_L|j'
+flock -n /tmp/xcape.lockfile xcape -e 'Control_L=Alt_L|o;Super_L=Alt_L|Shift_L|s;Control_R=Alt_L|Right;Alt_R=Alt_L|Left;Print=Alt_L|8;Shift_R=Alt_L|Tab;Shift_L=Alt_L|j'
 
 # set the background
 sh ~/.fehbg &
