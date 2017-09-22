@@ -112,7 +112,9 @@ call plug#end()
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
 "for quick indexing by using git file listing => no files from gitignore, but untracked files
-let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+"let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+" use ag instead
+"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
 """ search through tags
 let g:ctrlp_extensions = ['tag']
@@ -186,7 +188,10 @@ set pastetoggle=<F2>
 """ fold using syntax
 set foldmethod=syntax
 set foldclose=all "automatically reclose after navigating out
-set foldlevel=0
+set foldlevel=10
+
+" open close folds with space
+nnoremap <space> za
 
 """ underline current line
 set cursorline
@@ -215,7 +220,7 @@ let g:syntastic_always_populate_loc_list = 1
 
 "" python checkers
 " Require: pylint (apt-get)
-let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_python_checkers = ['pylint', 'pep8']
 
 "" c/cpp checkers
 " Require: gcc , cppcheck (apt-get), splint(apt-get), clang(apt-get)
@@ -237,7 +242,8 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 """ clang_complete
 " Require: clang (apt-get), exact path needs to be put here
-let g:clang_library_path='/usr/lib/llvm-3.6/lib/libclang-3.6.so.1'
+let g:clang_library_path='/usr/lib64/llvm/libclang.so'
+let g:clang_complete_loaded="0"
 
 """ jedi-vim
 let g:jedi#show_call_signatures = "1"
@@ -258,6 +264,22 @@ let g:hardtime_maxcount = 2
 " au CursorHoldI * stopinsert
 " Need a suitable value
 
-""" Use TAB like in Orgmode
-" Toggles between all open and all closed fully
-" TODO
+""" ctags configuration
+set tags=./tags;
+
+""" cscope configuration
+" auto loading cscope database
+" similar functionality with tags -> set tags=tags;/ (auto towards)
+fun! LoadCscope()
+    let db = findfile("cscope.out", '.;')
+    if (!empty(db))
+	let path = strpart(db, 0, match(db, "/cscope.out$"))
+	set nocscopeverbose " suppress 'duplicate connection' error
+	exe "cs add " . db . " " . path
+	set cscopeverbose
+    endif
+endfun
+au BufEnter * call LoadCscope()
+
+" find uses of word under cursor
+nnoremap <leader>] :cs find c <C-R>=expand("<cword>")<CR><CR>
