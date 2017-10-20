@@ -119,11 +119,10 @@ call plug#end()
 "for quick indexing by using git file listing => no files from gitignore, but untracked files
 "let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
 " use ag instead
+let g:loaded_ctrlp = 1
 let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
 " to search in mru files as well
 let g:ctrlp_cmd = 'CtrlPMixed'
-
 """ search through tags
 let g:ctrlp_extensions = ['tag', 'mixed']
 nmap <leader>p ;CtrlPTag<CR>
@@ -305,4 +304,17 @@ nnoremap <leader>p "*p
 vnoremap <leader>a !column -t<CR>
 
 """ Home grown CtrlP alternative powered by dmenu
-"...
+function! DmenuOpenAll()
+  " obtain files of interest in order
+  " 1. quilt operating files
+  " 2. Recent files opened in this sub folder
+  " 3. From git ls.
+  " 4. Find in subdir -> if not a git repo.
+  let iname = system("(quilt files 2>/dev/null; git ls-files 2>/dev/null) | dmenu -i -l 20 -p open")
+  if empty(iname)
+    return
+  endif
+  execute "tabe" . iname
+endfunction
+
+noremap <silent> <C-p> :call DmenuOpenAll()<cr>
