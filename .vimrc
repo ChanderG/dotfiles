@@ -51,7 +51,7 @@ Plug 'antoyo/vim-licenses'
 Plug 'wlangstroth/vim-racket'
 
 """find ideal positions to jump to
-Plug 'unblevable/quick-scope'
+Plug 'bradford-smith94/quick-scope'
 
 """list of tags
 Plug 'majutsushi/tagbar'
@@ -108,16 +108,24 @@ Plug 'justinmk/vim-sneak'
 """ Avoid repeated movements
 Plug 'takac/vim-hardtime'
 
+""" Better word motion in terms of camel and snake case
+Plug 'chaoren/vim-wordmotion'
+
+""" In an attempt to make use of the full set of registers
+Plug 'junegunn/vim-peekaboo'
 call plug#end()
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
 "for quick indexing by using git file listing => no files from gitignore, but untracked files
 "let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
 " use ag instead
-"let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+" to search in mru files as well
+let g:ctrlp_cmd = 'CtrlPMixed'
 
 """ search through tags
-let g:ctrlp_extensions = ['tag']
+let g:ctrlp_extensions = ['tag', 'mixed']
 nmap <leader>p ;CtrlPTag<CR>
 
 """For the License Adder
@@ -163,7 +171,7 @@ set showcmd
 """ QuickFix window options
 
 """ direct move to next
-nmap cn ;cn<CR>
+" nmap cn ;cn<CR>
 " no mapping for prev -- as I rarely need it
 
 " In the quickfix window, <CR> is used to jump to the error under the
@@ -265,6 +273,7 @@ let g:hardtime_maxcount = 2
 " Need a suitable value
 
 """ ctags configuration
+" searches upwards for tags file
 set tags=./tags;
 
 """ cscope configuration
@@ -281,5 +290,19 @@ fun! LoadCscope()
 endfun
 au BufEnter * call LoadCscope()
 
-" find uses of word under cursor
 nnoremap <leader>] :cs find c <C-R>=expand("<cword>")<CR><CR>
+
+""" highlight useless trailing whitespace for removal
+highlight ExtraWhiteSpace ctermbg=red
+match ExtraWhiteSpace /\s\+$/
+
+""" Easier access to system clipboard
+nnoremap <leader>y "*y
+nnoremap <leader>p "*p
+
+""" Easy technique for clean alignment
+" still need to reindent manually
+vnoremap <leader>a !column -t<CR>
+
+""" Home grown CtrlP alternative powered by dmenu
+"...
