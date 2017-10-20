@@ -13,7 +13,7 @@ function d {
 # has aa known flaw: if 2 anscestors have the same name, defaults to the one higher on the tree
 function a {
   path=$(pwd | tr '/' ' ')
-  dest=$(for i in $path; do echo $i; done | dmenu -p '<')
+  dest=$(for i in $path; do echo $i; done | tac | dmenu -p '<')
   cd "$(echo $(pwd) | awk -F"/$dest" '{print $1}')/$dest"
 }
 
