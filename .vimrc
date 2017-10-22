@@ -220,7 +220,9 @@ noremap <silent> X :SlimeSendCurrentLine<CR>
 set completeopt=longest,menu,menuone
 let g:neocomplete#enable_at_startup=1
 " have selection on first option
-let g:neocomplete#enable_auto_select = 1
+let g:neocomplete#enable_auto_select = 0
+" cancel the current neocomplete suggestion and open omnicomplete instead
+inoremap <tab> <c-e><c-x><c-o>
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
@@ -243,7 +245,7 @@ au BufWrite *.cpp :Autoformat
 " c/c++ : clangformat, comes with clang (apt-get)
 
 " snippets
-let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<c-tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
@@ -314,7 +316,7 @@ function! DmenuOpenAll()
   if empty(iname)
     return
   endif
-  execute "tabe" . iname
+  execute "e " . iname
 endfunction
 
 noremap <silent> <C-p> :call DmenuOpenAll()<cr>
