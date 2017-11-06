@@ -19,3 +19,6 @@ keycode  73 = 7 F7 7 F7
 keycode  74 = 8 F8 8 F8
 keycode  75 = 9 F9 9 F9
 keycode  76 = 0 F10 0 F10
+
+! replace Caps_Lock with Shift_Lock
+keycode 66 = Shift_Lock
