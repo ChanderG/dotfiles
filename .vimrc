@@ -305,18 +305,22 @@ nnoremap <leader>p "*p
 " still need to reindent manually
 vnoremap <leader>a !column -t<CR>
 
-""" Home grown CtrlP alternative powered by dmenu
-function! DmenuOpenAll()
-  " obtain files of interest in order
-  " 1. quilt operating files
-  " 2. Recent files opened in this sub folder
-  " 3. From git ls.
-  " 4. Find in subdir -> if not a git repo.
-  let iname = system("(quilt files 2>/dev/null; git ls-files 2>/dev/null) | dmenu -i -l 20 -p open")
+""" Home grown CtrlP alternative powered by dmenu--------------------------->
+
+function! DmenuOpen(cmd)
+  let iname = system(a:cmd . " 2>/dev/null | dmenu -i -l 20 -p open")
   if empty(iname)
     return
   endif
   execute "e " . iname
 endfunction
 
-noremap <silent> <C-p> :call DmenuOpenAll()<cr>
+" files being tracked by git
+nnoremap <silent> <C-p> :call DmenuOpen("git ls-files")<cr>
+" files currently being tracked in quilt
+nnoremap <silent> <C-u> :call DmenuOpen("quilt files")<cr>
+" using the normal find command
+nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
+" add more as needed !!!
+
+""" ------------------------------------------------------------------------<
