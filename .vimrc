@@ -105,14 +105,14 @@ Plug 'wellle/targets.vim'
 """ Sneak - medium distance motion
 Plug 'justinmk/vim-sneak'
 
-""" Avoid repeated movements
-Plug 'takac/vim-hardtime'
-
 """ Better word motion in terms of camel and snake case
 Plug 'chaoren/vim-wordmotion'
 
 """ In an attempt to make use of the full set of registers
 Plug 'junegunn/vim-peekaboo'
+
+""" Tagfile management
+Plug 'ludovicchabant/vim-gutentags'
 call plug#end()
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
@@ -147,18 +147,6 @@ map <C-PageDown> ;tabnext<CR>
 
 """ new tab creation
 map tn <Esc>;tabnew<CR>
-
-
-""" QuickScope plugin
-
-""" toggle with
-nmap <leader>q <plug>(QuickScopeToggle)
-vmap <leader>q <plug>(QuickScopeToggle)
-
-""" tagbar plugin
-
-""" easy toggle
-nmap <F8> ;TagbarToggle<CR>
 
 """ Timeouts for commands
 set notimeout
@@ -220,9 +208,11 @@ noremap <silent> X :SlimeSendCurrentLine<CR>
 set completeopt=longest,menu,menuone
 let g:neocomplete#enable_at_startup=1
 " have selection on first option
-let g:neocomplete#enable_auto_select = 0
-" cancel the current neocomplete suggestion and open omnicomplete instead
-inoremap <tab> <c-e><c-x><c-o>
+let g:neocomplete#enable_auto_select = 1
+" cancel the current neocomplete suggestion and use one of these instead
+inoremap <tab>o <c-e><c-x><c-o>
+inoremap <tab>] <c-e><c-x><c-]>
+inoremap <tab>l <c-e><c-x><c-l>
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
@@ -255,23 +245,8 @@ let g:clang_library_path='/usr/lib64/llvm/libclang.so'
 let g:clang_complete_loaded="0"
 
 """ jedi-vim
-let g:jedi#show_call_signatures = "1"
-let g:jedi#popup_select_first = 0
-
-""" Disable use of hjkl without number prefix =======================>
-" courtesy of https://gist.github.com/jeetsukumaran/96474ebbd00b874f0865
-" NOT included to test hardtime
-
-""" vim-hardtime: avoid repeated movement keys
-let g:hardtime_default_on = 1
-let g:list_of_normal_keys = ["<UP>", "<DOWN>"]
-let g:hardtime_timeout = 2000
-let g:hardtime_maxcount = 2
-
-" automatically leave insert mode after 'updatetime' milliseconds of inaction
-" set updatetime=5000
-" au CursorHoldI * stopinsert
-" Need a suitable value
+let g:jedi#show_call_signatures = "2"
+let g:jedi#popup_select_first = 1
 
 """ ctags configuration
 " searches upwards for tags file
@@ -304,6 +279,7 @@ nnoremap <leader>p "*p
 """ Easy technique for clean alignment
 " still need to reindent manually
 vnoremap <leader>a !column -t<CR>
+" also use the -s flag to manage multi word coumns
 
 """ Home grown CtrlP alternative powered by dmenu--------------------------->
 
@@ -316,7 +292,7 @@ function! DmenuOpen(cmd)
 endfunction
 
 " files being tracked by git
-nnoremap <silent> <C-p> :call DmenuOpen("git ls-files")<cr>
+nnoremap <silent> <C-p> :call DmenuOpen("git ls-files --exclude-standard -co")<cr>
 " files currently being tracked in quilt
 nnoremap <silent> <C-u> :call DmenuOpen("quilt files")<cr>
 " using the normal find command
@@ -324,3 +300,10 @@ nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
 " add more as needed !!!
 
 """ ------------------------------------------------------------------------<
+
+""" For automatic search of include files etc
+" can now jump to local include files in projects
+set path+=**
+
+" find the next number
+nnoremap <silent> <leader>n /\d\+<CR>
