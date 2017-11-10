@@ -297,6 +297,8 @@ nnoremap <silent> <C-p> :call DmenuOpen("git ls-files --exclude-standard -co")<c
 nnoremap <silent> <C-u> :call DmenuOpen("quilt files")<cr>
 " using the normal find command
 nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
+" git files currently tracked with modifications set
+nnoremap <silent> <C-e> :call DmenuOpen("git ls-files -m")<cr>
 " add more as needed !!!
 
 """ ------------------------------------------------------------------------<
