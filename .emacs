@@ -49,8 +49,15 @@
 		       ))
 
 ;; simplifying clock-in / clock-out
-(global-set-key '[f5] 'org-clock-in)
-(global-set-key '[f6] 'org-clock-out)
+;; toggle clock in and out
+(global-set-key '[f5] (lambda () 
+			(interactive)
+			(if (org-clocking-p)
+			  (org-clock-out)
+			  (org-clock-in)
+			)))
+
+(global-set-key '[f6] 'pomodoro-start)
 
 ;;syntax highlight code blocks
 (setq org-src-fontify-natively t)
@@ -108,7 +115,7 @@
 			    (save-buffer)
 				  ))
 
-(load (expand-file-name "~/Documents/Dabblings/CL/slime-helper.el"))
+;(load (expand-file-name "~/Documents/Dabblings/CL/slime-helper.el"))
 ;; Replace "sbcl" with the path to your implementation
 (setq inferior-lisp-program "sbcl")
 
@@ -185,11 +192,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
  '((python . t)
    (sh . t)
    (lisp . t)
-   (emacs-lisp . nil)
+   (emacs-lisp . t)
    ))
 
 ;; disable confirmation upon C-c C-c in org-babel
 (setq org-confirm-babel-evaluate nil)
+
+;; notify after execution of source blocks finish
+(add-hook 'org-babel-after-execute-hook (lambda ()
+					  (interactive)
+					  (start-process "Notification" nil "notify-send" "Emacs" "Evaluation of src block finished.")
+						))
 
 ;; zoom in and out of headings in orgmode
 (global-set-key (kbd "C-<next>") (lambda ()
@@ -213,3 +226,22 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 		 (lambda (x) (concat (number-to-string (nth 3 x)) "," (nth 1 x)))
 		 e
 		 "\n"))))))
+
+
+;; no confirm shell links for nice button like behaviour
+(setq org-confirm-shell-link-function nil)
+;; agenda view sizes
+(setq org-agenda-window-frame-fractions '(0.25 . 0.40))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/orgmode/time.org"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

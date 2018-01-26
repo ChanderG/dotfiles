@@ -4,34 +4,30 @@ alias xt="xterm & sleep .8s && transset -a 0.4"
 
 export EDITOR="vim"
 
-# descend into the subdirectories below
-function d {
-  cd $(find . -type d 2>/dev/null | dmenu -p '>' -l 10)
-}
-
-# ascend to the directories directly above you
-# has aa known flaw: if 2 anscestors have the same name, defaults to the one higher on the tree
-function a {
-  path=$(pwd | tr '/' ' ')
-  dest=$(for i in $path; do echo $i; done | tac | dmenu -p '<')
-  cd "$(echo $(pwd) | awk -F"/$dest" '{print $1}')/$dest"
-}
+# better management of large ouput commands
+# log interactive -> only filter by terms
+alias li="tee lastcommand.log | egrep -C3 -n "
+# simply open the full output
+alias lo="vi lastcommand.log"
 
 # related to git
 alias gl="git log --oneline"
+
+# xmessage output
+alias xm='xmessage -file - -center -default okay -center -fg "#eeeeee" -bg "#003366"'
 
 # related to quilt
 alias q="quilt"
 # tab completion for q too
 complete -F _quilt_completion $_quilt_complete_opt q
 alias qv='vi $(q files | dmenu -l 10)'
-alias qe='q edit $(q files | dmenu -l 10)'
+alias qe='vi $(q files | dmenu -l 10); q refresh'
 alias qs='q series'
-alias qr='q refresh'
+alias qr='q remove $(q files | dmenu -l 10)'
 alias qa='q add $(find . | dmenu -l 10)'
 
-# grep utils
-alias vo="dmenu -p 'vo' -l 25 | awk -F: '{print \"+\"\$2,\$1}' | xargs sh -c 'vim "\$@" < /dev/tty' vim"
+# related to emacs/orgmode
+alias omtodos="emacs -batch -l ~/.emacs -eval '(org-batch-agenda \"t\")' | tail -n+3"
 
 # general settings
 if [ -f ~/.shell_options ]; then

@@ -113,6 +113,9 @@ Plug 'junegunn/vim-peekaboo'
 
 """ Tagfile management
 Plug 'ludovicchabant/vim-gutentags'
+
+""" Trying out surround
+Plug 'machakann/vim-sandwich'
 call plug#end()
 
 "Ctrlp fuzzy finder : thanks to Robin Ward
@@ -298,7 +301,7 @@ nnoremap <silent> <C-u> :call DmenuOpen("quilt files")<cr>
 " using the normal find command
 nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
 " git files currently tracked with modifications set
-nnoremap <silent> <C-e> :call DmenuOpen("git ls-files -m")<cr>
+nnoremap <silent> <C-e> :call DmenuOpen("(git diff --name-only --cached; git ls-files -m)")<cr>
 " add more as needed !!!
 
 """ ------------------------------------------------------------------------<
