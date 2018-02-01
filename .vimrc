@@ -38,9 +38,6 @@ map <Enter> o<ESC>
 
 call plug#begin('~/.vim/bundle')
 
-"""CtrlP plugin
-Plug 'ctrlpvim/ctrlp.vim'
-
 """scala highlighting
 Plug 'derekwyatt/vim-scala'
 
@@ -115,17 +112,6 @@ Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-sandwich'
 call plug#end()
 
-"Ctrlp fuzzy finder : thanks to Robin Ward
-"for quick indexing by using git file listing => no files from gitignore, but untracked files
-"let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
-" use ag instead
-let g:loaded_ctrlp = 1
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-" to search in mru files as well
-let g:ctrlp_cmd = 'CtrlPMixed'
-""" search through tags
-let g:ctrlp_extensions = ['tag', 'mixed']
-nmap <leader>p ;CtrlPTag<CR>
 
 """For the License Adder
 let g:licenses_authors_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
