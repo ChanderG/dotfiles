@@ -108,9 +108,6 @@ Plug 'justinmk/vim-sneak'
 """ Better word motion in terms of camel and snake case
 Plug 'chaoren/vim-wordmotion'
 
-""" In an attempt to make use of the full set of registers
-Plug 'junegunn/vim-peekaboo'
-
 """ Tagfile management
 Plug 'ludovicchabant/vim-gutentags'
 
@@ -304,6 +301,26 @@ nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
 nnoremap <silent> <C-e> :call DmenuOpen("(git diff --name-only --cached; git ls-files -m)")<cr>
 " add more as needed !!!
 
+""" ------------------------------------------------------------------------<
+
+""" Home grown register selector powered by dmenu--------------------------->
+
+function! RegisterView(op)
+  let save_pos = getpos(".")
+  let tmpfile = tempname()
+  execute "redir > " . tmpfile . "|silent registers|redir END"
+  let rawout = system("cat " . tmpfile . "| dmenu -i -l 15 -p Reg")
+  execute delete(tmpfile)
+  call setpos(".", save_pos)
+  if (empty(rawout)) " for exiting flow if esc is entered from dmenu
+    return
+  endif
+  let reg = split(rawout)[0]
+  call feedkeys(a:op . reg[1], 'n')
+endfunction
+
+nnoremap <silent> " :call RegisterView("\"")<CR>
+nnoremap <silent> @ :call RegisterView("@")<CR>
 """ ------------------------------------------------------------------------<
 
 """ For automatic search of include files etc
