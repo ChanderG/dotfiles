@@ -1,11 +1,6 @@
 syntax on
 
-"line numbering that toggles between normal and relative
-autocmd InsertEnter * :set number
-autocmd InsertLeave * :set relativenumber
-
-"original line number
-set number
+set relativenumber
 
 "indent options
 set ai
@@ -128,11 +123,11 @@ map [6^ <C-PageDown>
 """ Tabs management
 
 """switching between tabs
-map <C-PageUp> ;tabprevious<CR>
-map <C-PageDown> ;tabnext<CR>
+nnoremap <C-PageUp> :tabprevious<CR>
+nnoremap <C-PageDown> :tabnext<CR>
 
 """ new tab creation
-map tn <Esc>;tabnew<CR>
+nnoremap tn :tabnew<CR>
 
 """ Timeouts for commands
 set notimeout
