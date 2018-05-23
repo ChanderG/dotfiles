@@ -21,13 +21,15 @@ set wildmenu
 nore ; :
 nore : ;
 
+" open up the full color range
+set t_Co=256
 "dark background color
-set background=light
+set background=dark
 
 "shift >>/<< width
-set shiftwidth=2
+set shiftwidth=0
 
-set tabstop=8
+set tabstop=2
 
 "Use Enter/Shift-Enter to introduce new lines above/below w/o leaving normal mode
 map <Enter> o<ESC>
@@ -106,8 +108,23 @@ Plug 'ludovicchabant/vim-gutentags'
 
 """ Trying out surround
 Plug 'machakann/vim-sandwich'
+
+""" Pony syntax support
+Plug 'jakwings/vim-pony'
+
+""" Async runner
+Plug 'skywind3000/asyncrun.vim'
+
+""" Go editing engine
+Plug 'fatih/vim-go'
+
+""" 256 Color theme
+Plug 'morhetz/gruvbox'
+
 call plug#end()
 
+" set color scheme
+colorscheme gruvbox
 
 """For the License Adder
 let g:licenses_authors_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
@@ -192,9 +209,9 @@ let g:neocomplete#enable_at_startup=1
 " have selection on first option
 let g:neocomplete#enable_auto_select = 1
 " cancel the current neocomplete suggestion and use one of these instead
-inoremap <tab>o <c-e><c-x><c-o>
-inoremap <tab>] <c-e><c-x><c-]>
-inoremap <tab>l <c-e><c-x><c-l>
+" inoremap <tab>o <c-e><c-x><c-o>
+" inoremap <tab>] <c-e><c-x><c-]>
+" inoremap <tab>l <c-e><c-x><c-l>
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
@@ -248,6 +265,7 @@ fun! LoadCscope()
 endfun
 au BufEnter * call LoadCscope()
 
+""" jump to uses of function using cscope
 nnoremap <leader>] :cs find c <C-R>=expand("<cword>")<CR><CR>
 
 """ highlight useless trailing whitespace for removal
@@ -311,3 +329,53 @@ set path+=**
 
 " find the next number
 nnoremap <silent> <leader>n /\d\+<CR>
+
+""" Home grown :Gblame ----------------------------------------------------->
+" displays only the author and relative date to commit in a vertical window
+" scrollbinded to the main info.
+function! GitBlameInfo()
+	set scrollbind
+	set cursorbind
+	vnew | r!git blame -c --date=relative #
+	%norm df(f)DdaW
+	norm ggdd
+	vertical res -15
+	" lock the screens
+	set scrollbind
+	set cursorbind
+	set readonly
+endfunction
+command! Gblame :call GitBlameInfo()<CR>
+""" ------------------------------------------------------------------------<
+
+""" Navigate loclist entries
+nnoremap ]l :lnext<CR>
+nnoremap [l :lprevious<CR>
+nnoremap ]L :llast<CR>
+nnoremap [L :lfirst<CR>
+
+""" Navigate quickfix entries
+nnoremap ]q :cnext<CR>
+nnoremap [q :cprevious<CR>
+
+""" Experimental features
+
+" highlight word under cursor
+highlight WordUnder ctermbg=237
+autocmd CursorMoved * exe printf('match WordUnder /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+
+" Switching between diff with master and INDEX
+let g:gitgutter_diff_target_master = 0
+function! GitDiffTargetToggle()
+	if g:gitgutter_diff_target_master
+		let g:gitgutter_diff_base = ''
+		let g:gitgutter_diff_target_master = 0
+		echom "Showing diff with INDEX"
+	else
+		let g:gitgutter_diff_base = 'master'
+		let g:gitgutter_diff_target_master = 1
+		echom "Showing diff with master"
+	endif
+	GitGutter
+endfunction
+nnoremap <silent> gM :call GitDiffTargetToggle()<CR>
