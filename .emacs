@@ -108,20 +108,25 @@
 (add-hook 'auto-save-hook 'org-update-all-dblocks)
 (add-hook 'auto-save-hook 'org-table-recalculate-buffer-tables)
 
-;; save automatically 
+;; save automatically
 ;; runs on tab switch etc
+;; only runs on buffers with non nil file-name which is true for all user buffers
+;; special/system buffers (all surrounded with **) such as *scratch*, *ielm* etc are not saved
 (add-hook 'focus-out-hook (lambda ()
 			    (interactive)
-			    (save-buffer)
-				  ))
+			    (if (not (equal (buffer-file-name) nil))
+				    (save-buffer)
+				  )))
 
 ;(load (expand-file-name "~/Documents/Dabblings/CL/slime-helper.el"))
 ;; Replace "sbcl" with the path to your implementation
 (setq inferior-lisp-program "sbcl")
 
-;; disable menu bar
+;; disable menu bar and tool bar
 (menu-bar-mode 0)
+(tool-bar-mode 0)
 
+; evil is the default state
 (require 'evil)
 (evil-mode 1)
 
@@ -130,12 +135,16 @@
 (helm-mode 1)
 
 ;Use space to toggle between normal mode and emacs mode
-(define-key evil-normal-state-map " " 'evil-emacs-state)
-(define-key evil-emacs-state-map " " 'evil-exit-emacs-state)
+; (define-key evil-normal-state-map " " 'evil-emacs-state)
+; (define-key evil-emacs-state-map " " 'evil-exit-emacs-state)
 
 ;; easy to access commands
+; not working yet - map ; to :
 (define-key evil-normal-state-map (kbd ";") 'helm-M-x)
 (define-key evil-emacs-state-map (kbd ";") 'helm-M-x)
+; for that spacemacs feel
+(define-key evil-normal-state-map " " 'helm-M-x)
+(define-key evil-emacs-state-map " " 'helm-M-x)
 
 ;; normal map single key translations for orgmode
 ; life saver
@@ -143,30 +152,6 @@
 (define-key evil-normal-state-map (kbd "<") 'org-metaleft)
 (define-key evil-normal-state-map (kbd ">") 'org-metaright)
 (define-key evil-normal-state-map (kbd "O") 'org-insert-heading)
-
-;; multi key translation setup in normal mode
-
-;; Note: lexical-binding must be t in order for this to work correctly.
-(defun make-conditional-key-translation (key-from key-to translate-keys-p)
-  "Make a Key Translation such that if the translate-keys-p function returns true,
-  key-from translates to key-to, else key-from translates to itself.  translate-keys-p
-  takes key-from as an argument. "
-  (define-key key-translation-map key-from
-	      (lambda (prompt)
-		(if (funcall translate-keys-p key-from) key-to key-from))))
-
-(defun my-translate-keys-p (key-from)
-  "Returns whether conditional key translations should be active.  See make-conditional-key-translation function. "
-  (and
-    ;; Only allow a non identity translation if we're beginning a Key Sequence.
-    (equal key-from (this-command-keys))
-    (or (evil-motion-state-p) (evil-normal-state-p) (evil-visual-state-p))))
-
-;(define-key evil-normal-state-map "c" nil)
-;(define-key evil-motion-state-map "cu" 'universal-argument)
-;(make-conditional-key-translation (kbd "ch") (kbd "C-h") 'my-translate-keys-p)
-(make-conditional-key-translation (kbd "g") (kbd "C-x") 'my-translate-keys-p)
-;(make-conditional-key-translation (kbd ";") (kbd "M-x")'my-translate-keys-p)
 
 ;;; esc quits
 (defun minibuffer-keyboard-quit ()
@@ -178,8 +163,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
       (setq deactivate-mark  t)
     (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
     (abort-recursive-edit)))
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
+; keyboard-escape-quit closes other open windows like help screens
+(define-key evil-normal-state-map [escape] 'keyboard-escape-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-escape-quit)
 (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
@@ -227,21 +213,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 		 e
 		 "\n"))))))
 
+(setq org-link-frame-setup
+   (quote
+    ((vm . vm-visit-folder-other-frame)
+     (vm-imap . vm-visit-imap-folder-other-frame)
+     (gnus . org-gnus-no-new-news)
+     (file . find-file)
+     (wl . wl-other-frame))))
 
 ;; no confirm shell links for nice button like behaviour
 (setq org-confirm-shell-link-function nil)
 ;; agenda view sizes
 (setq org-agenda-window-frame-fractions '(0.25 . 0.40))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/orgmode/time.org"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
