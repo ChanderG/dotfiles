@@ -379,3 +379,23 @@ function! GitDiffTargetToggle()
 	GitGutter
 endfunction
 nnoremap <silent> gM :call GitDiffTargetToggle()<CR>
+
+""" Home grown "helm-mini" --------------------------------------------->
+" Switch buffer easily with fuzzy find
+" Even simpler alt:  nnoremap <Space>b :ls<CR>:b<Space>
+function! BufferSwitch()
+  let save_pos = getpos(".")
+  let tmpfile = tempname()
+  execute "redir > " . tmpfile . "|silent ls|redir END"
+  let rawout = system("cat " . tmpfile . " | dmenu -i -l 10 -p buffer")
+  execute delete(tmpfile)
+  call setpos(".", save_pos)
+  if (empty(rawout)) " for exiting flow if esc is entered from dmenu
+    return
+  endif
+  let buffer = split(rawout)[0]
+	execute "b " . buffer
+endfunction
+
+nnoremap <silent> <space>b :call BufferSwitch()<CR>
+" ----------------------------------------------------------------------<
