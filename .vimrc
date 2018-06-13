@@ -304,7 +304,7 @@ nnoremap <silent> <C-e> :call DmenuOpen("(git diff --name-only --cached; git ls-
 """ ------------------------------------------------------------------------<
 
 """ Home grown register selector powered by dmenu--------------------------->
-
+" Not really using.
 function! RegisterView(op)
   let save_pos = getpos(".")
   let tmpfile = tempname()
@@ -319,8 +319,7 @@ function! RegisterView(op)
   call feedkeys(a:op . reg[1], 'n')
 endfunction
 
-nnoremap <silent> " :call RegisterView("\"")<CR>
-nnoremap <silent> @ :call RegisterView("@")<CR>
+" nnoremap <silent> " :call RegisterView("\"")<CR>
 """ ------------------------------------------------------------------------<
 
 """ For automatic search of include files etc
@@ -383,6 +382,8 @@ nnoremap <silent> gM :call GitDiffTargetToggle()<CR>
 """ Home grown "helm-mini" --------------------------------------------->
 " Switch buffer easily with fuzzy find
 " Even simpler alt:  nnoremap <Space>b :ls<CR>:b<Space>
+" Problem with this: am not really using long lived buffers and C-e already
+" covers this use case heavily.
 function! BufferSwitch()
   let save_pos = getpos(".")
   let tmpfile = tempname()
@@ -397,5 +398,19 @@ function! BufferSwitch()
 	execute "b " . buffer
 endfunction
 
-nnoremap <silent> <space>b :call BufferSwitch()<CR>
+" nnoremap <silent> <space>b :call BufferSwitch()<CR>
+" ----------------------------------------------------------------------<
+
+""" Home grown line finder using dmenu --------------------------------->
+" Like the FZF :Blines command.
+function! LineSelect()
+  let rawout = system("cat -n " . expand('%:p') . " | dmenu -i -l 20 -p line")
+  if (empty(rawout)) " for exiting flow if esc is entered from dmenu
+    return
+  endif
+	let lineno = split(rawout)[0]
+	execute lineno
+endfunction
+
+noremap <silent> <C-l> :call LineSelect()<CR>
 " ----------------------------------------------------------------------<
