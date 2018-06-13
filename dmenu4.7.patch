@@ -1,0 +1,30 @@
+diff --git a/config.h b/config.h
+index 1edb647..a4161ef 100644
+--- a/config.h
++++ b/config.h
+@@ -4,7 +4,7 @@
+ static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom     */
+ /* -fn option overrides fonts[0]; default X11 font or font set */
+ static const char *fonts[] = {
+-	"monospace:size=10"
++	"Fantasque Sans Mono:style=Regular:size=25"
+ };
+ static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
+ static const char *colors[SchemeLast][2] = {
+diff --git a/dmenu.c b/dmenu.c
+index d605ab4..a61073d 100644
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -588,9 +588,9 @@ setup(void)
+ 				if (INTERSECT(x, y, 1, 1, info[i]))
+ 					break;
+ 
+-		x = info[i].x_org;
+-		y = info[i].y_org + (topbar ? 0 : info[i].height - mh);
+-		mw = info[i].width;
++		mw = info[i].width*2.0/3;
++		x = info[i].x_org + ((info[i].width - mw) / 2);
++		y = info[i].y_org + ((info[i].height - mh) / 3);
+ 		XFree(info);
+ 	} else
+ #endif
