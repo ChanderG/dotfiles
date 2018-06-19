@@ -357,8 +357,6 @@ nnoremap [L :lfirst<CR>
 nnoremap ]q :cnext<CR>
 nnoremap [q :cprevious<CR>
 
-""" Experimental features
-
 " highlight word under cursor
 highlight WordUnder ctermbg=237
 autocmd CursorMoved * exe printf('match WordUnder /\V\<%s\>/', escape(expand('<cword>'), '/\'))
@@ -413,4 +411,32 @@ function! LineSelect()
 endfunction
 
 noremap <silent> <C-l> :call LineSelect()<CR>
+" ----------------------------------------------------------------------<
+
+" use ag if available
+if executable("ag")
+	set grepprg=ag\ --vimgrep
+	set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
+""" Home grown grep/search helper using dmenu  ------------------------->
+" Search for word under cursor
+" Or use like :grep, with fuzzy finding on top
+" Can use other searchers instead of Ag
+function! WordSearch(word)
+  let rawout = system("ag --nogroup --nocolor " . a:word . " | dmenu -i -l 20 -p search")
+  if (empty(rawout)) " for exiting flow if esc is entered from dmenu
+    return
+  endif
+	let filename = split(rawout, ':')[0]
+	let lineno = split(rawout, ':')[1]
+	execute "e" filename
+	execute lineno
+endfunction
+" search for word under cursor
+noremap <silent> <space>s :call WordSearch(expand('<cword>'))<CR>
+" search for WORD under cursor
+noremap <silent> <space>S :call WordSearch(expand('<cWORD>'))<CR>
+" search custom string: eg, :Search abc def
+command! -nargs=1 Search :call WordSearch(string(<f-args>))
 " ----------------------------------------------------------------------<
