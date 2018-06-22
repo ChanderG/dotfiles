@@ -299,6 +299,8 @@ nnoremap <silent> <C-u> :call DmenuOpen("quilt files")<cr>
 nnoremap <silent> <C-f> :call DmenuOpen("find . -type f")<cr>
 " git files currently tracked with modifications set
 nnoremap <silent> <C-e> :call DmenuOpen("(git diff --name-only --cached; git ls-files -m)")<cr>
+" old files from viminfo
+nnoremap <silent> <Space>o :call DmenuOpen("grep '^>' ~/.viminfo \| cut -c3-")<cr>
 " add more as needed !!!
 
 """ ------------------------------------------------------------------------<
@@ -396,7 +398,7 @@ function! BufferSwitch()
 	execute "b " . buffer
 endfunction
 
-" nnoremap <silent> <space>b :call BufferSwitch()<CR>
+nnoremap <silent> <C-y> :call BufferSwitch()<CR>
 " ----------------------------------------------------------------------<
 
 """ Home grown line finder using dmenu --------------------------------->
@@ -440,3 +442,9 @@ noremap <silent> <space>S :call WordSearch(expand('<cWORD>'))<CR>
 " search custom string: eg, :Search abc def
 command! -nargs=1 Search :call WordSearch(string(<f-args>))
 " ----------------------------------------------------------------------<
+
+" visual tab characters
+set list
+" set lcs=tab:├─
+" set lcs=tab:\|\ 
+set lcs=tab:▶\ 
