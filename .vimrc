@@ -468,3 +468,27 @@ omap ih <Plug>GitGutterTextObjectInnerPending
 omap ah <Plug>GitGutterTextObjectOuterPending
 xmap ih <Plug>GitGutterTextObjectInnerVisual
 xmap ah <Plug>GitGutterTextObjectOuterVisual
+
+""" Tmux complete
+" reset user completefunc, use only with neocomplete
+let g:tmuxcomplete#trigger = ''
+
+""" Recently entered words completions
+" Complete from list of newly inserted words
+" Meant to be used without any prefix; if some prefix is known/entered, normal
+" autocomplete, currently neocomplete, will kick in
+function! RecentAdditions(findstart, base)
+	" if first invocation - use nothing already entered
+	if a:findstart == 1
+		return col('.')
+	endif
+
+	" list of words in addition sections in the git diff
+	let wordlist = split(system('git diff | grep "^+[^+]\{2\}" | cut -c2- | paste -sd " " - | sed "s/[^a-zA-Z0-9_]/\ /g"'))
+	"" can do additional processing here, like
+	" 1. filtering out small words
+	" 2. removing words that already exist in buffer
+	return wordlist
+endfunction
+set completefunc=RecentAdditions
+" has to be triggered using C-X C-U
