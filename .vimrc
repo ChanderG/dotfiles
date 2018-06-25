@@ -121,6 +121,19 @@ Plug 'fatih/vim-go'
 """ 256 Color theme
 Plug 'morhetz/gruvbox'
 
+""" Custom text objects
+Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment'
+Plug 'kana/vim-textobj-function'
+
+""" Extra syntax highlighting for C
+Plug 'justinmk/vim-syntax-extra'
+
+""" Extra syntax highlight for many languages
+Plug 'sheerun/vim-polyglot'
+
+""" Autocomplete stuff from other tmux panes
+Plug 'wellle/tmux-complete.vim'
 call plug#end()
 
 " set color scheme
@@ -284,7 +297,7 @@ vnoremap <leader>a !column -t<CR>
 """ Home grown CtrlP alternative powered by dmenu--------------------------->
 
 function! DmenuOpen(cmd)
-  let iname = system(a:cmd . " 2>/dev/null | dmenu -i -l 20 -p open")
+  let iname = system(a:cmd . " 2>/dev/null | dmenu -i -f -l 20 -p open")
   if empty(iname)
     return
   endif
@@ -445,6 +458,13 @@ command! -nargs=1 Search :call WordSearch(string(<f-args>))
 
 " visual tab characters
 set list
-" set lcs=tab:├─
+set lcs=tab:├─
 " set lcs=tab:\|\ 
-set lcs=tab:▶\ 
+" set lcs=tab:▶\ 
+
+"" gitgutter text objects
+" c conflicts with 'comment' text object
+omap ih <Plug>GitGutterTextObjectInnerPending
+omap ah <Plug>GitGutterTextObjectOuterPending
+xmap ih <Plug>GitGutterTextObjectInnerVisual
+xmap ah <Plug>GitGutterTextObjectOuterVisual
