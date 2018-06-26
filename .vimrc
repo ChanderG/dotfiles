@@ -126,11 +126,9 @@ Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
 Plug 'kana/vim-textobj-function'
 
-""" Extra syntax highlighting for C
-Plug 'justinmk/vim-syntax-extra'
-
 """ Extra syntax highlight for many languages
 Plug 'sheerun/vim-polyglot'
+Plug 'justinmk/vim-syntax-extra'
 
 """ Autocomplete stuff from other tmux panes
 Plug 'wellle/tmux-complete.vim'
@@ -225,6 +223,7 @@ let g:neocomplete#enable_auto_select = 1
 " inoremap <tab>o <c-e><c-x><c-o>
 " inoremap <tab>] <c-e><c-x><c-]>
 " inoremap <tab>l <c-e><c-x><c-l>
+let g:necomplete#auto_complete_delay=1000
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
@@ -478,9 +477,9 @@ let g:tmuxcomplete#trigger = ''
 " Meant to be used without any prefix; if some prefix is known/entered, normal
 " autocomplete, currently neocomplete, will kick in
 function! RecentAdditions(findstart, base)
-	" if first invocation - use nothing already entered
+	" if first invocation - grab full keyword before cursor
 	if a:findstart == 1
-		return col('.')
+		return match(strpart(getline('.'), 0, col('.')), '\k*$')
 	endif
 
 	" list of words in addition sections in the git diff
@@ -488,7 +487,11 @@ function! RecentAdditions(findstart, base)
 	"" can do additional processing here, like
 	" 1. filtering out small words
 	" 2. removing words that already exist in buffer
+	" right now: keeps words that contain stuff already entered
+	call filter(wordlist, 'v:val =~ a:base')
 	return wordlist
 endfunction
 set completefunc=RecentAdditions
 " has to be triggered using C-X C-U
+
+highlight link Function GruvboxBlue
