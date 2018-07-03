@@ -498,23 +498,3 @@ set completefunc=RecentAdditions
 " has to be triggered using C-X C-U
 
 highlight link Function GruvboxBlue
-
-""" gvim options 
-
-" font
-set guifont=Fantasque\ Sans\ Mono\ 23
-
-" disable menus 
-set guioptions-=m
-set guioptions-=T
-
-" Zoom in current lines
-augroup currcontext
-	autocmd!
-	autocmd CursorMoved * :execute 'match CurrentLines /.*\n.*\%#.*\n.*/'
-	autocmd CursorMovedI * :execute 'match CurrentLines /.*\n.*\%#.*\n.*/'
-augroup END
-" Works:
-" highlight CurrentLines gui=bold
-" Does not work:
-highlight CurrentLines font='Fantasque\ Sans\ Mono\ 23'
