@@ -224,6 +224,8 @@ let g:neocomplete#enable_auto_select = 1
 " inoremap <tab>] <c-e><c-x><c-]>
 " inoremap <tab>l <c-e><c-x><c-l>
 let g:necomplete#auto_complete_delay=1000
+let g:neocomplete#auto_completion_start_length=4
+inoremap <expr><Tab>  neocomplete#start_manual_complete()
 
 """ Syntastic configuration
 let g:syntastic_always_populate_loc_list = 1
@@ -296,7 +298,7 @@ vnoremap <leader>a !column -t<CR>
 """ Home grown CtrlP alternative powered by dmenu--------------------------->
 
 function! DmenuOpen(cmd)
-  let iname = system(a:cmd . " 2>/dev/null | dmenu -i -f -l 20 -p open")
+  let iname = system(a:cmd . " 2>/dev/null | dmenu -i -f -l 10 -p open")
   if empty(iname)
     return
   endif
@@ -394,6 +396,7 @@ nnoremap <silent> gM :call GitDiffTargetToggle()<CR>
 """ Home grown "helm-mini" --------------------------------------------->
 " Switch buffer easily with fuzzy find
 " Even simpler alt:  nnoremap <Space>b :ls<CR>:b<Space>
+" or: nnoremap <Space>b :b<Space><Tab>
 " Problem with this: am not really using long lived buffers and C-e already
 " covers this use case heavily.
 function! BufferSwitch()
@@ -416,7 +419,7 @@ nnoremap <silent> <C-y> :call BufferSwitch()<CR>
 """ Home grown line finder using dmenu --------------------------------->
 " Like the FZF :Blines command.
 function! LineSelect()
-  let rawout = system("cat -n " . expand('%:p') . " | dmenu -i -l 20 -p line")
+  let rawout = system("cat -n " . expand('%:p') . " | dmenu -i -l 10 -p line")
   if (empty(rawout)) " for exiting flow if esc is entered from dmenu
     return
   endif
@@ -438,7 +441,7 @@ endif
 " Or use like :grep, with fuzzy finding on top
 " Can use other searchers instead of Ag
 function! WordSearch(word)
-  let rawout = system("ag --nogroup --nocolor " . a:word . " | dmenu -i -l 20 -p search")
+  let rawout = system("ag --nogroup --nocolor " . a:word . " | dmenu -i -l 10 -p search")
   if (empty(rawout)) " for exiting flow if esc is entered from dmenu
     return
   endif
