@@ -497,4 +497,8 @@ endfunction
 set completefunc=RecentAdditions
 " has to be triggered using C-X C-U
 
+" cleaner form
 highlight link Function GruvboxBlue
+
+" comments in italic
+highlight Comment cterm=italic
