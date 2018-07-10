@@ -48,9 +48,6 @@ Plug 'wlangstroth/vim-racket'
 """find ideal positions to jump to
 Plug 'bradford-smith94/quick-scope'
 
-"""list of tags
-Plug 'majutsushi/tagbar'
-
 """comment toggle
 Plug 'tpope/vim-commentary'
 
@@ -102,9 +99,6 @@ Plug 'justinmk/vim-sneak'
 
 """ Better word motion in terms of camel and snake case
 Plug 'chaoren/vim-wordmotion'
-
-""" Tagfile management
-Plug 'ludovicchabant/vim-gutentags'
 
 """ Trying out surround
 Plug 'machakann/vim-sandwich'
@@ -260,24 +254,6 @@ let g:clang_complete_loaded="0"
 """ jedi-vim
 let g:jedi#show_call_signatures = "2"
 let g:jedi#popup_select_first = 1
-
-""" ctags configuration
-" searches upwards for tags file
-set tags=./tags;
-
-""" cscope configuration
-" auto loading cscope database
-" similar functionality with tags -> set tags=tags;/ (auto towards)
-fun! LoadCscope()
-    let db = findfile("cscope.out", '.;')
-    if (!empty(db))
-	let path = strpart(db, 0, match(db, "/cscope.out$"))
-	set nocscopeverbose " suppress 'duplicate connection' error
-	exe "cs add " . db . " " . path
-	set cscopeverbose
-    endif
-endfun
-au BufEnter * call LoadCscope()
 
 """ jump to uses of function using cscope
 nnoremap <leader>] :cs find c <C-R>=expand("<cword>")<CR><CR>
@@ -502,3 +478,14 @@ highlight link Function GruvboxBlue
 
 " comments in italic
 highlight Comment cterm=italic
+
+""" Use gtags for everything
+" Source gtag functions
+source /usr/share/gtags/gtags.vim
+" Use gtags instead of cscope (all cscope functions should work out of the
+" box)
+source /usr/share/gtags/gtags-cscope.vim
+" activate cscope db if possible; cscope functions will work after this
+silent GtagsCscope
+" Use cscope (now actually gtag) for tags instead of (c|e)tags
+set cscopetag
