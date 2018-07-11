@@ -489,3 +489,17 @@ source /usr/share/gtags/gtags-cscope.vim
 silent GtagsCscope
 " Use cscope (now actually gtag) for tags instead of (c|e)tags
 set cscopetag
+
+""" Home grown fuzzy find for tags.
+"" Doing it this way is a bit expensive/slow
+" Convert wordstring to regex suitable for substring search
+function! SSS(words)
+	let output = substitute(a:words, "^", "/.*", "")
+	return substitute(output, " ", "\\\\\\&.*", "g")
+endfunction
+
+" call tag function
+function! TagSSS(words)
+	execute "tag" SSS(a:words)
+endfunction
+command! -nargs=* Tag :call TagSSS(<q-args>)
