@@ -494,13 +494,12 @@ set cscopetag
 "" Doing it this way is a bit expensive/slow
 " Convert wordstring to regex suitable for substring search
 function! SSS(words)
-	let output = substitute(a:words, "^", "/.*", "")
-	return substitute(output, " ", "\\\\\\&.*", "g")
+	return '/.*'.substitute(a:words, '\s\+', '\\\&.*', &gdefault ? 'gg' : 'g')
 endfunction
 
 " call tag function
 function! TagSSS(words)
-	silent! execute "tag" SSS(a:words)
+	execute "tag" SSS(a:words)
 endfunction
 command! -nargs=* Tag :call TagSSS(<q-args>)
 
