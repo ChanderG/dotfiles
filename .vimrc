@@ -500,6 +500,12 @@ endfunction
 
 " call tag function
 function! TagSSS(words)
-	execute "tag" SSS(a:words)
+	silent! execute "tag" SSS(a:words)
 endfunction
 command! -nargs=* Tag :call TagSSS(<q-args>)
+
+" list matches in buffer
+function! ListSSS(words)
+	execute "g" . SSS(a:words) . "\\c"
+endfunction
+command! -nargs=* LS :call ListSSS(<q-args>)
