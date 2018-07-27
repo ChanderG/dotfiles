@@ -74,9 +74,6 @@ Plug 'kabbamine/zeavim.vim'
 """ Online docs
 Plug 'keith/investigate.vim'
 
-""" Neocomplete - general purpose auto complete frontend
-Plug 'Shougo/neocomplete.vim'
-
 """ Syntax checking
 Plug 'w0rp/ale'
 
@@ -192,18 +189,12 @@ nnoremap Y y$
 let g:slime_target = "tmux"
 noremap <silent> X :SlimeSendCurrentLine<CR>
 
-""" Neocomplete settings
-set completeopt=longest,menu,menuone
-let g:neocomplete#enable_at_startup=1
-" have selection on first option
-let g:neocomplete#enable_auto_select = 1
-" cancel the current neocomplete suggestion and use one of these instead
-" inoremap <tab>o <c-e><c-x><c-o>
-" inoremap <tab>] <c-e><c-x><c-]>
-" inoremap <tab>l <c-e><c-x><c-l>
-let g:necomplete#auto_complete_delay=1000
-let g:neocomplete#auto_completion_start_length=4
-inoremap <expr><Tab>  neocomplete#start_manual_complete()
+""" Better 'complete'
+" i - too slow when ** is in path
+" t - usually too many tags;
+" in any case can manually trigger one of the above
+set complete=.,w,b,u
+set completeopt=longest,menu,menuone,preview
 
 "" ale linters
 " Require: pylint (apt-get)
