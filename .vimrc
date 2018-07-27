@@ -36,14 +36,25 @@ map <Enter> o<ESC>
 
 call plug#begin('~/.vim/bundle')
 
-"""scala highlighting
+""" Language specific syntax,completion etc
 Plug 'derekwyatt/vim-scala'
+Plug 'wlangstroth/vim-racket'
+Plug 'jakwings/vim-pony'
+" Requires jedi(pip)
+Plug 'davidhalter/jedi-vim'
+" syntax based code folding for python
+Plug 'tmhedberg/SimpylFold'
+" C/C++ completion engine based on clang
+Plug 'Rip-Rip/clang_complete'
+" Go all-in-all
+Plug 'fatih/vim-go'
+
+""" Language independent syntax stuff
+Plug 'sheerun/vim-polyglot'
+Plug 'justinmk/vim-syntax-extra'
 
 """License adder
 Plug 'antoyo/vim-licenses'
-
-"""racket highlighting
-Plug 'wlangstroth/vim-racket'
 
 """find ideal positions to jump to
 Plug 'bradford-smith94/quick-scope'
@@ -53,9 +64,6 @@ Plug 'tpope/vim-commentary'
 
 """for auto git diffs
 Plug 'airblade/vim-gitgutter'
-
-"""syntax based code folding for python
-Plug 'tmhedberg/SimpylFold'
 
 """slime for vim
 Plug 'jpalardy/vim-slime'
@@ -69,12 +77,8 @@ Plug 'keith/investigate.vim'
 """ Neocomplete - general purpose auto complete frontend
 Plug 'Shougo/neocomplete.vim'
 
-""" Python autocomplete engine
-" Requires jedi(pip)
-Plug 'davidhalter/jedi-vim'
-
 """ Syntax checking
-Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
 
 """ Auto formatting
 Plug 'chiel92/vim-autoformat'
@@ -85,47 +89,27 @@ Plug 'SirVer/ultisnips'
 " snippets
 Plug 'honza/vim-snippets'
 
-""" extra objects
-Plug 'michaeljsmith/vim-indent-object'
-
-""" C/C++ completion engine based on clang
-Plug 'Rip-Rip/clang_complete'
-
-""" More text objects
-Plug 'wellle/targets.vim'
-
-""" Sneak - medium distance motion
-Plug 'justinmk/vim-sneak'
-
-""" Better word motion in terms of camel and snake case
-Plug 'chaoren/vim-wordmotion'
-
 """ Trying out surround
 Plug 'machakann/vim-sandwich'
 
-""" Pony syntax support
-Plug 'jakwings/vim-pony'
-
 """ Async runner
 Plug 'skywind3000/asyncrun.vim'
-
-""" Go editing engine
-Plug 'fatih/vim-go'
 
 """ 256 Color theme
 Plug 'morhetz/gruvbox'
 
 """ Custom text objects
+Plug 'wellle/targets.vim'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
 Plug 'kana/vim-textobj-function'
-
-""" Extra syntax highlight for many languages
-Plug 'sheerun/vim-polyglot'
-Plug 'justinmk/vim-syntax-extra'
+" camel-Snake case helper
+Plug 'chaoren/vim-wordmotion'
 
 """ Autocomplete stuff from other tmux panes
-Plug 'wellle/tmux-complete.vim'
+" Plug 'wellle/tmux-complete.vim'
+
 call plug#end()
 
 " set color scheme
@@ -221,17 +205,14 @@ let g:necomplete#auto_complete_delay=1000
 let g:neocomplete#auto_completion_start_length=4
 inoremap <expr><Tab>  neocomplete#start_manual_complete()
 
-""" Syntastic configuration
-let g:syntastic_always_populate_loc_list = 1
-
-"" python checkers
+"" ale linters
 " Require: pylint (apt-get)
-let g:syntastic_python_checkers = ['pylint', 'pep8']
-
-"" c/cpp checkers
 " Require: gcc , cppcheck (apt-get), splint(apt-get), clang(apt-get)
-let g:syntastic_c_checkers = ['gcc','cppcheck','splint','clang_check','clang_tidy']
-let g:syntastic_cpp_checkers = ['gcc','cppcheck','clang_check','clang_tidy']
+let g:ale_linters = {
+\  'python': ['pylint', 'pep8'],
+\  'c': ['gcc','cppcheck','splint','clang_check','clang_tidy'],
+\  'cpp': ['gcc','cppcheck','clang_check','clang_tidy'],
+\}
 
 """ Auto formatting
 " format on save
@@ -490,7 +471,7 @@ silent GtagsCscope
 " Use cscope (now actually gtag) for tags instead of (c|e)tags
 set cscopetag
 
-""" Home grown fuzzy find for tags.
+""" Home grown one-shot multi substring find.
 "" Doing it this way is a bit expensive/slow
 " Convert wordstring to regex suitable for substring search
 function! SSS(words)
