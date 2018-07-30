@@ -107,6 +107,9 @@ Plug 'chaoren/vim-wordmotion'
 """ Autocomplete stuff from other tmux panes
 " Plug 'wellle/tmux-complete.vim'
 
+""" quickfix helpers
+Plug 'romainl/vim-qf'
+
 call plug#end()
 
 " set color scheme
@@ -466,17 +469,26 @@ set cscopetag
 "" Doing it this way is a bit expensive/slow
 " Convert wordstring to regex suitable for substring search
 function! SSS(words)
-	return '/.*'.substitute(a:words, '\s\+', '\\\&.*', &gdefault ? 'gg' : 'g')
+	return '.*'.substitute(escape(a:words, '.'), '\s\+', '\\\&.*', &gdefault ? 'gg' : 'g')
 endfunction
 
-" call tag function
+"" call tag function
 function! TagSSS(words)
-	execute "tag" SSS(a:words)
+	execute "tag /".SSS(a:words)
 endfunction
 command! -nargs=* Tag :call TagSSS(<q-args>)
 
-" list matches in buffer
+"" list matches in buffer
 function! ListSSS(words)
-	execute "g" . SSS(a:words) . "\\c"
+	execute "g/" . SSS(a:words) . "\\c"
 endfunction
 command! -nargs=* LS :call ListSSS(<q-args>)
+
+"" file opening helper
+" takes cmd to use to create a list to search for files in
+function! FileOpenSSS(cmd, words)
+	let rawout = split(system(a:cmd), "\n")
+	execute "e" matchstr(rawout, "\c" . SSS(a:words))
+endfunction
+command! -nargs=* G :call FileOpenSSS("git ls-files --exclude-standard -co", <q-args>)
+command! -nargs=* F :call FileOpenSSS("find . -type f", <q-args>)
