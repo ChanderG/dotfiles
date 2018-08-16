@@ -64,6 +64,7 @@ Plug 'tpope/vim-commentary'
 
 """for auto git diffs
 Plug 'airblade/vim-gitgutter'
+Plug 'iberianpig/tig-explorer.vim'
 
 """slime for vim
 Plug 'jpalardy/vim-slime'
