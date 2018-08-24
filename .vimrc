@@ -62,7 +62,7 @@ Plug 'bradford-smith94/quick-scope'
 """comment toggle
 Plug 'tpope/vim-commentary'
 
-"""for auto git diffs
+""" Git related
 Plug 'airblade/vim-gitgutter'
 Plug 'iberianpig/tig-explorer.vim'
 
@@ -297,24 +297,6 @@ set path+=**
 " find the next number
 nnoremap <silent> <leader>n /\d\+<CR>
 
-""" Home grown :Gblame ----------------------------------------------------->
-" displays only the author and relative date to commit in a vertical window
-" scrollbinded to the main info.
-function! GitBlameInfo()
-	set scrollbind
-	set cursorbind
-	vnew | r!git blame -c --date=relative #
-	%norm df(f)DdaW
-	norm ggdd
-	vertical res -15
-	" lock the screens
-	set scrollbind
-	set cursorbind
-	set readonly
-endfunction
-command! Gblame :call GitBlameInfo()<CR>
-""" ------------------------------------------------------------------------<
-
 """ Navigate loclist entries
 nnoremap ]l :lnext<CR>
 nnoremap [l :lprevious<CR>
@@ -493,3 +475,7 @@ function! FileOpenSSS(cmd, words)
 endfunction
 command! -nargs=* G :call FileOpenSSS("git ls-files --exclude-standard -co", <q-args>)
 command! -nargs=* F :call FileOpenSSS("find . -type f", <q-args>)
+
+"" Mappings for tig-explorer
+nnoremap <Space>g :Tig<CR>
+nnoremap <Space>b :TigBlame<CR>
