@@ -81,12 +81,6 @@ Plug 'w0rp/ale'
 """ Auto formatting
 Plug 'chiel92/vim-autoformat'
 
-""" Snippets
-" engine
-Plug 'SirVer/ultisnips'
-" snippets
-Plug 'honza/vim-snippets'
-
 """ Trying out surround
 Plug 'machakann/vim-sandwich'
 
@@ -105,12 +99,17 @@ Plug 'kana/vim-textobj-function'
 " camel-Snake case helper
 Plug 'chaoren/vim-wordmotion'
 
-""" Autocomplete stuff from other tmux panes
-" Plug 'wellle/tmux-complete.vim'
-
 """ quickfix helpers
 Plug 'romainl/vim-qf'
 
+""" minimal autocomplete
+Plug 'lifepillar/vim-mucomplete'
+
+""" LSP
+Plug 'natebosch/vim-lsc'
+
+""" Autoclose chars
+Plug 'vim-scripts/AutoClose'
 call plug#end()
 
 " set color scheme
@@ -405,10 +404,6 @@ omap ah <Plug>GitGutterTextObjectOuterPending
 xmap ih <Plug>GitGutterTextObjectInnerVisual
 xmap ah <Plug>GitGutterTextObjectOuterVisual
 
-""" Tmux complete
-" reset user completefunc, use only with neocomplete
-let g:tmuxcomplete#trigger = ''
-
 """ Recently entered words completions
 " Complete from list of newly inserted words
 " Meant to be used without any prefix; if some prefix is known/entered, normal
@@ -479,3 +474,19 @@ command! -nargs=* F :call FileOpenSSS("find . -type f", <q-args>)
 "" Mappings for tig-explorer
 nnoremap <Space>g :Tig<CR>
 nnoremap <Space>b :TigBlame<CR>
+
+""" LSP
+let g:lsc_auto_map = v:true " Use defaults
+let g:lsc_server_commands = {
+ \ 'python': 'pyls',
+ \ 'java': '/home/chanderg/Documents/Dabblings/lsp/jdt_language_server',
+ \ }
+
+""" Shell/Terminal Workflow
+tnoremap <Esc><Esc> <C-\><C-n>
+" set notimeout ttimeout timeoutlen=100
+
+" Excellent idea for one off shell interactions
+" Found here: https://stackoverflow.com/a/7185348
+" Works because C-d on bash side brings one back to vim
+nnoremap <C-d> :sh<CR>
