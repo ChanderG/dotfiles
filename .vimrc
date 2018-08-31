@@ -22,7 +22,9 @@ nore ; :
 nore : ;
 
 " open up the full color range
-set t_Co=256
+" set t_Co=256
+""" Use truecolours
+set termguicolors
 "dark background color
 set background=dark
 
@@ -120,6 +122,7 @@ let g:licenses_authors_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
 let g:licenses_copyright_holders_name = 'Govindarajan, Chander <chandergovind@gmail.com>'
 
 """ set terminal mode
+"" DON'T TOUCH THIS VARIABLE - NO OTHER VALUE WORKS
 set term=rxvt-unicode
 """ this way, by using tmux (with xterm keys on) also works
 
@@ -483,10 +486,36 @@ let g:lsc_server_commands = {
  \ }
 
 """ Shell/Terminal Workflow
+" single escape used by arrow keys internally etc
 tnoremap <Esc><Esc> <C-\><C-n>
-" set notimeout ttimeout timeoutlen=100
 
 " Excellent idea for one off shell interactions
 " Found here: https://stackoverflow.com/a/7185348
 " Works because C-d on bash side brings one back to vim
 nnoremap <C-d> :sh<CR>
+
+""" Redirect to buffer
+"" Based on https://gist.github.com/romainl/eae0a260ab9c135390c30cd370c20cd7
+function! Redir(cmd)
+	if a:cmd =~ '^!'
+		execute "let output = system('" . substitute(a:cmd, '^!', '', '') . "')"
+	else
+		redir => output
+		execute a:cmd
+		redir END
+	endif
+	vnew
+	let w:scratch = 1
+	setlocal buftype=nofile noswapfile
+	call setline(1, split(output, "\n"))
+	" Prompt for name of scratch buffer
+	call inputsave()
+  let name = input('Buffer name (empty for default): ')
+	redraw
+	if name != ""
+		execute "file " . name
+	endif
+	call inputrestore()
+endfunction
+
+command! -nargs=1 -complete=command Redir call Redir(<f-args>)
