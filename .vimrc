@@ -98,6 +98,8 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
 Plug 'kana/vim-textobj-function'
+Plug 'kana/vim-operator-user'
+Plug 'kana/vim-operator-replace'
 " camel-Snake case helper
 Plug 'chaoren/vim-wordmotion'
 
@@ -519,3 +521,6 @@ function! Redir(cmd)
 endfunction
 
 command! -nargs=1 -complete=command Redir call Redir(<f-args>)
+
+""" Replace operator
+map r <Plug>(operator-replace)
