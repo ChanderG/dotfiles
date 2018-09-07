@@ -148,19 +148,6 @@ set ttimeout
 """ Show partial commands
 set showcmd
 
-""" QuickFix window options
-
-""" direct move to next
-" nmap cn ;cn<CR>
-" no mapping for prev -- as I rarely need it
-
-" In the quickfix window, <CR> is used to jump to the error under the
-" cursor, so undefine the mapping there.
-autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
-" required to counter the effect of our mapping of <CR> in clist window
-
-"" location list
-
 """ A better escape
 inoremap <silent> <Left> <ESC><Left>
 inoremap <silent> <Right> <ESC><Right>
@@ -300,16 +287,6 @@ set path+=**
 
 " find the next number
 nnoremap <silent> <leader>n /\d\+<CR>
-
-""" Navigate loclist entries
-nnoremap ]l :lnext<CR>
-nnoremap [l :lprevious<CR>
-nnoremap ]L :llast<CR>
-nnoremap [L :lfirst<CR>
-
-""" Navigate quickfix entries
-nnoremap ]q :cnext<CR>
-nnoremap [q :cprevious<CR>
 
 " highlight word under cursor
 highlight WordUnder ctermbg=237
@@ -502,3 +479,21 @@ command! -nargs=1 -complete=command Redir call Redir(<f-args>)
 
 """ Replace operator
 map r <Plug>(operator-replace)
+
+" richer colouring for golang
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_extra_types = 1
+let g:go_auto_sameids = 1
+
+""" vim-qf mappings
+nmap <space>q <Plug>(qf_qf_toggle)
+nmap <space>l <Plug>(qf_loc_toggle)
+nmap [q <Plug>(qf_qf_previous)
+nmap ]q <Plug>(qf_qf_next)
+nmap [l <Plug>(qf_loc_previous)
+nmap ]l <Plug>(qf_loc_next)
