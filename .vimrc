@@ -34,7 +34,7 @@ set shiftwidth=0
 set tabstop=2
 
 "Use Enter/Shift-Enter to introduce new lines above/below w/o leaving normal mode
-map <Enter> o<ESC>
+nnoremap <Enter> o<ESC>
 
 call plug#begin('~/.vim/bundle')
 
@@ -83,9 +83,6 @@ Plug 'w0rp/ale'
 """ Auto formatting
 Plug 'chiel92/vim-autoformat'
 
-""" Trying out surround
-Plug 'machakann/vim-sandwich'
-
 """ Async runner
 Plug 'skywind3000/asyncrun.vim'
 
@@ -98,8 +95,10 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
 Plug 'kana/vim-textobj-function'
-Plug 'kana/vim-operator-user'
-Plug 'kana/vim-operator-replace'
+"" Operators
+Plug 'machakann/vim-sandwich'
+Plug 'vim-scripts/ReplaceWithRegister'
+
 " camel-Snake case helper
 Plug 'chaoren/vim-wordmotion'
 
@@ -107,13 +106,16 @@ Plug 'chaoren/vim-wordmotion'
 Plug 'romainl/vim-qf'
 
 """ minimal autocomplete
-Plug 'lifepillar/vim-mucomplete'
+" Plug 'lifepillar/vim-mucomplete'
 
 """ LSP
 Plug 'natebosch/vim-lsc'
 
 """ Autoclose chars
 Plug 'vim-scripts/AutoClose'
+
+""" Snippets
+Plug 'KeyboardFire/vim-minisnip'
 call plug#end()
 
 " set color scheme
@@ -207,11 +209,6 @@ au BufWrite *.c :Autoformat
 au BufWrite *.cpp :Autoformat
 " python: formatting requries python-autopep8 (apt-get)
 " c/c++ : clangformat, comes with clang (apt-get)
-
-" snippets
-let g:UltiSnipsExpandTrigger="<c-tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 """ clang_complete
 " Require: clang (apt-get), exact path needs to be put here
@@ -478,9 +475,11 @@ endfunction
 command! -nargs=1 -complete=command Redir call Redir(<f-args>)
 
 """ Replace operator
-map r <Plug>(operator-replace)
+map r <Plug>ReplaceWithRegisterOperator
 
-" richer colouring for golang
+" vim-go settings
+" disable def mapping; use global with gogtags instead
+let g:go_def_mapping_enabled = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_fields = 1
@@ -488,7 +487,6 @@ let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
-let g:go_auto_sameids = 1
 
 """ vim-qf mappings
 nmap <space>q <Plug>(qf_qf_toggle)
@@ -497,3 +495,6 @@ nmap [q <Plug>(qf_qf_previous)
 nmap ]q <Plug>(qf_qf_next)
 nmap [l <Plug>(qf_loc_previous)
 nmap ]l <Plug>(qf_loc_next)
+" restore CR for quickfix
+autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+autocmd BufReadPost quickfix nnoremap <buffer> D :Reject<CR>
