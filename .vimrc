@@ -97,7 +97,6 @@ Plug 'glts/vim-textobj-comment'
 Plug 'kana/vim-textobj-function'
 "" Operators
 Plug 'machakann/vim-sandwich'
-Plug 'vim-scripts/ReplaceWithRegister'
 
 " camel-Snake case helper
 Plug 'chaoren/vim-wordmotion'
@@ -474,9 +473,6 @@ endfunction
 
 command! -nargs=1 -complete=command Redir call Redir(<f-args>)
 
-""" Replace operator
-map r <Plug>ReplaceWithRegisterOperator
-
 " vim-go settings
 " disable def mapping; use global with gogtags instead
 let g:go_def_mapping_enabled = 0
@@ -498,3 +494,44 @@ nmap ]l <Plug>(qf_loc_next)
 " restore CR for quickfix
 autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
 autocmd BufReadPost quickfix nnoremap <buffer> D :Reject<CR>
+
+""" comment line with duplicate
+nnoremap zz yygccp
+
+""" Vim Script installer 
+"" Install into .vim without special rtp changes
+"" Save a copy of all vimballs in ~/.vim/vimscripts
+
+" global dict of vim scripts
+let vim_scripts = {}
+function! VimScript(scriptname, fileno)
+	let g:vim_scripts[a:scriptname] = a:fileno
+endfunction
+
+" Install vimscript by name, fileno
+function! VimScriptInstallScript(scriptname, fileno)
+	silent !mkdir -p ~/.vim/vimscripts
+	let exists = system("ls ~/.vim/vimscripts | grep " . a:scriptname . ".vmb")
+	if empty(exists)
+		echom "Installing " . a:scriptname
+		execute "silent !wget https://www.vim.org/scripts/download_script.php?src_id=" . a:fileno . " -O ~/.vim/vimscripts/" . a:scriptname . ".vmb.gz"
+		execute "silent !gunzip ~/.vim/vimscripts/" . a:scriptname . ".vmb.gz"
+		execute "source ~/.vim/vimscripts/" . a:scriptname . ".vmb"
+	else
+		echom "Skipping " . a:scriptname
+	endif
+endfunction
+
+" install all registered vim scripts
+function! VimScriptInstall()
+	for item in items(g:vim_scripts)
+		call VimScriptInstallScript(item[0], item[1])
+	endfor
+	echom "Done installing Vim Scripts."
+endfunction
+"" handy command for the above
+command! -nargs=0 VimScriptInstall call VimScriptInstall()
+""" End VimScript installer
+
+"" Register required vimscripts
+call VimScript("ReplaceWithRegister", 22581)
