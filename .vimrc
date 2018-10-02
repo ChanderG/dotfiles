@@ -29,8 +29,7 @@ set termguicolors
 set background=dark
 
 "shift >>/<< width
-set shiftwidth=0
-
+set shiftwidth=2
 set tabstop=2
 
 "Use Enter/Shift-Enter to introduce new lines above/below w/o leaving normal mode
@@ -68,15 +67,6 @@ Plug 'tpope/vim-commentary'
 Plug 'airblade/vim-gitgutter'
 Plug 'iberianpig/tig-explorer.vim'
 
-"""slime for vim
-Plug 'jpalardy/vim-slime'
-
-"""zeavim - access zeal docs from vim
-Plug 'kabbamine/zeavim.vim'
-
-""" Online docs
-Plug 'keith/investigate.vim'
-
 """ Syntax checking
 Plug 'w0rp/ale'
 
@@ -90,7 +80,8 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'morhetz/gruvbox'
 
 """ Custom text objects
-Plug 'wellle/targets.vim'
+Plug 'tpope/vim-repeat'
+Plug 'ChanderG/TextObjectify'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 Plug 'glts/vim-textobj-comment'
@@ -103,9 +94,6 @@ Plug 'chaoren/vim-wordmotion'
 
 """ quickfix helpers
 Plug 'romainl/vim-qf'
-
-""" minimal autocomplete
-" Plug 'lifepillar/vim-mucomplete'
 
 """ LSP
 Plug 'natebosch/vim-lsc'
@@ -498,7 +486,8 @@ autocmd BufReadPost quickfix nnoremap <buffer> D :Reject<CR>
 """ comment line with duplicate
 nnoremap zz yygccp
 
-""" Vim Script installer 
+"""------------------------------------------------------------------------------------->
+""" Vim Script Vimball installer 
 "" Install into .vim without special rtp changes
 "" Save a copy of all vimballs in ~/.vim/vimscripts
 
@@ -532,6 +521,30 @@ endfunction
 "" handy command for the above
 command! -nargs=0 VimScriptInstall call VimScriptInstall()
 """ End VimScript installer
+"""-------------------------------------------------------------------------------------<
 
 "" Register required vimscripts
 call VimScript("ReplaceWithRegister", 22581)
+
+""" Default textobjectify mapping.
+let g:textobjectify = {
+					\'(': {'left': '(', 'right': ')', 'same': 0, 'seek': 1, 'line': 0},
+					\')': {'left': '(', 'right': ')', 'same': 0, 'seek': 2, 'line': 0},
+					\'{': {'left': '{', 'right': '}', 'same': 0, 'seek': 1, 'line': 0},
+					\'}': {'left': '{', 'right': '}', 'same': 0, 'seek': 2, 'line': 0},
+					\'[': {'left': '\[', 'right': '\]', 'same': 0, 'seek': 1, 'line': 0},
+					\']': {'left': '\[', 'right': '\]', 'same': 0, 'seek': 2, 'line': 0},
+					\'<': {'left': '<', 'right': '>', 'same': 0, 'seek': 1, 'line': 0},
+					\'>': {'left': '<', 'right': '>', 'same': 0, 'seek': 2, 'line': 0},
+					\'"': {'left': '"', 'right': '"', 'same': 1, 'seek': 1, 'line': 0},
+					\"'": {'left': "'", 'right': "'", 'same': 1, 'seek': 1, 'line': 0},
+					\'`': {'left': '`', 'right': '`', 'same': 1, 'seek': 1, 'line': 0},
+					\'V': {'left': '^\s*\(if\|for\|function\|try\|while\)\>',
+							\'right': '^\s*end', 'same': 0, 'seek': 1, 'line': 1},
+					\"\<cr>": {'left': '\%^', 'right': '\%$', 'same': 0, 'seek': 0,
+					\'line': 0},
+					\}
+
+""" Text objects for function arguments
+let g:textobjectify['a'] = {'left': '(', 'right': ')\|,', 'same': 0, 'seek': 1, 'line': 0}
+let g:textobjectify['A'] = {'left': ',\|(', 'right': ')', 'same': 0, 'seek': 1, 'line': 0}
