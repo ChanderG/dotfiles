@@ -548,3 +548,30 @@ let g:textobjectify = {
 """ Text objects for function arguments
 let g:textobjectify['a'] = {'left': '(', 'right': ')\|,', 'same': 0, 'seek': 1, 'line': 0}
 let g:textobjectify['A'] = {'left': ',\|(', 'right': ')', 'same': 0, 'seek': 1, 'line': 0}
+""" Text object for anything between 2 punctuations
+let g:textobjectify['u'] = {'left': '[.=:]', 'right': '[.=:]', 'same': 0, 'seek': 1, 'line': 0}
+
+""" Experimental "indentpara" text object using kana/vim-textobj-user
+"" Implies the current paragraph but only lines of the current indent or above
+call textobj#user#plugin('indentpara', {
+\	'indentpara': {
+\ 	'select-i': 'iz',
+\ 	'select-i-function': 'CurrentIndentPara',
+\	},
+\})
+
+function! CurrentIndentPara()
+	" get starting column num of this line
+	normal! ^
+	let indentcol = getpos('.')[2]
+	" go to start of para and search down for first line that matches indent
+	normal! {
+	call search('^\s*\%'.indentcol.'c', 'W')
+	let head_pos = getpos('.')
+	" go to end of para and search up for first line that matches indent
+	normal! }
+	call search('^\s*\%'.indentcol.'c', 'b')
+	let tail_pos = getpos('.')
+	return ['V', head_pos, tail_pos]
+endfunction
+""" End "indentpara" text object
