@@ -1,0 +1,45 @@
+diff --git a/config.def.h b/config.def.h
+index 823e79f..5c32563 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -27,6 +27,9 @@ char *vtiden = "\033[?6c";
+ static float cwscale = 1.0;
+ static float chscale = 1.0;
+ 
++/* Plumbing */
++static char plumber[] = "plumb.sh";
++
+ /*
+  * word delimiter string
+  *
+diff --git a/x.c b/x.c
+index 00cb6b1..f48e9bf 100644
+--- a/x.c
++++ b/x.c
+@@ -638,6 +638,9 @@ xsetsel(char *str)
+ void
+ brelease(XEvent *e)
+ {
++	pid_t child;
++	char cmd[100];
++
+ 	if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forceselmod)) {
+ 		mousereport(e);
+ 		return;
+@@ -647,6 +650,16 @@ brelease(XEvent *e)
+ 		selpaste(NULL);
+ 	else if (e->xbutton.button == Button1)
+ 		mousesel(e, 1);
++	else if (e->xbutton.button == Button3) {
++		switch(child = fork()) {
++			case -1:
++				return;
++			case 0:
++				sprintf(cmd, "(%s \"%s\")", plumber, getsel());
++				execvp( "sh", (char *const []){ "/bin/sh", "-c", cmd, 0 });
++				exit(127);
++		}
++	}
+ }
+ 
+ void
