@@ -92,13 +92,11 @@
 			))
 
 ;; for melpa
-(require 'package) ;; You might already have this line
-(add-to-list 'package-archives
-		'("melpa" . "https://melpa.org/packages/"))
-(when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
+(require 'package)
+(setq package-check-signature nil)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(package-initialize)
 
 ;; add post save hook to update dynamic blocks and clocks
 (add-hook 'before-save-hook 'org-update-all-dblocks)
@@ -140,8 +138,8 @@
 
 ;; easy to access commands
 ; not working yet - map ; to :
-(define-key evil-normal-state-map (kbd ";") 'helm-M-x)
-(define-key evil-emacs-state-map (kbd ";") 'helm-M-x)
+(define-key evil-normal-state-map (kbd ";") 'helm-mini)
+(define-key evil-emacs-state-map (kbd ";") 'helm-mini)
 ; for that spacemacs feel
 (define-key evil-normal-state-map " " 'helm-M-x)
 (define-key evil-emacs-state-map " " 'helm-M-x)
@@ -176,7 +174,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
-   (sh . t)
+   ;(sh . t)
    (lisp . t)
    (emacs-lisp . t)
    ))
@@ -225,6 +223,96 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (setq org-confirm-shell-link-function nil)
 ;; agenda view sizes
 (setq org-agenda-window-frame-fractions '(0.25 . 0.40))
+
+;; switch to last buffer
+(defun switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
+
+;; stuff related to exwm
+; experimental exwm trial
+(require 'exwm)
+(require 'exwm-config)
+;(exwm-config-default)
+
+; workspace switching keys
+(defun set-exwm-workspace-switch-hotkey (key win-num)
+  (exwm-input-set-key (kbd (format "s-%s" key))
+		       `(lambda ()
+			  (interactive)
+			  (exwm-workspace-switch-create ,win-num))))
+
+(set-exwm-workspace-switch-hotkey "!" 1)
+(set-exwm-workspace-switch-hotkey "@" 2)
+(set-exwm-workspace-switch-hotkey "#" 3)
+(set-exwm-workspace-switch-hotkey "$" 4)
+(set-exwm-workspace-switch-hotkey "%" 5)
+(set-exwm-workspace-switch-hotkey "^" 6)
+(set-exwm-workspace-switch-hotkey "&" 7)
+(set-exwm-workspace-switch-hotkey "*" 8)
+(set-exwm-workspace-switch-hotkey "(" 9)
+(set-exwm-workspace-switch-hotkey ")" 0)
+
+; launch dmenu -> does not work yet
+;(exwm-input-set-key (kbd "s-p") (lambda ()
+;				  (interactive)
+;				  (start-process-shell-command "dmenu_run" nil "j4-dmenu-desktop")))
+
+; 's-w': Switch workspace
+(exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
+
+; reload .emacs
+(exwm-input-set-key (kbd "s-R") `(lambda ()
+				  (interactive)
+				  (load-file "~/.emacs")))
+
+; Launch application
+(exwm-input-set-key (kbd "s-p")
+		    (lambda (command)
+		      (interactive (list (read-shell-command "$ ")))
+		      (start-process-shell-command command nil command)))
+
+; run shell command then and there
+(exwm-input-set-key (kbd "s-P") 'shell-command)
+
+; provide better names for exwm windows
+(add-hook 'exwm-update-title-hook
+	  (lambda ()
+	    (exwm-workspace-rename-buffer exwm-title)))
+
+; helm helpers
+; does not seem to work
+(exwm-input-set-key (kbd "s-y") 'helm-exwm)
+(exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
+
+; does not work yet
+(exwm-input-set-key (kbd "s-RET") 'switch-to-previous-buffer)
+
+; ; alt-tab
+; (defvar exwm-workspace-previous-index nil "The previous active workspace index.")
+
+; (defun exwm-workspace--current-to-previous-index (_x)
+;   (setq exwm-workspace-previous-index exwm-workspace-current-index))
+
+; (advice-add 'exwm-workspace-switch :before #'exwm-workspace--current-to-previous-index)
+
+; (defun exwm-workspace-switch-to-previous ()
+;   (interactive)
+;   "Switch to the previous active workspace." 
+;   (let ((index exwm-workspace-previous-index))
+;     (exwm-workspace-switch index)))
+
+; does not work
+(exwm-input-set-key (kbd "<S-tab>") 'exwm-workspace-switch-to-previous)
+(global-set-key (kbd "s-t") 'exwm-workspace-switch-to-previous)
+
+(exwm-enable)
+
+;; end exwm related configuration
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
