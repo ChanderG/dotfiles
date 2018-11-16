@@ -1,0 +1,326 @@
+#+title: .emacs in Org
+#+PROPERTY: header-args :tangle "~/.emacs"
+
+* Setup
+  Initial setup.
+#+BEGIN_SRC emacs-lisp
+;;; -*- lexical-binding: t -*-
+#+END_SRC
+
+  Manually specify file (to store into and load from) the customize variable so that it does not clobber the `.emacs` file.
+#+BEGIN_SRC emacs-lisp
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+#+END_SRC
+* Packages
+  Specifying and installing packages.
+  
+** Setup package and melpa.
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(setq package-check-signature nil)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(package-initialize)
+#+END_SRC
+** Install packages
+Right now, manually installed.
+
+Bring in `use-package` here.
+* Beauty is in the eye of the beholder
+  Font and size.
+#+BEGIN_SRC emacs-lisp
+(set-default-font "Monospace 18")
+#+END_SRC
+
+  Disable menu bar and tool bar.
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+#+END_SRC
+* Evil is Good
+  Core install.
+#+BEGIN_SRC emacs-lisp
+(require 'evil)
+(evil-mode 1)
+#+END_SRC
+
+** For general editing
+   Classic vim plugins.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-commentary)
+(evil-commentary-mode)
+
+(require 'evil-surround)
+#+END_SRC
+
+** For Orgmode
+#+BEGIN_SRC emacs-lisp
+(require 'evil-org)
+(add-hook 'org-mode-hook 'evil-org-mode)
+(evil-org-set-key-theme '(navigation insert textobjects additional calendar))
+#+END_SRC
+* Organizing Org
+  
+  Global calls. Need to revisit and clean up.
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
+
+  Syntax highlight code blocks.
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+#+END_SRC
+
+  Auto update clock tables and dynamic blocks on save.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'org-update-all-dblocks)
+(add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
+(add-hook 'auto-save-hook 'org-update-all-dblocks)
+(add-hook 'auto-save-hook 'org-table-recalculate-buffer-tables)
+#+END_SRC
+
+  Zoom in and out of headings.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-<next>") (lambda ()
+				   (interactive)
+				   (outline-next-visible-heading 0)
+				   (org-narrow-to-subtree)))
+
+(global-set-key (kbd "C-<prior>") (lambda ()
+				    (interactive)
+				    (widen)
+				    (outline-up-heading 1)
+				    (org-narrow-to-subtree)))
+#+END_SRC
+
+  No confirm shell links for nice button like behaviour.
+#+BEGIN_SRC emacs-lisp
+(setq org-confirm-shell-link-function nil)
+#+END_SRC
+
+  Set agenda view sizes.
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-window-frame-fractions '(0.25 . 0.40))
+#+END_SRC
+
+** Clocking
+   Add completion time to tasks.
+#+BEGIN_SRC emacs-lisp
+(setq org-log-done 'time)
+#+END_SRC
+
+  Functions for Pomodoro with tasks.
+#+BEGIN_SRC emacs-lisp
+(defun pomodoro-start ()
+  "Starts and automatically clocks out a Pomodoro unit of 20 minutes."
+  (interactive)
+  (org-clock-in)
+  (message "Starting pomodoro cycle of 20 minutes.")
+  (set-process-sentinel (start-process "sleep" nil "sleep" "20m") 'pomodoro-end)
+)
+
+(defun pomodoro-end (process event)
+  (org-clock-out)
+  (message "Stopping pomodoro cycle of 20 minutes.")
+  (start-process "slock" nil "slock")
+)
+#+END_SRC
+** Babel
+  Active Babel languages.
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (emacs-lisp . t)
+   ))
+#+END_SRC
+
+  Disable confirmation upon C-c C-c.
+#+BEGIN_SRC emacs-lisp
+(setq org-confirm-babel-evaluate nil)
+#+END_SRC 
+
+  Notify after execution of source blocks finish.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-babel-after-execute-hook (lambda ()
+					  (interactive)
+					  (start-process "Notification" nil "notify-send" "Emacs" "Evaluation of src block finished.")
+						))
+#+END_SRC
+
+* Iron Helm of Dexterity [4, +5] (+3)
+  Install Helm.
+#+BEGIN_SRC emacs-lisp
+(require 'helm-config)
+(helm-mode 1)
+#+END_SRC
+
+  Mini and M-x, most frequently used commands.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd ";") 'helm-mini)
+(define-key evil-emacs-state-map (kbd ";") 'helm-mini)
+(define-key evil-normal-state-map " " 'helm-M-x)
+(define-key evil-emacs-state-map " " 'helm-M-x)
+#+END_SRC
+
+  For all windows, when using EXWM.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-y") 'helm-exwm)
+(exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
+#+END_SRC
+
+* Say NO to RSI
+  General key bindings.
+
+  Swap meta and super. Mostly a backward compatibility thing from the days of dwm. Keeping it for now.
+#+BEGIN_SRC emacs-lisp
+(setq x-meta-keysym 'super)
+(setq x-super-keysym 'meta)
+#+END_SRC
+
+  Add "emacs-lisp" code block template.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp
+?
+#+END_SRC"))
+#+END_SRC
+
+* EXWM: the next step to a Lisp Machine
+** Bootup
+#+BEGIN_SRC emacs-lisp
+(require 'exwm)
+(require 'exwm-config)
+(exwm-enable)
+#+END_SRC
+** Switching workspaces
+   
+   The default option (for backup).
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
+#+END_SRC
+
+   Switch to workspace by num. (Corrected for permenantly toggled number row.)
+#+BEGIN_SRC emacs-lisp
+(defun set-exwm-workspace-switch-hotkey (key win-num)
+  (exwm-input-set-key (kbd (format "s-%s" key))
+		       `(lambda ()
+			  (interactive)
+			  (exwm-workspace-switch-create ,win-num))))
+
+(set-exwm-workspace-switch-hotkey "!" 1)
+(set-exwm-workspace-switch-hotkey "@" 2)
+(set-exwm-workspace-switch-hotkey "#" 3)
+(set-exwm-workspace-switch-hotkey "$" 4)
+(set-exwm-workspace-switch-hotkey "%" 5)
+(set-exwm-workspace-switch-hotkey "^" 6)
+(set-exwm-workspace-switch-hotkey "&" 7)
+(set-exwm-workspace-switch-hotkey "*" 8)
+(set-exwm-workspace-switch-hotkey "(" 9)
+(set-exwm-workspace-switch-hotkey ")" 0)
+#+END_SRC
+
+
+   Alt-Tab behaviour.
+#+BEGIN_SRC emacs-lisp
+(defvar exwm-workspace-previous-index nil "The previous active workspace index.")
+
+(defun exwm-workspace-switch-to-previous ()
+  "Switch to the previous active workspace." 
+  (interactive)
+  (let ((index exwm-workspace-previous-index))
+    (setq exwm-workspace-previous-index exwm-workspace-current-index)
+    (exwm-workspace-switch index)))
+
+(exwm-input-set-key (kbd "<s-tab>") #'exwm-workspace-switch-to-previous)
+#+END_SRC
+
+** Launching Applications
+   Launch generic system application async.
+#+BEGIN_SRC emacs-lisp
+; Launch application
+(exwm-input-set-key (kbd "s-p")
+		    (lambda (command)
+		      (interactive (list (read-shell-command "$ ")))
+		      (start-process-shell-command command nil command)))
+#+END_SRC  
+
+   For one-off shell commands.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-P") 'shell-command)
+#+END_SRC 
+
+** Visual cues
+   
+   Display dwm like bar in mini-buffer.
+#+BEGIN_SRC emacs-lisp
+; function to generate contents of bar
+(defun exwm-workspace-listing-minibuffer (_x)
+  (message (mapconcat (lambda (x)
+			(format (if (= x exwm-workspace-current-index) "[%d]" "%d") x))
+		      (append (number-sequence 1 9) '(0))
+		      " ")))
+
+; refresh upon switch
+; careful: crashes on bootup if un-commented
+;(advice-add 'exwm-workspace-switch :after #'exwm-workspace-listing-minibuffer)
+#+END_SRC
+** Dynamic Window Management
+   
+   Switch to last buffer in window. Maybe can be replaced with `evil-buffer`?
+#+BEGIN_SRC emacs-lisp
+(defun switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
+#+END_SRC
+** Assorted QoL changes
+   
+   Reload .emacs.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-R") `(lambda ()
+				  (interactive)
+				  (load-file "~/.emacs")))
+#+END_SRC
+
+   Better names for windows.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-update-title-hook
+	  (lambda ()
+	    (exwm-workspace-rename-buffer exwm-title)))
+#+END_SRC
+
+* Assorted QoL changes
+  Save buffers automatically when possible.
+#+BEGIN_SRC emacs-lisp
+;; runs on tab switch etc
+;; only runs on buffers with non nil file-name which is true for all user buffers
+;; special/system buffers (all surrounded with **) such as *scratch*, *ielm* etc are not saved
+(add-hook 'focus-out-hook (lambda ()
+			    (interactive)
+			    (if (not (equal (buffer-file-name) nil))
+				    (save-buffer)
+				  )))
+#+END_SRC
+
+  Set browser to use for opening.
+#+BEGIN_SRC emacs-lisp
+(setq browse-url-browser-function 'browse-url-generic
+            browse-url-generic-program "firefox")
+#+END_SRC
+
+  Set backups file name.
+#+BEGIN_SRC emacs-lisp
+(defun make-backup-file-name (filename)
+  (expand-file-name
+    (concat "." (file-name-nondirectory filename) "~")
+    (file-name-directory filename)))
+#+END_SRC
+
+
