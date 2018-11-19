@@ -223,16 +223,19 @@ Bring in `use-package` here.
 (set-exwm-workspace-switch-hotkey ")" 0)
 #+END_SRC
 
-
    Alt-Tab behaviour.
 #+BEGIN_SRC emacs-lisp
 (defvar exwm-workspace-previous-index nil "The previous active workspace index.")
+
+(defun update-last-workspace (_x)
+  (setq exwm-workspace-previous-index exwm-workspace-current-index))
+; fails if sourced at bootup, works otherwise
+;(advice-add 'exwm-workspace-switch :before 'update-last-workspace)
 
 (defun exwm-workspace-switch-to-previous ()
   "Switch to the previous active workspace." 
   (interactive)
   (let ((index exwm-workspace-previous-index))
-    (setq exwm-workspace-previous-index exwm-workspace-current-index)
     (exwm-workspace-switch index)))
 
 (exwm-input-set-key (kbd "<s-tab>") #'exwm-workspace-switch-to-previous)
