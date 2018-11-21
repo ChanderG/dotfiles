@@ -38,7 +38,16 @@ Bring in `use-package` here.
 (menu-bar-mode 0)
 (tool-bar-mode 0)
 #+END_SRC
+
+  Disable fringe.
+#+BEGIN_SRC emacs-lisp
+(fringe-mode '(0 . 0))
+#+END_SRC
+
 * Evil is Good
+  In this section, I do everything I possibly can to make emacs edit like Vim. 
+  I might have started living in Emacs, but I am not leaving Vim behind.
+  
   Core install.
 #+BEGIN_SRC emacs-lisp
 (require 'evil)
@@ -54,6 +63,32 @@ Bring in `use-package` here.
 (require 'evil-surround)
 #+END_SRC
 
+** Version Control
+   
+   Git gutter.
+#+BEGIN_SRC emacs-lisp
+(global-git-gutter+-mode)
+
+(define-key git-gutter+-mode-map (kbd "]c") 'git-gutter+-next-hunk)
+(define-key git-gutter+-mode-map (kbd "[c") 'git-gutter+-previous-hunk)
+#+END_SRC 
+
+  Hunk text object.
+#+BEGIN_SRC emacs-lisp
+(defun pos-from-line (line)
+  (save-excursion 
+   (goto-char (point-min))
+   (forward-line line)
+   (point)))
+   
+(evil-define-text-object evil-inner-githunk (count &optional beg end type)
+  (setq di (git-gutter+-diffinfo-at-point))
+  (setq start (plist-get di :start-line))
+  (setq end (plist-get di :end-line))
+  (evil-range (pos-from-line (- start 1)) (pos-from-line end) type :expanded t))
+    
+(define-key evil-inner-text-objects-map "h" 'evil-inner-githunk)
+#+END_SRC  
 ** For Orgmode
 #+BEGIN_SRC emacs-lisp
 (require 'evil-org)
@@ -159,20 +194,33 @@ Bring in `use-package` here.
 (helm-mode 1)
 #+END_SRC
 
-  Mini and M-x, most frequently used commands.
+  Bindings for M-x for evil and for all other modes (primarily exwm).
 #+BEGIN_SRC emacs-lisp
-(define-key evil-normal-state-map (kbd ";") 'helm-mini)
-(define-key evil-emacs-state-map (kbd ";") 'helm-mini)
-(define-key evil-normal-state-map " " 'helm-M-x)
-(define-key evil-emacs-state-map " " 'helm-M-x)
+  (define-key evil-normal-state-map " " 'helm-M-x)
+  (exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
 #+END_SRC
 
-  For all windows, when using EXWM.
+** Buffer switching
+  Section for various buffer switch configurations.
+  
+  Helm mini.
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-y") 'helm-mini)
+  (define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
+#+END_SRC
+
+  For switching exwm windows.
 #+BEGIN_SRC emacs-lisp
 (exwm-input-set-key (kbd "s-y") 'helm-exwm)
-(exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
-#+END_SRC
+#+END_SRC 
 
+  For all git files in folder. Need to install `helm-ls-git`.
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-p") 'helm-ls-git-ls)
+#+END_SRC
+  
+  For all modified files in folder.
+  
 * Say NO to RSI
   General key bindings.
 
@@ -180,6 +228,12 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (setq x-meta-keysym 'super)
 (setq x-super-keysym 'meta)
+#+END_SRC
+
+  Set ';' to `evil-ex`.
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
 #+END_SRC
 
   Add "emacs-lisp" code block template.
@@ -283,6 +337,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
 #+END_SRC
+
 ** Assorted QoL changes
    
    Reload .emacs.
