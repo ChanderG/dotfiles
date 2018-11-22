@@ -23,6 +23,11 @@
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 #+END_SRC
+** Quelpa
+   Install "Quelpa" for those corner case packages not on Melpa. For now, stuff on github.
+#+BEGIN_SRC emacs-lisp
+(require 'quelpa)
+#+END_SRC
 ** Install packages
 Right now, manually installed.
 
@@ -55,12 +60,17 @@ Bring in `use-package` here.
 #+END_SRC
 
 ** For general editing
-   Classic vim plugins.
+  Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
 (require 'evil-commentary)
 (evil-commentary-mode)
+#+END_SRC
 
-(require 'evil-surround)
+** General text objects
+   Targets/TextObjectify style seek behaviour for text objects.
+#+BEGIN_SRC emacs-lisp
+(quelpa '(targets :fetcher git :url "https://github.com/noctuid/targets.el"))
+(targets-setup t)
 #+END_SRC
 
 ** Version Control
