@@ -130,14 +130,26 @@ Bring in `use-package` here.
   (evil-range (pos-from-line (- start 1)) (pos-from-line end) type :expanded t))
     
 (define-key evil-inner-text-objects-map "h" 'evil-inner-githunk)
-#+END_SRC  
+#+END_SRC
 ** For Orgmode
 #+BEGIN_SRC emacs-lisp
 (require 'evil-org)
 (add-hook 'org-mode-hook 'evil-org-mode)
 (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 #+END_SRC
-* Emacs is good for editing too!
+* Emacs rocks
+  Assorted emacs packages and configurations too small to go as separate configurations.
+** Magit
+  Set default state for magit commit mode to normal.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'git-commit-mode-hook 'evil-normal-state)
+#+END_SRC
+
+  Open magit from dired too.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'dired-mode-hook 'magit-file-mode)
+#+END_SRC
+** Emacs is good for editing too!
   Emacs paradigms for editing.
 
   Easier occur.
