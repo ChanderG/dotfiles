@@ -59,6 +59,26 @@ Bring in `use-package` here.
 (evil-mode 1)
 #+END_SRC
 
+** Basic Vim compatibility
+
+  Number control like in vim. Note how we bind decrement to C-e. Can't use up C-x, that's why.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-numbers)
+
+(define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
+(define-key evil-normal-state-map (kbd "C-e") 'evil-numbers/dec-at-pt)
+#+END_SRC
+
+  Relative line numbering. Activate only for programming related buffers.
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+#+END_SRC
+
+  Show matching paranthesis (and other brackets).
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode)
+#+END_SRC
 ** For general editing
   Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
