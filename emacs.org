@@ -378,8 +378,25 @@ Repeated invocations toggle between the two most recently open buffers."
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
 (global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
+(global-set-key (kbd "<C-tab>") 'switch-to-previous-buffer)
 #+END_SRC
 
+  Easier management of common Emacs window actions.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "C-!") 'delete-other-windows)
+(exwm-input-set-key (kbd "C-@") 'split-window-below)
+(exwm-input-set-key (kbd "C-#") 'split-window-right)
+(exwm-input-set-key (kbd "C-`") 'delete-window)
+(exwm-input-set-key (kbd "C-$") 'other-window)
+#+END_SRC
+
+  Dwm like (for a very loose meaning of like) window resizing. Operates on the current focused window.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "s-k") 'enlarge-window)
+(exwm-input-set-key (kbd "s-j") 'shrink-window)
+(exwm-input-set-key (kbd "s-l") 'enlarge-window-horizontally)
+(exwm-input-set-key (kbd "s-h") 'shrink-window-horizontally)
+#+END_SRC
 ** Assorted QoL changes
    
    Reload .emacs.
