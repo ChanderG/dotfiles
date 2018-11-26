@@ -137,6 +137,13 @@ Bring in `use-package` here.
 (add-hook 'org-mode-hook 'evil-org-mode)
 (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 #+END_SRC
+* Emacs is good for editing too!
+  Emacs paradigms for editing.
+
+  Easier occur.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "C-l") 'occur)
+#+END_SRC
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
