@@ -86,6 +86,12 @@ Bring in `use-package` here.
 (evil-commentary-mode)
 #+END_SRC
 
+  Quickscope port. Only activates upon pressing f/F/t/T.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-quickscope)
+(global-evil-quickscope-mode 1)
+#+END_SRC
+
 ** General text objects
    Targets/TextObjectify style seek behaviour for text objects.
 #+BEGIN_SRC emacs-lisp
@@ -93,14 +99,20 @@ Bring in `use-package` here.
 (targets-setup t)
 #+END_SRC
 
+  ReplaceWithRegister port. Works fine.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-replace-with-register)
+(setq evil-replace-with-register-key (kbd "gr"))
+(evil-replace-with-register-install)
+#+END_SRC
 ** Version Control
    
    Git gutter.
 #+BEGIN_SRC emacs-lisp
 (global-git-gutter+-mode)
 
-(define-key git-gutter+-mode-map (kbd "]c") 'git-gutter+-next-hunk)
-(define-key git-gutter+-mode-map (kbd "[c") 'git-gutter+-previous-hunk)
+(define-key evil-normal-state-map (kbd "]c") 'git-gutter+-next-hunk)
+(define-key evil-normal-state-map (kbd "[c") 'git-gutter+-previous-hunk)
 #+END_SRC 
 
   Hunk text object.
