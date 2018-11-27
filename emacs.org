@@ -149,6 +149,13 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dired-mode-hook 'magit-file-mode)
 #+END_SRC
+** Gtags
+   ggtags in emacs speak.
+
+   Find references or definition. Better than the vim version.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "C-]") 'ggtags-find-tag-dwim)
+#+END_SRC
 ** Emacs is good for editing too!
   Emacs paradigms for editing.
 
