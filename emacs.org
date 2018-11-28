@@ -439,6 +439,16 @@ Repeated invocations toggle between the two most recently open buffers."
 	    (exwm-workspace-rename-buffer exwm-title)))
 #+END_SRC
 
+* Shells and Terminals
+
+  Normal shell.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "M-`") 'shell)
+(exwm-input-set-key (kbd "M-!") (lambda ()
+                                  (interactive)
+                                  (let ((b (generate-new-buffer "*shell*")))
+                                    (shell b))))
+#+END_SRC
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
