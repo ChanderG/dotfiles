@@ -476,4 +476,9 @@ Repeated invocations toggle between the two most recently open buffers."
     (file-name-directory filename)))
 #+END_SRC
 
-
+  Flash expression evaluations. TODO Need a better option than rebinding the core eval key.
+#+BEGIN_SRC emacs-lisp
+(require 'eval-sexp-fu)
+(turn-on-eval-sexp-fu-flash-mode)
+(define-key global-map (kbd "C-x C-e") 'eval-sexp-fu-eval-sexp-inner-list)
+#+END_SRC
