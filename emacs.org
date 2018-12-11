@@ -255,6 +255,34 @@ Bring in `use-package` here.
 						))
 #+END_SRC
 
+* LaTeX setup
+
+  Path setup for TeXLive binaries.
+#+BEGIN_SRC emacs-lisp
+(setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "/usr/local/texlive/2018/bin/x86_64-linux")))
+(add-to-list 'exec-path "/usr/local/texlive/2018/bin/x86_64-linux")
+#+END_SRC
+
+  Basic AucTeX setup.
+#+BEGIN_SRC emacs-lisp
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+#+END_SRC
+
+  Open using PDF tools.
+#+BEGIN_SRC emacs-lisp
+(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+      TeX-source-correlate-start-server t)
+
+(add-hook 'TeX-after-compilation-finished-functions
+           #'TeX-revert-document-buffer)
+#+END_SRC
+
+  Also use reftex.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+#+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
