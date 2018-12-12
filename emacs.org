@@ -120,6 +120,18 @@ Bring in `use-package` here.
   (define-key evil-outer-text-objects-map "f" 'evil-a-function)
 #+END_SRC
 
+  Function Arguments text object.
+#+BEGIN_SRC emacs-lisp
+  (require 'evil-args)
+
+  ;; bind evil-args text objects
+  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
+  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
+
+  ;; bind evil-forward/backward-args
+  (define-key evil-normal-state-map "]a" 'evil-forward-arg)
+  (define-key evil-normal-state-map "[a" 'evil-backward-arg)
+#+END_SRC
 ** Version Control
    
    Git gutter.
