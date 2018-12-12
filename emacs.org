@@ -105,6 +105,21 @@ Bring in `use-package` here.
 (setq evil-replace-with-register-key (kbd "gr"))
 (evil-replace-with-register-install)
 #+END_SRC
+
+  Generic function text object. Not really tested with counts etc. Only have a "a" type. Inner/Outer seem to vary with language
+  too much.
+#+BEGIN_SRC emacs-lisp
+  (evil-define-text-object evil-a-function (count &optional beg end type)
+     (evil-range (save-excursion
+                   (beginning-of-defun) (point))
+                 (save-excursion
+                   (end-of-defun) (point))
+                 ; force line-wise mode
+                 'line))
+
+  (define-key evil-outer-text-objects-map "f" 'evil-a-function)
+#+END_SRC
+
 ** Version Control
    
    Git gutter.
