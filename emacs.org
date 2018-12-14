@@ -189,6 +189,10 @@ Bring in `use-package` here.
   Easier occur.
 #+BEGIN_SRC emacs-lisp
 (define-key evil-normal-state-map (kbd "C-l") 'occur)
+** pdf-tools
+   Enable pdf-tools.
+#+BEGIN_SRC emacs-lisp
+(pdf-tools-install)
 #+END_SRC
 * Organizing Org
   
