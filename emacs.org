@@ -83,6 +83,19 @@ Bring in `use-package` here.
   TODO Complete file names.
 #+BEGIN_SRC emacs-lisp
 #+END_SRC
+
+  Jump using \*/\# uses symbols in Vim. In evil, it defaults to use word under cursor, which is not too helpful.
+#+BEGIN_SRC emacs-lisp
+(evil-define-motion evil-search-symbol-backward (count)
+  "Simply pass in true for the symbol param of the original motion."
+  (evil-search-word-backward count t))
+(define-key evil-motion-state-map "#" 'evil-search-symbol-backward)
+
+(evil-define-motion evil-search-symbol-forward (count)
+  "Simply pass in true for the symbol param of the original motion."
+  (evil-search-word-forward count t))
+(define-key evil-motion-state-map "*" 'evil-search-symbol-forward)
+#+END_SRC
 ** For general editing
   Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
