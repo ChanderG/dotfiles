@@ -79,17 +79,30 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (show-paren-mode)
 #+END_SRC
+
+  TODO Complete file names.
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
 ** For general editing
   Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
 (require 'evil-commentary)
-(evil-commentary-mode)
+
+(define-key evil-normal-state-map "gc" 'evil-commentary)
+; yank and comment
+(define-key evil-normal-state-map "gy" 'evil-commentary-yank)
 #+END_SRC
 
   Quickscope port. Only activates upon pressing f/F/t/T.
 #+BEGIN_SRC emacs-lisp
 (require 'evil-quickscope)
 (global-evil-quickscope-mode 1)
+#+END_SRC
+
+  Bindings for "flycheck".
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map "]f" 'flycheck-next-error)
+(define-key evil-normal-state-map "[f" 'flycheck-previous-error)
 #+END_SRC
 
 ** General text objects
@@ -160,6 +173,7 @@ Bring in `use-package` here.
 #+END_SRC
 ** For Orgmode
 #+BEGIN_SRC emacs-lisp
+(require 's)
 (require 'evil-org)
 (add-hook 'org-mode-hook 'evil-org-mode)
 (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
@@ -176,6 +190,31 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dired-mode-hook 'magit-file-mode)
 #+END_SRC
+** Cyphejor
+   Minimizing mode-line space wastage.
+#+BEGIN_SRC emacs-lisp
+(setq
+ cyphejor-rules
+ '(:upcase
+   ("buffer"      "β")
+   ("diff"        "Δ")
+   ("dired"       "δ")
+   ("emacs"       "ε")
+   ("inferior"    "i" :prefix)
+   ("interaction" "i" :prefix)
+   ("interactive" "i" :prefix)
+   ("lisp"        "λ" :postfix)
+   ("menu"        "▤" :postfix)
+   ("mode"        "")
+   ("package"     "↓")
+   ("python"      "π")
+   ("shell"       "sh" :postfix)
+   ("text"        "ξ")
+   ("wdired"      "↯δ")
+   ("helm"        "H")))
+   
+(cyphejor-mode 1)
+#+END_SRC
 ** Gtags
    ggtags in emacs speak.
 
@@ -189,10 +228,33 @@ Bring in `use-package` here.
   Easier occur.
 #+BEGIN_SRC emacs-lisp
 (define-key evil-normal-state-map (kbd "C-l") 'occur)
+#+END_SRC
+
+  Configuring tabs.
+#+BEGIN_SRC emacs-lisp
+(setq indent-tabs-mode nil)
+(setq tab-width 4)
+#+END_SRC  
+
+  Automatic white-space management
+#+BEGIN_SRC emacs-lisp
+(require 'ws-butler)
+(add-hook 'prog-mode-hook #'ws-butler-mode)
+(add-hook 'org-mode-hook #'ws-butler-mode)
+#+END_SRC
+
+  Complete at point.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-insert-state-map (kbd "C-/") 'completion-at-point)
+#+END_SRC
 ** pdf-tools
    Enable pdf-tools.
 #+BEGIN_SRC emacs-lisp
 (pdf-tools-install)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(define-key pdf-view-mode-map (kbd "C-G") 'pdf-view-first-page)
+(define-key pdf-view-mode-map (kbd "G") 'pdf-view-last-page)
 #+END_SRC
 * Organizing Org
   
@@ -270,6 +332,8 @@ Bring in `use-package` here.
  'org-babel-load-languages
  '((python . t)
    (emacs-lisp . t)
+   (dot . t)
+   (C . t)
    ))
 #+END_SRC
 
@@ -308,11 +372,48 @@ Bring in `use-package` here.
 
 (add-hook 'TeX-after-compilation-finished-functions
            #'TeX-revert-document-buffer)
+
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 #+END_SRC
 
   Also use reftex.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+#+END_SRC
+
+  Evil objects for latex.
+#+BEGIN_SRC emacs-lisp
+(quelpa '(evil-latex-textobjects :fetcher git :url "https://github.com/hpdeifel/evil-latex-textobjects"))
+(require 'evil-latex-textobjects)
+(add-hook 'LaTeX-mode-hook 'turn-on-evil-latex-textobjects-mode)
+#+END_SRC
+* Programming language specifics
+** Golang
+   Get go related binaries into path.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'exec-path (expand-file-name "~/thirdparty/go/bin"))
+(add-to-list 'exec-path (substitute-in-file-name "$GOPATH/bin"))
+#+END_SRC
+
+  Using flycheck (w/ go-metalinter) for linting.
+
+  Setup stuff for go-mode.
+#+BEGIN_SRC emacs-lisp
+(defun go-mode-addons ()
+  (flycheck-mode)
+  ; startup lsp client HERE
+  ; gofmt on save
+  (add-hook 'before-save-hook 'gofmt-before-save))
+
+(add-hook 'go-mode-hook #'go-mode-addons)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
+** Erlang
+#+BEGIN_SRC emacs-lisp
+(add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 #+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
@@ -497,10 +598,27 @@ Repeated invocations toggle between the two most recently open buffers."
 	  (lambda ()
 	    (exwm-workspace-rename-buffer exwm-title)))
 #+END_SRC
+** Application specific mappings
+*** Firefox
+    In the pre-Quantum Firefox days, used to use VimFx. That is gone now.
+    Almost all "Vim-like" extensions for Firefox are slow, bloated and require a bunch of permissions.
 
+    So, we use our Lisp machine instead.
+    TODO: need to figure out a system for single key shortcuts.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'exwm-manage-finish-hook
+          (lambda ()
+            (when (and exwm-class-name
+                       (string= exwm-class-name "Firefox"))
+              (exwm-input-set-local-simulation-keys
+	      '(([?\C-d] . []))))))
+#+END_SRC
 * Shells and Terminals
-
+  
   Normal shell.
+  TODO Maintain a map of shells to projects and somehow bring up the right shell for each project. 
+  This causes problems with multiple shells per project. So, each project needs a single primary shell and other
+  named shells perhaps...
 #+BEGIN_SRC emacs-lisp
 (exwm-input-set-key (kbd "M-`") 'shell)
 (exwm-input-set-key (kbd "M-!") (lambda ()
