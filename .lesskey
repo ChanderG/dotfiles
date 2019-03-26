@@ -1,0 +1,27 @@
+#command
+
+# go to next/prev section heading
+> forw-search \^[A-Z]\rn
+< forw-search \^[A-Z]\rN
+
+# reset filters
+r filter \r
+
+# go into outline mode - list only section headings
+# From here you can, force scroll up and down with J/K
+# as with the options trick below, you can switch between outline view and normal view seamlessly
+o filter \^[A-Z]\r
+
+# search in options
+# this only displays all lines that start with '-', this is (more often than not) all the flags
+# now use the normal search command, it's easier as the fov is reduced to the relevant lines
+# the kicker is that once you find the option you were looking for, reset filter and voila:
+# you are at the right location in the full view
+# Don't like what you see in the full view, hit c to go back to the options view and voila:
+# at the right location
+c filter \^\ *-\r
+# need a generalized version of this for all sorts of commands/args
+
+# aliases for J/K command; useful with the outline mode
+\ku back-line-force
+\kd forw-line-force
