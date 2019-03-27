@@ -245,11 +245,11 @@ Bring in `use-package` here.
 
   Configuring tabs.
 #+BEGIN_SRC emacs-lisp
-(setq indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil)
 (setq tab-width 4)
 #+END_SRC  
 
-  Automatic white-space management
+  Automatic trailing white-space management
 #+BEGIN_SRC emacs-lisp
 (require 'ws-butler)
 (add-hook 'prog-mode-hook #'ws-butler-mode)
@@ -439,6 +439,11 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map " " 'helm-M-x)
   (exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
+#+END_SRC
+
+  Restrict "helm-git-ls" to only show open buffers in git project.
+#+BEGIN_SRC emacs-lisp
+(setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
 #+END_SRC
 
 ** Buffer switching
