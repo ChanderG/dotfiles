@@ -446,7 +446,7 @@ Bring in `use-package` here.
 (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
 #+END_SRC
 
-** Buffer switching
+** Buffer/Window switching
   Section for various buffer switch configurations.
   
   Helm mini.
@@ -456,9 +456,18 @@ Bring in `use-package` here.
 #+END_SRC
 
   For switching exwm windows.
+  You can only switch within a workspace, so the switcher filters in only windows present in the current workspace.
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "s-y") 'helm-exwm)
-#+END_SRC 
+  ;(exwm-input-set-key (kbd "s-y") 'helm-exwm)
+
+  (defun helm-exwm-current-workspace ()
+    (interactive)
+    (helm-exwm (function
+                (lambda ()
+                  (if (eq exwm--desktop (exwm-workspace--position exwm-workspace--current)) t nil)))))
+
+  (exwm-input-set-key (kbd "s-y") 'helm-exwm-current-workspace)
+#+END_SRC
 
   For all git files in folder. Need to install `helm-ls-git`.
 #+BEGIN_SRC emacs-lisp
@@ -631,6 +640,8 @@ Repeated invocations toggle between the two most recently open buffers."
               (exwm-input-set-local-simulation-keys
 	      '(([?\C-d] . []))))))
 #+END_SRC
+
+    TODO: Look into walseb/exwm-firefox-evil
 * Shells and Terminals
   
   Normal shell.
