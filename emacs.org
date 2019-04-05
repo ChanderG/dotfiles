@@ -469,6 +469,13 @@ Bring in `use-package` here.
   (exwm-input-set-key (kbd "s-y") 'helm-exwm-current-workspace)
 #+END_SRC
 
+  For jumping to exwm windows irrespective of workspace.
+#+BEGIN_SRC emacs-lisp
+  (exwm-input-set-key (kbd "M-y") (lambda ()
+                    (interactive)
+                    (exwm-workspace-switch-to-buffer (helm-exwm))))
+#+END_SRC
+
   For all git files in folder. Need to install `helm-ls-git`.
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map (kbd "C-p") 'helm-ls-git-ls)
