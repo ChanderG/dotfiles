@@ -649,6 +649,27 @@ Repeated invocations toggle between the two most recently open buffers."
 #+END_SRC
 
     TODO: Look into walseb/exwm-firefox-evil
+*** Network Manager
+
+    Some settings (like VPN) are only configurable through nm-applet. nmtui/nmcli don't work in this context.
+#+BEGIN_SRC emacs-lisp
+  (defvar is-network-tools-open nil "Current status of network tools.")
+
+  (defun toggle-network-tools ()
+    (interactive)
+    (if is-network-tools-open
+      (progn
+       (setq is-network-tools-open nil)
+       (start-process-shell-command "Tray" nil "trayer")
+       (start-process-shell-command "NMApplet" nil "nm-applet"))
+      (progn
+       (setq is-network-tools-open t)
+       (start-process-shell-command "CloseTray" nil "pkill trayer")
+       (start-process-shell-command "CloseNMApplet" nil "pkill nm-applet"))))
+
+  (exwm-input-set-key (kbd "M-w") 'toggle-network-tools)
+#+END_SRC
+
 * Shells and Terminals
   
   Normal shell.
