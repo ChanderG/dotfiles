@@ -463,6 +463,28 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
 #+END_SRC
+** JS
+   Tide is the way to go, even for JS (non TS). Played around with Tern, could not get some setup working.
+#+BEGIN_SRC emacs-lisp
+(defun js-mode-addons ()
+  ; start tide
+  (tide-setup)
+  ; flycheck config
+  (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+  (flycheck-mode +1)
+  ; eldoc config
+  (eldoc-mode +1)
+  ; autocomplete
+  (company-mode +1)
+  ; formatting
+  (add-hook 'before-save-hook 'tide-format-before-save)
+  ; better eldoc looks
+  (require 'eldoc-box)
+  (eldoc-box-hover-mode)
+)
+
+(add-hook 'js-mode-hook #'js-mode-addons)
+#+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
