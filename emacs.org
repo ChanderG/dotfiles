@@ -119,6 +119,11 @@ Bring in `use-package` here.
 #+END_SRC
 
 ** General text objects
+   Yank to end of line with Y.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd "Y") (kbd "y$"))
+#+END_SRC
+
    Targets/TextObjectify style seek behaviour for text objects.
 #+BEGIN_SRC emacs-lisp
 (quelpa '(targets :fetcher git :url "https://github.com/noctuid/targets.el"))
@@ -224,6 +229,7 @@ Bring in `use-package` here.
    ("shell"       "sh" :postfix)
    ("text"        "ξ")
    ("wdired"      "↯δ")
+   ("company"     "⇔")
    ("helm"        "H")))
    
 (cyphejor-mode 1)
@@ -269,6 +275,22 @@ Bring in `use-package` here.
 (define-key pdf-view-mode-map (kbd "C-G") 'pdf-view-first-page)
 (define-key pdf-view-mode-map (kbd "G") 'pdf-view-last-page)
 #+END_SRC
+** Torus
+  Enable tab bar, configure some shortcuts.
+#+BEGIN_SRC emacs-lisp
+(use-package torus
+  :bind-keymap ("s-t" . torus-map)
+  :bind (("<C-next>" . torus-next-location)
+         ("<C-prior>" . torus-previous-location)
+         ("<C-b>" . torus-switch-location)
+         :map torus-map)
+  :custom ((torus-prefix-key "s-t")
+           (torus-display-tab-bar t))
+  :config
+  (torus-init)
+  (torus-install-default-bindings))
+#+END_SRC
+
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
@@ -294,16 +316,18 @@ Bring in `use-package` here.
 
   Zoom in and out of headings.
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-<next>") (lambda ()
+(eval-after-load 'org-mode
+    '(define-key org-mode-map (kbd "C-<next>") (lambda ()
 				   (interactive)
 				   (outline-next-visible-heading 0)
-				   (org-narrow-to-subtree)))
+				   (org-narrow-to-subtree))))
 
-(global-set-key (kbd "C-<prior>") (lambda ()
+(eval-after-load 'org-mode
+    '(define-key org-mode-map (kbd "C-<prior>") (lambda ()
 				    (interactive)
 				    (widen)
 				    (outline-up-heading 1)
-				    (org-narrow-to-subtree)))
+				    (org-narrow-to-subtree))))
 #+END_SRC
 
   No confirm shell links for nice button like behaviour.
@@ -413,10 +437,21 @@ Bring in `use-package` here.
   Setup stuff for go-mode.
 #+BEGIN_SRC emacs-lisp
 (defun go-mode-addons ()
+  ; syntax checking/linter
   (flycheck-mode)
   ; startup lsp client HERE
-  ; gofmt on save
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  ;(lsp)
+  (lsp-ui-mode)
+  ; auto goimport on save
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  ; autocomplete
+  (require 'company)
+  (require 'company-go)
+  (set (make-local-variable 'company-backends) '(company-go))
+  (company-mode)
+  ; documentation
+  (go-eldoc-setup))
 
 (add-hook 'go-mode-hook #'go-mode-addons)
 #+END_SRC
@@ -444,6 +479,11 @@ Bring in `use-package` here.
   Restrict "helm-git-ls" to only show open buffers in git project.
 #+BEGIN_SRC emacs-lisp
 (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
+#+END_SRC
+
+  Imenu.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "M-i") 'helm-semantic-or-imenu)
 #+END_SRC
 
 ** Buffer/Window switching
