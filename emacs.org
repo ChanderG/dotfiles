@@ -481,9 +481,27 @@ Bring in `use-package` here.
   ; better eldoc looks
   (require 'eldoc-box)
   (eldoc-box-hover-mode)
+  ;; enable dash docsets
+  (setq-local helm-dash-docsets '("Express"))
 )
 
 (add-hook 'js-mode-hook #'js-mode-addons)
+#+END_SRC
+** Kubernetes
+   Install.
+#+BEGIN_SRC emacs-lisp
+(use-package kubernetes
+  :ensure t
+  :commands (kubernetes-overview))
+
+;; If you want to pull in the Evil compatibility package.
+(use-package kubernetes-evil
+  :ensure t
+  :after kubernetes)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'kubernetes-overview-mode-hook 'evil-emacs-state)
 #+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
