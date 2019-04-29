@@ -290,7 +290,6 @@ Bring in `use-package` here.
   (torus-init)
   (torus-install-default-bindings))
 #+END_SRC
-
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
@@ -424,7 +423,7 @@ Bring in `use-package` here.
 (require 'evil-latex-textobjects)
 (add-hook 'LaTeX-mode-hook 'turn-on-evil-latex-textobjects-mode)
 #+END_SRC
-* Programming language specifics
+* Programming language/platform specifics
 ** Golang
    Get go related binaries into path.
 #+BEGIN_SRC emacs-lisp
@@ -486,6 +485,13 @@ Bring in `use-package` here.
 )
 
 (add-hook 'js-mode-hook #'js-mode-addons)
+#+END_SRC
+** Docker
+#+BEGIN_SRC emacs-lisp
+(use-package kubernetes
+  :ensure t
+  :hook ((docker-image-mode-hook docker-container-mode-hook docker-volume-mode-hook docker-network-mode-hook)
+         . 'evil-emacs-state))
 #+END_SRC
 ** Kubernetes
    Install.
