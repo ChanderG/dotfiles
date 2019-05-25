@@ -35,7 +35,8 @@ Bring in `use-package` here.
 * Beauty is in the eye of the beholder
   Font and size.
 #+BEGIN_SRC emacs-lisp
-(set-default-font "Monospace 18")
+(set-default-font "-unknown-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+(set-face-attribute 'default nil :height 220)
 #+END_SRC
 
   Disable menu bar and tool bar.
@@ -289,6 +290,8 @@ Bring in `use-package` here.
   :config
   (torus-init)
   (torus-install-default-bindings))
+
+(define-key evil-normal-state-map (kbd "<C-b>") 'torus-switch-location)
 #+END_SRC
 * Organizing Org
   
@@ -385,7 +388,13 @@ Bring in `use-package` here.
 					  (start-process "Notification" nil "notify-send" "Emacs" "Evaluation of src block finished.")
 						))
 #+END_SRC
+** Todos
 
+Better colors.
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keyword-faces
+  '(("BLOCKED" . "yellow")))
+#+END_SRC
 * LaTeX setup
 
   Path setup for TeXLive binaries.
@@ -509,6 +518,26 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'kubernetes-overview-mode-hook 'evil-emacs-state)
 #+END_SRC
+** Java
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-java
+  :ensure t)
+
+(defun java-mode-addons ()
+  ; path to java lsp server
+  (setq lsp-java-server-install-dir "~/thirdparty/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/")
+  (lsp-ui-mode)
+  (lsp)
+  ; disable sideline -> not using the actions really
+  (lsp-ui-sideline-mode -1)
+  ; disable popup doc (too big for my screen), we see the doc in the minibuffer anyway
+  (lsp-ui-doc-mode -1)
+  ; company
+  (company-mode +1)
+)
+
+(add-hook 'java-mode-hook #'java-mode-addons)
+#+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
@@ -522,14 +551,43 @@ Bring in `use-package` here.
   (exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
 #+END_SRC
 
-  Restrict "helm-git-ls" to only show open buffers in git project.
-#+BEGIN_SRC emacs-lisp
-(setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
-#+END_SRC
-
   Imenu.
 #+BEGIN_SRC emacs-lisp
 (exwm-input-set-key (kbd "M-i") 'helm-semantic-or-imenu)
+#+END_SRC
+
+ DOES NOT WORK
+ Getting helm into a separate frame.
+#+BEGIN_SRC emacs-lisp
+  ;; (setq helm-display-function 'helm-display-buffer-in-own-frame
+  ;;         helm-display-buffer-reuse-frame t
+  ;;         helm-use-undecorated-frame-option t)
+#+END_SRC
+
+ NOT TESTED
+#+BEGIN_SRC emacs-lisp
+  ;;https://www.reddit.com/r/emacs/comments/bsc8pc/why_did_you_stop_using_helm/eomanzl?utm_source=share&utm_medium=web2x
+  ;; (require 'dash)
+
+  ;; (define-advice helm-display-buffer-popup-frame (:around (f buffer frame-alist) tweak-appearance)
+  ;;   (funcall f buffer
+  ;;            (-reduce-from (lambda (alist pair) (cons pair alist))
+  ;;                          frame-alist
+  ;;                          ;; Overriding frame parameters for initial creation.
+  ;;                          '((fullscreen . nil)
+  ;;                            (left-fringe . 8)
+  ;;                            (right-fringe . 8)
+  ;;                            (border-width . 0)
+  ;;                            (unsplittable . t)
+  ;;                            (undecorated . t)
+  ;;                            (cursor-type . bar))))
+
+  ;;   (when helm-popup-frame
+  ;;     (any-customization-here)
+  ;;     ;; FIX: Make helm support dynamic sizing instead.
+  ;;     (setq helm-display-buffer-width (frame-width helm-popup-frame)
+  ;;           helm-display-buffer-height (frame-height helm-popup-frame))))
+
 #+END_SRC
 
 ** Buffer/Window switching
@@ -562,9 +620,22 @@ Bring in `use-package` here.
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
 #+END_SRC
 
-  For all git files in folder. Need to install `helm-ls-git`.
+ For all git files in folder. Need to install `helm-ls-git`.
+ Variant with only open files listed.
+ Also restrict "helm-git-ls" to only show open buffers in git project.
 #+BEGIN_SRC emacs-lisp
+  (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
   (define-key evil-normal-state-map (kbd "C-p") 'helm-ls-git-ls)
+
+  ; TODO: get this working.
+
+  ;; (defun helm-all-git-ls (&optional arg)
+  ;;   (interactive "p")
+  ;;   (helm :sources helm-source-ls-git
+  ;;         :buffer "*helm allgit*"
+  ;;         :ff-transformer-show-only-basename nil))
+  ;; (define-key evil-normal-state-map (kbd "C-f") 'helm-all-git-ls)
+
 #+END_SRC
   
   For all modified files in folder.
