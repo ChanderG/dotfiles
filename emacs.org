@@ -373,6 +373,7 @@ Bring in `use-package` here.
    (emacs-lisp . t)
    (dot . t)
    (C . t)
+   (shell . t)
    ))
 #+END_SRC
 
@@ -882,4 +883,60 @@ Repeated invocations toggle between the two most recently open buffers."
 (require 'eval-sexp-fu)
 (turn-on-eval-sexp-fu-flash-mode)
 (define-key global-map (kbd "C-x C-e") 'eval-sexp-fu-eval-sexp-inner-list)
+#+END_SRC
+* Custom Workflows
+** Project specific link/bookmark management
+   The idea is to "capture" links by project when browsing using a bookmarklet.
+   These links are stored by project/tag and can later by accessed from a helm behind a hydra.
+
+   Code of the protocol handler. Assuming that `~/bin` is in $PATH. Tangle this.
+#+BEGIN_SRC sh :tangle ~/bin/link-save
+#!/bin/bash
+
+INP=$1
+IFS=',' read -a vars <<< "$INP"
+
+TAG="${vars[0]#"link-save://"}"
+URL="${vars[1]}"
+
+echo "$URL" >> ~/.link-save/$TAG.links
+#+END_SRC
+
+   The protocol handler glue for Linux. Tangle this.
+#+BEGIN_SRC :tangle ~/.local/share/applications/link-save.desktop
+[Desktop Entry]
+Name=link-save
+Exec=/home/chanderg/bin/link-save %u
+Type=Application
+Terminal=false
+Categories=System;
+MimeType=x-scheme-handler/link-save
+#+END_SRC
+
+   Install the protocol handler. Source this.
+#+BEGIN_SRC shell :tangle no :results none
+update-desktop-database ~/.local/share/applications/
+#+END_SRC
+
+   Install tag/project specific bookmarklets in your browser based on the following code.
+#+BEGIN_SRC js :tangle no
+javascript:location.href="link-save://<tag name here>,"+location.href
+#+END_SRC
+
+   Helm setup to pull up links.
+   TODO: error flow is a bit lacking currently.
+#+BEGIN_SRC emacs-lisp
+  (defun helm-link-saves ()
+    (interactive)
+    (let ((tag (helm :sources (helm-build-async-source "link-save-meta-source" :candidates-process
+                                                       (lambda ()
+                                                         (start-process-shell-command "link-save-meta" nil "ls -1 ~/.link-save")))
+                     :buffer "*helm link saves meta*")))
+      (helm :sources (helm-build-in-file-source
+                         "link-save-source" (format "~/.link-save/%s" tag)
+                         :action (lambda (candidate)
+                                   (start-process-shell-command "link-save-ff" nil (concat "firefox " candidate))))
+            :buffer "*helm link saves*")))
+
+  (exwm-input-set-key (kbd "M-l") 'helm-link-saves)
 #+END_SRC
