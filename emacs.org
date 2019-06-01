@@ -32,24 +32,6 @@
 Right now, manually installed.
 
 Bring in `use-package` here.
-* Beauty is in the eye of the beholder
-  Font and size.
-#+BEGIN_SRC emacs-lisp
-(set-default-font "-unknown-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-(set-face-attribute 'default nil :height 220)
-#+END_SRC
-
-  Disable menu bar and tool bar.
-#+BEGIN_SRC emacs-lisp
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-#+END_SRC
-
-  Disable fringe.
-#+BEGIN_SRC emacs-lisp
-(fringe-mode '(0 . 0))
-#+END_SRC
-
 * Evil is Good
   In this section, I do everything I possibly can to make emacs edit like Vim. 
   I might have started living in Emacs, but I am not leaving Vim behind.
@@ -461,7 +443,8 @@ Better colors.
   (company-mode)
   ; documentation
   (go-eldoc-setup)
-  ; for auto expanding abbrevations defined below
+  ; for auto expanding abbrevations
+  (define-abbrev go-mode-abbrev-table "ife" "" 'golang-err-skeleton)
   (abbrev-mode 1))
 
 (add-hook 'go-mode-hook #'go-mode-addons)
@@ -476,7 +459,6 @@ Better colors.
   >"return " _ \n
   "}" > \n)
 
-(define-abbrev go-mode-abbrev-table "ife" "" 'golang-err-skeleton)
 #+END_SRC
 ** Erlang
 #+BEGIN_SRC emacs-lisp
@@ -943,4 +925,26 @@ javascript:location.href="link-save://<tag name here>,"+location.href
             :buffer "*helm link saves*")))
 
   (exwm-input-set-key (kbd "M-l") 'helm-link-saves)
+#+END_SRC
+* Beauty is in the eye of the beholder
+  Font and size.
+#+BEGIN_SRC emacs-lisp
+(set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+(set-face-attribute 'default nil :height 220)
+#+END_SRC
+
+  Disable menu bar and tool bar.
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+#+END_SRC
+
+  Disable fringe.
+#+BEGIN_SRC emacs-lisp
+(fringe-mode '(0 . 0))
+#+END_SRC
+
+  Setup color.
+#+BEGIN_SRC emacs-lisp
+(load-theme 'misterioso)
 #+END_SRC
