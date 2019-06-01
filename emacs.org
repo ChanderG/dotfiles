@@ -903,7 +903,7 @@ echo "$URL" >> ~/.link-save/$TAG.links
 #+END_SRC
 
    The protocol handler glue for Linux. Tangle this.
-#+BEGIN_SRC :tangle ~/.local/share/applications/link-save.desktop
+#+BEGIN_SRC sh :tangle ~/.local/share/applications/link-save.desktop
 [Desktop Entry]
 Name=link-save
 Exec=/home/chanderg/bin/link-save %u
@@ -926,11 +926,15 @@ javascript:location.href="link-save://<tag name here>,"+location.href
    Helm setup to pull up links.
    TODO: error flow is a bit lacking currently.
 #+BEGIN_SRC emacs-lisp
+  ; one time setup source for tag specific files
+  (defun helm-link-saves-meta-init ()
+    (with-current-buffer (helm-candidate-buffer 'global)
+                                        (call-process-shell-command "ls -1 ~/.link-save" nil t)))
+
   (defun helm-link-saves ()
     (interactive)
-    (let ((tag (helm :sources (helm-build-async-source "link-save-meta-source" :candidates-process
-                                                       (lambda ()
-                                                         (start-process-shell-command "link-save-meta" nil "ls -1 ~/.link-save")))
+    (let ((tag (helm :sources (helm-build-in-buffer-source "link-save-meta-source"
+                                    :init #'helm-link-saves-meta-init)
                      :buffer "*helm link saves meta*")))
       (helm :sources (helm-build-in-file-source
                          "link-save-source" (format "~/.link-save/%s" tag)
