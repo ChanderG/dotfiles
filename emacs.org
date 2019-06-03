@@ -44,12 +44,12 @@ Bring in `use-package` here.
 
 ** Basic Vim compatibility
 
-  Number control like in vim. Note how we bind decrement to C-e. Can't use up C-x, that's why.
+  Number control like in vim. Note how we bind decrement to C-S-a. Can't use C-x, that's why.
 #+BEGIN_SRC emacs-lisp
 (require 'evil-numbers)
 
 (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-(define-key evil-normal-state-map (kbd "C-e") 'evil-numbers/dec-at-pt)
+(define-key evil-normal-state-map (kbd "C-S-a") 'evil-numbers/dec-at-pt)
 #+END_SRC
 
   Relative line numbering. Activate only for programming related buffers.
@@ -583,7 +583,7 @@ Better colors.
 
 #+END_SRC
 
-** Buffer/Window switching
+** Buffer switching
   Section for various buffer switch configurations.
   
   Helm mini.
@@ -592,11 +592,37 @@ Better colors.
   (define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
 #+END_SRC
 
+ Using `helm-ls-git` to get open buffers in current git project.
+#+BEGIN_SRC emacs-lisp
+  (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
+  (define-key evil-normal-state-map (kbd "C-e") 'helm-ls-git-ls)
+#+END_SRC
+
+ Bespoke helm command for accessing any file in git project.
+#+BEGIN_SRC emacs-lisp
+  (defun cg-helm-git-ls-files ()
+    (interactive)
+    (helm :sources (helm-build-in-buffer-source "cg-helm-git-ls-file-source"
+                                          :init (lambda ()
+                                            (with-current-buffer (helm-candidate-buffer 'global)
+                                                (call-process-shell-command
+                                                    "cd $(git rev-parse --show-toplevel); git ls-files --exclude-standard"
+                                                    nil t))))
+          :buffer "*helm git ls-files*" ))
+  (define-key evil-normal-state-map (kbd "C-p") 'cg-helm-git-ls-files)
+#+END_SRC
+
+** In Buffer switching
+
+  Imenu.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "M-i") 'helm-semantic-or-imenu)
+#+END_SRC
+** Window switching
+
   For switching exwm windows.
   You can only switch within a workspace, so the switcher filters in only windows present in the current workspace.
 #+BEGIN_SRC emacs-lisp
-  ;(exwm-input-set-key (kbd "s-y") 'helm-exwm)
-
   (defun helm-exwm-current-workspace ()
     (interactive)
     (helm-exwm (function
@@ -612,27 +638,6 @@ Better colors.
                     (interactive)
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
 #+END_SRC
-
- For all git files in folder. Need to install `helm-ls-git`.
- Variant with only open files listed.
- Also restrict "helm-git-ls" to only show open buffers in git project.
-#+BEGIN_SRC emacs-lisp
-  (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
-  (define-key evil-normal-state-map (kbd "C-p") 'helm-ls-git-ls)
-
-  ; TODO: get this working.
-
-  ;; (defun helm-all-git-ls (&optional arg)
-  ;;   (interactive "p")
-  ;;   (helm :sources helm-source-ls-git
-  ;;         :buffer "*helm allgit*"
-  ;;         :ff-transformer-show-only-basename nil))
-  ;; (define-key evil-normal-state-map (kbd "C-f") 'helm-all-git-ls)
-
-#+END_SRC
-  
-  For all modified files in folder.
-  
 * Say NO to RSI
   General key bindings.
 
