@@ -191,6 +191,14 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'dired-mode-hook 'magit-file-mode)
 #+END_SRC
+
+  The new transient mechanism drops the `q` command to quit. That's bad, I need my `q`.
+  This new `q` only kills the latest transient, we can use `C-q` to take out all transients.
+  Source: [[https://magit.vc/manual/transient.html#Aborting-and-Resuming-Transients][Transients]]
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'transient
+    (transient-bind-q-to-quit))
+#+END_SRC
 ** Cyphejor
    Minimizing mode-line space wastage.
 #+BEGIN_SRC emacs-lisp
