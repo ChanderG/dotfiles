@@ -611,12 +611,16 @@ Better colors.
   (defun cg-helm-git-ls-files ()
     (interactive)
     (helm :sources (helm-build-in-buffer-source "cg-helm-git-ls-file-source"
-                                          :init (lambda ()
-                                            (with-current-buffer (helm-candidate-buffer 'global)
-                                                (call-process-shell-command
-                                                    "cd $(git rev-parse --show-toplevel); git ls-files --exclude-standard"
-                                                    nil t))))
-          :buffer "*helm git ls-files*" ))
+                     :init (lambda ()
+                             (with-current-buffer (helm-candidate-buffer 'global)
+                               (call-process-shell-command
+                                "cd $(git rev-parse --show-toplevel); git ls-files --exclude-standard"
+                                nil t)))
+                     :action (lambda (candidate)
+                                    (find-file (concat (string-trim (shell-command-to-string "git rev-parse --show-toplevel"))
+                                                        "/"
+                                                        candidate))))
+          :buffer "*helm git ls-files*"))
   (define-key evil-normal-state-map (kbd "C-p") 'cg-helm-git-ls-files)
 #+END_SRC
 
