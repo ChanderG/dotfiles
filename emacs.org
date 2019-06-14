@@ -423,6 +423,16 @@ Better colors.
 (require 'evil-latex-textobjects)
 (add-hook 'LaTeX-mode-hook 'turn-on-evil-latex-textobjects-mode)
 #+END_SRC
+* General Programming helpers
+** Find/Replace
+   General programmatic full buffer case-sensitive find/replace strings.
+#+BEGIN_SRC emacs-lisp
+(defun cg/replace-all (from to)
+  (let ((case-fold-search nil))
+    (goto-char (point-min))
+    (while (search-forward from nil t)
+      (replace-match to))))
+#+END_SRC
 * Programming language/platform specifics
 ** Golang
    Get go related binaries into path.
