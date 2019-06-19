@@ -146,6 +146,24 @@ Bring in `use-package` here.
   (define-key evil-normal-state-map "]a" 'evil-forward-arg)
   (define-key evil-normal-state-map "[a" 'evil-backward-arg)
 #+END_SRC
+
+  Indent based text object.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-indent-plus)
+(evil-indent-plus-default-bindings)
+#+END_SRC
+
+  Using embrace for surround.
+#+BEGIN_SRC emacs-lisp
+(require 'embrace)
+(define-key evil-normal-state-map "s" #'embrace-commander)
+#+END_SRC
+
+  Exchange.
+#+BEGIN_SRC emacs-lisp
+(require 'evil-exchange)
+(evil-exchange-install)
+#+END_SRC
 ** Version Control
    
    Git gutter.
