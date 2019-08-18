@@ -503,26 +503,44 @@ Better colors.
 ** JS
    Tide is the way to go, even for JS (non TS). Played around with Tern, could not get some setup working.
 #+BEGIN_SRC emacs-lisp
-(defun js-mode-addons ()
-  ; start tide
-  (tide-setup)
-  ; flycheck config
-  (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
-  (flycheck-mode +1)
-  ; eldoc config
-  (eldoc-mode +1)
-  ; autocomplete
-  (company-mode +1)
-  ; formatting
-  (add-hook 'before-save-hook 'tide-format-before-save)
-  ; better eldoc looks
-  (require 'eldoc-box)
-  (eldoc-box-hover-mode)
-  ;; enable dash docsets
-  (setq-local helm-dash-docsets '("Express"))
-)
+  (defun js-mode-addons ()
+    ; start tide
+    (tide-setup)
+    ; flycheck config
+    (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+    (flycheck-mode +1)
+    ;; use local eslint if possible
+    (cg/use-eslint-from-node-modules)
+    ; eldoc config
+    (eldoc-mode +1)
+    ; autocomplete
+    (company-mode +1)
+    ; tide formatting settings
+    ;(setq tide-format-options '(:indentSize 2 :tabSize 2 :convertTabsToSpaces true))
+    ; formatting
+    (add-hook 'before-save-hook 'tide-format-before-save)
+    ; better eldoc looks
+    (require 'eldoc-box)
+    (eldoc-box-hover-mode)
+    ;; enable dash docsets
+    (setq-local helm-dash-docsets '("Express"))
+  )
 
-(add-hook 'js-mode-hook #'js-mode-addons)
+  (add-hook 'js-mode-hook #'js-mode-addons)
+#+END_SRC
+
+  Use local eslint instead of global. Sourced from: https://emacs.stackexchange.com/a/21207
+#+BEGIN_SRC emacs-lisp
+(defun cg/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint
+          (and root
+               (expand-file-name "node_modules/.bin/eslint"
+                                 root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
 #+END_SRC
 ** Docker
 #+BEGIN_SRC emacs-lisp
