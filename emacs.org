@@ -154,6 +154,7 @@ Bring in `use-package` here.
 #+END_SRC
 
   Using embrace for surround.
+  TODO -> allow cancelling using 'esc
 #+BEGIN_SRC emacs-lisp
 (require 'embrace)
 (define-key evil-normal-state-map "s" #'embrace-commander)
@@ -397,12 +398,25 @@ Bring in `use-package` here.
 					  (start-process "Notification" nil "notify-send" "Emacs" "Evaluation of src block finished.")
 						))
 #+END_SRC
+
+  Get async execution.
+#+BEGIN_SRC emacs-lisp
+(use-package ob-async
+  :ensure ob-async)
+#+END_SRC
 ** Todos
 
 Better colors.
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces
   '(("BLOCKED" . "yellow")))
+#+END_SRC
+** Agenda
+
+   More agenda views.
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-custom-commands
+  '(("x" todo-tree "TODO")))
 #+END_SRC
 * LaTeX setup
 
@@ -550,7 +564,8 @@ Better colors.
          . 'evil-emacs-state))
 #+END_SRC
 ** Kubernetes
-   Install.
+
+   Install k8s porcelain in the style of magit.
 #+BEGIN_SRC emacs-lisp
 (use-package kubernetes
   :ensure t
@@ -562,6 +577,7 @@ Better colors.
   :after kubernetes)
 #+END_SRC
 
+ TODO Move to using use-package hook.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'kubernetes-overview-mode-hook 'evil-emacs-state)
 #+END_SRC
@@ -725,8 +741,8 @@ Better colors.
 (require 'exwm-config)
 (exwm-enable)
 #+END_SRC
-** Switching workspaces
-   
+** Switching workspaces                                            :SOURCEME:
+
    The default option (for backup).
 #+BEGIN_SRC emacs-lisp
 (exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
@@ -785,7 +801,7 @@ Better colors.
 (exwm-input-set-key (kbd "s-P") 'shell-command)
 #+END_SRC 
 
-** Visual cues
+** Visual cues                                                     :SOURCEME:
    
    Display dwm like bar in mini-buffer.
 #+BEGIN_SRC emacs-lisp
@@ -808,7 +824,7 @@ Better colors.
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
+  (switch-to-buffer (other-buffer (current-buffer) 1) t))
 
 (global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
 (global-set-key (kbd "<C-tab>") 'switch-to-previous-buffer)
@@ -882,7 +898,12 @@ Repeated invocations toggle between the two most recently open buffers."
 
   (exwm-input-set-key (kbd "M-w") 'toggle-network-tools)
 #+END_SRC
-
+* General system management
+  Manage init systems.
+#+BEGIN_SRC emacs-lisp
+(use-package daemons
+  :ensure daemons)
+#+END_SRC
 * Shells and Terminals
   
   Normal shell.
@@ -896,6 +917,9 @@ Repeated invocations toggle between the two most recently open buffers."
                                   (let ((b (generate-new-buffer "*shell*")))
                                     (shell b))))
 #+END_SRC
+
+  Bring up and dismiss terminals.
+  (Without clobbering history).
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
