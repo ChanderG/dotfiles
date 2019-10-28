@@ -904,6 +904,26 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package daemons
   :ensure daemons)
 #+END_SRC
+
+  Lock/Suspend system.
+#+BEGIN_SRC emacs-lisp
+; for X11 windows
+(define-key exwm-mode-map (kbd "<f9>") (lambda ()
+                                  (interactive)
+                                  (start-process-shell-command "rlock" nil "rlock")))
+; for emacs buffers
+(exwm-input-set-key (kbd "<f9>") (lambda ()
+                                  (interactive)
+                                  (start-process-shell-command "rlock" nil "rlock")))
+; for X11 windows
+(define-key exwm-mode-map (kbd "<f10>") (lambda ()
+                                   (interactive)
+                                   (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
+; for emacs buffers
+(exwm-input-set-key (kbd "<f10>") (lambda ()
+                                   (interactive)
+                                   (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
+#+END_SRC
 * Shells and Terminals
   
   Normal shell.
@@ -920,6 +940,16 @@ Repeated invocations toggle between the two most recently open buffers."
 
   Bring up and dismiss terminals.
   (Without clobbering history).
+
+  New terminals. Works only from Emacs buffers.
+#+BEGIN_SRC emacs-lisp
+(exwm-input-set-key (kbd "<f5>") (lambda ()
+                                  (interactive)
+                                  (start-process-shell-command "st" nil "st")))
+(exwm-input-set-key (kbd "<f6>") (lambda ()
+                                  (interactive)
+                                  (start-process-shell-command "terminator" nil "terminator")))
+#+END_SRC
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
