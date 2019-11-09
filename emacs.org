@@ -614,11 +614,6 @@ Better colors.
   (exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
 #+END_SRC
 
-  Imenu.
-#+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "M-i") 'helm-semantic-or-imenu)
-#+END_SRC
-
  DOES NOT WORK
  Getting helm into a separate frame.
 #+BEGIN_SRC emacs-lisp
@@ -690,7 +685,7 @@ Better colors.
 
   Imenu.
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "M-i") 'helm-semantic-or-imenu)
+(global-set-key (kbd "M-i") 'helm-semantic-or-imenu)
 #+END_SRC
 ** Window switching
 
@@ -832,11 +827,11 @@ Repeated invocations toggle between the two most recently open buffers."
 
   Easier management of common Emacs window actions.
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "C-!") 'delete-other-windows)
-(exwm-input-set-key (kbd "C-@") 'split-window-below)
-(exwm-input-set-key (kbd "C-#") 'split-window-right)
-(exwm-input-set-key (kbd "C-`") 'delete-window)
-(exwm-input-set-key (kbd "C-$") 'other-window)
+(global-set-key (kbd "C-!") 'delete-other-windows)
+(global-set-key (kbd "C-@") 'split-window-below)
+(global-set-key (kbd "C-#") 'split-window-right)
+(global-set-key (kbd "C-`") 'delete-window)
+(global-set-key (kbd "C-$") 'other-window)
 #+END_SRC
 
   Dwm like (for a very loose meaning of like) window resizing. Operates on the current focused window.
@@ -896,7 +891,7 @@ Repeated invocations toggle between the two most recently open buffers."
        (start-process-shell-command "CloseTray" nil "pkill trayer")
        (start-process-shell-command "CloseNMApplet" nil "pkill nm-applet"))))
 
-  (exwm-input-set-key (kbd "M-w") 'toggle-network-tools)
+  (global-set-key (kbd "M-w") 'toggle-network-tools)
 #+END_SRC
 * General system management
   Manage init systems.
@@ -912,7 +907,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                   (interactive)
                                   (start-process-shell-command "rlock" nil "rlock")))
 ; for emacs buffers
-(exwm-input-set-key (kbd "<f9>") (lambda ()
+(global-set-key (kbd "<f9>") (lambda ()
                                   (interactive)
                                   (start-process-shell-command "rlock" nil "rlock")))
 ; for X11 windows
@@ -920,7 +915,7 @@ Repeated invocations toggle between the two most recently open buffers."
                                    (interactive)
                                    (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
 ; for emacs buffers
-(exwm-input-set-key (kbd "<f10>") (lambda ()
+(global-set-key (kbd "<f10>") (lambda ()
                                    (interactive)
                                    (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
 #+END_SRC
@@ -943,10 +938,10 @@ Repeated invocations toggle between the two most recently open buffers."
 
   New terminals. Works only from Emacs buffers.
 #+BEGIN_SRC emacs-lisp
-(exwm-input-set-key (kbd "<f5>") (lambda ()
+(global-set-key (kbd "<f5>") (lambda ()
                                   (interactive)
                                   (start-process-shell-command "st" nil "st")))
-(exwm-input-set-key (kbd "<f6>") (lambda ()
+(global-set-key (kbd "<f6>") (lambda ()
                                   (interactive)
                                   (start-process-shell-command "terminator" nil "terminator")))
 #+END_SRC
