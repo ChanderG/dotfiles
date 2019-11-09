@@ -1044,16 +1044,15 @@ javascript:location.href="link-save://<tag name here>,"+location.href
   (exwm-input-set-key (kbd "M-l") 'helm-link-saves)
 #+END_SRC
 * Beauty is in the eye of the beholder
-  Font and size.
-#+BEGIN_SRC emacs-lisp
-(set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-(set-face-attribute 'default nil :height 220)
-#+END_SRC
-
   Disable menu bar and tool bar.
 #+BEGIN_SRC emacs-lisp
 (menu-bar-mode 0)
 (tool-bar-mode 0)
+#+END_SRC
+
+  Disable scroll bar.
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode 0)
 #+END_SRC
 
   Disable fringe.
@@ -1061,7 +1060,27 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 (fringe-mode '(0 . 0))
 #+END_SRC
 
-  Setup color.
+  Setup color. One time load.
 #+BEGIN_SRC emacs-lisp
-(load-theme 'misterioso)
+(defvar cg-color-theme-loaded nil)
+(if (not cg-color-theme-loaded)
+  (progn
+    (setq cg-color-theme-loaded t)
+    (load-theme 'misterioso t nil)))
+#+END_SRC
+
+  Font and size.
+#+BEGIN_SRC emacs-lisp
+(set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+(set-face-attribute 'default nil :height 230)
+#+END_SRC
+
+  If using Leuven theme, get the headlines size into control. DOES NOT WORK
+#+BEGIN_SRC emacs-lisp
+(setq leuven-scale-outline-headlines nil)
+#+END_SRC
+
+  Good background for light color themes.
+#+BEGIN_SRC emacs-lisp
+
 #+END_SRC
