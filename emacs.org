@@ -12,6 +12,14 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 #+END_SRC
+
+  Load EXWM if needed.
+  TODO: Clean up this filename repetition in this entire file.
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
+(require 'exwm)
+(require 'exwm-config)
+(exwm-enable)
+#+END_SRC
 * Packages
   Specifying and installing packages.
   
@@ -26,7 +34,7 @@
 ** Quelpa
    Install "Quelpa" for those corner case packages not on Melpa. For now, stuff on github.
 #+BEGIN_SRC emacs-lisp
-(require 'quelpa)
+  ;; (require 'quelpa)
 #+END_SRC
 ** Install packages
 Right now, manually installed.
@@ -109,8 +117,8 @@ Bring in `use-package` here.
 
    Targets/TextObjectify style seek behaviour for text objects.
 #+BEGIN_SRC emacs-lisp
-(quelpa '(targets :fetcher git :url "https://github.com/noctuid/targets.el"))
-(targets-setup t)
+  ;; (quelpa '(targets :fetcher git :url "https://github.com/noctuid/targets.el"))
+  (targets-setup t)
 #+END_SRC
 
   ReplaceWithRegister port. Works fine.
@@ -451,9 +459,9 @@ Better colors.
 
   Evil objects for latex.
 #+BEGIN_SRC emacs-lisp
-(quelpa '(evil-latex-textobjects :fetcher git :url "https://github.com/hpdeifel/evil-latex-textobjects"))
-(require 'evil-latex-textobjects)
-(add-hook 'LaTeX-mode-hook 'turn-on-evil-latex-textobjects-mode)
+  ;; (quelpa '(evil-latex-textobjects :fetcher git :url "https://github.com/hpdeifel/evil-latex-textobjects"))
+  (require 'evil-latex-textobjects)
+  (add-hook 'LaTeX-mode-hook 'turn-on-evil-latex-textobjects-mode)
 #+END_SRC
 * General Programming helpers
 ** Find/Replace
@@ -611,6 +619,9 @@ Better colors.
   Bindings for M-x for evil and for all other modes (primarily exwm).
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map " " 'helm-M-x)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
   (exwm-input-set-key (kbd "s-SPC") 'helm-M-x)
 #+END_SRC
 
@@ -691,7 +702,7 @@ Better colors.
 
   For switching exwm windows.
   You can only switch within a workspace, so the switcher filters in only windows present in the current workspace.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
   (defun helm-exwm-current-workspace ()
     (interactive)
     (helm-exwm (function
@@ -702,7 +713,7 @@ Better colors.
 #+END_SRC
 
   For jumping to exwm windows irrespective of workspace.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
   (exwm-input-set-key (kbd "M-y") (lambda ()
                     (interactive)
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
@@ -730,21 +741,15 @@ Better colors.
 #+END_SRC
 
 * EXWM: the next step to a Lisp Machine
-** Bootup
-#+BEGIN_SRC emacs-lisp
-(require 'exwm)
-(require 'exwm-config)
-(exwm-enable)
-#+END_SRC
 ** Switching workspaces                                            :SOURCEME:
 
    The default option (for backup).
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
 #+END_SRC
 
    Switch to workspace by num. (Corrected for permenantly toggled number row.)
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (defun set-exwm-workspace-switch-hotkey (key win-num)
   (exwm-input-set-key (kbd (format "s-%s" key))
 		       `(lambda ()
@@ -764,7 +769,7 @@ Better colors.
 #+END_SRC
 
    Alt-Tab behaviour.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (defvar exwm-workspace-previous-index nil "The previous active workspace index.")
 
 (defun update-last-workspace (_x)
@@ -783,7 +788,7 @@ Better colors.
 
 ** Launching Applications
    Launch generic system application async.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 ; Launch application
 (exwm-input-set-key (kbd "s-p")
 		    (lambda (command)
@@ -792,14 +797,14 @@ Better colors.
 #+END_SRC  
 
    For one-off shell commands.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (exwm-input-set-key (kbd "s-P") 'shell-command)
 #+END_SRC 
 
 ** Visual cues                                                     :SOURCEME:
    
    Display dwm like bar in mini-buffer.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 ; function to generate contents of bar
 (defun exwm-workspace-listing-minibuffer (_x)
   (message (mapconcat (lambda (x)
@@ -814,7 +819,7 @@ Better colors.
 ** Dynamic Window Management
    
    Switch to last buffer in window. Maybe can be replaced with `evil-buffer`?
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (defun switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
@@ -835,7 +840,7 @@ Repeated invocations toggle between the two most recently open buffers."
 #+END_SRC
 
   Dwm like (for a very loose meaning of like) window resizing. Operates on the current focused window.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (exwm-input-set-key (kbd "s-k") 'enlarge-window)
 (exwm-input-set-key (kbd "s-j") 'shrink-window)
 (exwm-input-set-key (kbd "s-l") 'enlarge-window-horizontally)
@@ -844,14 +849,14 @@ Repeated invocations toggle between the two most recently open buffers."
 ** Assorted QoL changes
    
    Reload .emacs.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (exwm-input-set-key (kbd "s-R") `(lambda ()
 				  (interactive)
 				  (load-file "~/.emacs")))
 #+END_SRC
 
    Better names for windows.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (add-hook 'exwm-update-title-hook
 	  (lambda ()
 	    (exwm-workspace-rename-buffer exwm-title)))
@@ -863,7 +868,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
     So, we use our Lisp machine instead.
     TODO: need to figure out a system for single key shortcuts.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (add-hook 'exwm-manage-finish-hook
           (lambda ()
             (when (and exwm-class-name
@@ -900,21 +905,21 @@ Repeated invocations toggle between the two most recently open buffers."
   :ensure daemons)
 #+END_SRC
 
-  Lock/Suspend system.
-#+BEGIN_SRC emacs-lisp
-; for X11 windows
+  Lock/Suspend system. For Emacs buffers and for EXWM windows.
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (define-key exwm-mode-map (kbd "<f9>") (lambda ()
                                   (interactive)
                                   (start-process-shell-command "rlock" nil "rlock")))
-; for emacs buffers
-(global-set-key (kbd "<f9>") (lambda ()
-                                  (interactive)
-                                  (start-process-shell-command "rlock" nil "rlock")))
-; for X11 windows
+
 (define-key exwm-mode-map (kbd "<f10>") (lambda ()
                                    (interactive)
                                    (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
-; for emacs buffers
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f9>") (lambda ()
+                                  (interactive)
+                                  (start-process-shell-command "rlock" nil "rlock")))
+
 (global-set-key (kbd "<f10>") (lambda ()
                                    (interactive)
                                    (start-process-shell-command "sleeplock" nil "sudo pm-suspend; slock")))
@@ -925,7 +930,7 @@ Repeated invocations toggle between the two most recently open buffers."
   TODO Maintain a map of shells to projects and somehow bring up the right shell for each project. 
   This causes problems with multiple shells per project. So, each project needs a single primary shell and other
   named shells perhaps...
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (exwm-input-set-key (kbd "M-`") 'shell)
 (exwm-input-set-key (kbd "M-!") (lambda ()
                                   (interactive)
@@ -1019,7 +1024,7 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 
    Helm setup to pull up links.
    TODO: error flow is a bit lacking currently.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
   ; one time setup source for tag specific files
   (defun helm-link-saves-meta-init ()
     (with-current-buffer (helm-candidate-buffer 'global)
@@ -1056,7 +1061,7 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 #+END_SRC
 
   Setup color. One time load.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
 (defvar cg-color-theme-loaded nil)
 (if (not cg-color-theme-loaded)
   (progn
@@ -1078,4 +1083,9 @@ javascript:location.href="link-save://<tag name here>,"+location.href
   Good background for light color themes.
 #+BEGIN_SRC emacs-lisp
 
+#+END_SRC
+* Configure
+    Enable/Disable EXWM. Edit this as needed.
+#+BEGIN_SRC emacs-lisp
+(load "~/.emacs.d/exwm.el")
 #+END_SRC
