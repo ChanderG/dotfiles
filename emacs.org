@@ -326,11 +326,14 @@ Bring in `use-package` here.
 #+END_SRC
 
   Auto update clock tables and dynamic blocks on save.
+  ONLY for org buffers. This was causing a *lot* of problems when I had set them to global hooks.
 #+BEGIN_SRC emacs-lisp
-(add-hook 'before-save-hook 'org-update-all-dblocks)
-(add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
-(add-hook 'auto-save-hook 'org-update-all-dblocks)
-(add-hook 'auto-save-hook 'org-table-recalculate-buffer-tables)
+(add-hook 'org-mode-hook
+  (lambda ()
+        (add-hook 'before-save-hook 'org-update-all-dblocks)
+        (add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
+        (add-hook 'auto-save-hook 'org-update-all-dblocks)
+        (add-hook 'auto-save-hook 'org-table-recalculate-buffer-tables)))
 #+END_SRC
 
   Zoom in and out of headings.
@@ -472,6 +475,20 @@ Better colors.
     (goto-char (point-min))
     (while (search-forward from nil t)
       (replace-match to))))
+#+END_SRC
+* Elisp functions/snippets to smoothen workflows
+  Custom function to delete all buffers.
+#+BEGIN_SRC emacs-lisp
+(defun cg/kill-all-buffers ()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+#+END_SRC
+
+  Display current buffer name.
+#+BEGIN_SRC emacs-lisp
+(defun cg/display-file-name ()
+  (interactive)
+  (message (buffer-file-name)))
 #+END_SRC
 * Programming language/platform specifics
 ** Golang
@@ -983,6 +1000,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (turn-on-eval-sexp-fu-flash-mode)
 (define-key global-map (kbd "C-x C-e") 'eval-sexp-fu-eval-sexp-inner-list)
 #+END_SRC
+
 * Custom Workflows
 ** Project specific link/bookmark management
    The idea is to "capture" links by project when browsing using a bookmarklet.
