@@ -87,6 +87,19 @@ Bring in `use-package` here.
   (evil-search-word-forward count t))
 (define-key evil-motion-state-map "*" 'evil-search-symbol-forward)
 #+END_SRC
+
+  Don't prompt for jumping to files using gf.
+#+BEGIN_SRC emacs-lisp
+  (defun ffap-noprompt ()
+    "Repackaged ffap that guesses the file under string and jumps to it if possible. Does nothing if nothing useful is found. Does not prompt the user in any case."
+    (interactive)
+    (let ((file-guess (ffap-guess-file-name-at-point)))
+      (if (equal "~/" file-guess)
+        (message "No file found under cursor.")
+        (find-file file-guess))))
+
+  (define-key evil-normal-state-map "gf" 'ffap-noprompt)
+#+END_SRC
 ** For general editing
   Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
@@ -206,6 +219,12 @@ Bring in `use-package` here.
 (add-hook 'org-mode-hook 'evil-org-mode)
 (evil-org-set-key-theme '(navigation insert textobjects additional calendar))
 #+END_SRC
+** Emacs pecularities
+   Use `q` for closing buffers instead of frames. Setup `Q` to close frames.
+ #+BEGIN_SRC emacs-lisp
+(evil-ex-define-cmd "q" 'kill-this-buffer)
+(evil-ex-define-cmd "Q" 'evil-quit)
+ #+END_SRC
 * Emacs rocks
   Assorted emacs packages and configurations too small to go as separate configurations.
 ** Magit
@@ -866,10 +885,14 @@ Repeated invocations toggle between the two most recently open buffers."
 ** Assorted QoL changes
    
    Reload .emacs.
+#+BEGIN_SRC emacs-lisp
+(defun cg/reinit ()
+  (interactive)
+  (load-file "~/.emacs"))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
-(exwm-input-set-key (kbd "s-R") `(lambda ()
-				  (interactive)
-				  (load-file "~/.emacs")))
+(exwm-input-set-key (kbd "s-R") 'cg/reinit)
 #+END_SRC
 
    Better names for windows.
