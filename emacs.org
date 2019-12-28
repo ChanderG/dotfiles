@@ -645,6 +645,32 @@ Better colors.
 
 (add-hook 'java-mode-hook #'java-mode-addons)
 #+END_SRC
+** Anisble
+   Define a `task` text object.
+#+BEGIN_SRC emacs-lisp
+  (evil-define-text-object evil-i-ansible-task (count &optional beg end type)
+     (evil-range (save-excursion
+                     (search-backward "- name:")
+                     (point))
+                 (save-excursion
+                     ; TODO: does not work with nested tasks like blocks
+                     (search-forward "- name:" nil 'move)
+                     (forward-line -1)
+                     (while (looking-at "[[:space:]]*$")
+                       (forward-line -1))
+                     (end-of-line)
+                     (point))
+                 ; force line-wise mode
+                 'line))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun ansible-mode ()
+    (interactive)
+    ; task text object
+    (define-key evil-inner-text-objects-map "t" 'evil-i-ansible-task)
+    (define-key evil-outer-text-objects-map "t" 'evil-i-ansible-task))
+#+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
@@ -754,6 +780,11 @@ Better colors.
                     (interactive)
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
 #+END_SRC
+** File Opening
+   Shortcut for `find-file`.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd ";f") 'find-file)
+#+END_SRC
 * Say NO to RSI
   General key bindings.
 
@@ -761,12 +792,6 @@ Better colors.
 #+BEGIN_SRC emacs-lisp
 (setq x-meta-keysym 'super)
 (setq x-super-keysym 'meta)
-#+END_SRC
-
-  Set ';' to `evil-ex`.
-#+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
-  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
 #+END_SRC
 
   Add "emacs-lisp" code block template.
