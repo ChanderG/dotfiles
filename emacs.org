@@ -664,12 +664,24 @@ Better colors.
                  'line))
 #+END_SRC
 
+  Imenu based on task names.
+#+BEGIN_SRC emacs-lisp
+(defun setup-ansible-task-imenu ()
+  ; match "- name: ..." lines
+  (setq imenu-generic-expression '(("tasks" "^[[:space:]]*-[[:space:]]name:[[:space:]]\\(.*\\)$" 1))))
+#+END_SRC
+
+  Manually setup ansible mode.
 #+BEGIN_SRC emacs-lisp
   (defun ansible-mode ()
     (interactive)
+    ; base yaml mode
+    (yaml-mode)
     ; task text object
     (define-key evil-inner-text-objects-map "t" 'evil-i-ansible-task)
-    (define-key evil-outer-text-objects-map "t" 'evil-i-ansible-task))
+    (define-key evil-outer-text-objects-map "t" 'evil-i-ansible-task)
+    ; enable task imenu
+    (setup-ansible-task-imenu))
 #+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
@@ -730,10 +742,10 @@ Better colors.
   (define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
 #+END_SRC
 
- Using `helm-ls-git` to get open buffers in current git project.
+ Using `helm-ls-git` to get open buffers in current git project. Haven't found myself using this at all.
 #+BEGIN_SRC emacs-lisp
   (setq helm-ls-git-default-sources '(helm-source-ls-git-buffers))
-  (define-key evil-normal-state-map (kbd "C-e") 'helm-ls-git-ls)
+  ;(define-key evil-normal-state-map (kbd "C-e") 'helm-ls-git-ls)
 #+END_SRC
 
  Bespoke helm command for accessing any file in git project.
@@ -756,9 +768,16 @@ Better colors.
 
 ** In Buffer switching
 
-  Imenu.
+  Imenu. Search in current buffer.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "M-i") 'helm-semantic-or-imenu)
+#+END_SRC
+
+  Imenu anywhere. Install `imenu-anywhere`.
+#+BEGIN_SRC emacs-lisp
+(use-package imenu-anywhere
+  :ensure t)
+(define-key evil-normal-state-map (kbd "C-e") 'helm-imenu-anywhere)
 #+END_SRC
 ** Window switching
 
