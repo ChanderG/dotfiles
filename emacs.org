@@ -650,6 +650,8 @@ Better colors.
 #+BEGIN_SRC emacs-lisp
   (evil-define-text-object evil-i-ansible-task (count &optional beg end type)
      (evil-range (save-excursion
+                     ; TODO: fails if we are on the match word itself
+                     ; possible fix, go to the end of the current line and search backwards
                      (search-backward "- name:")
                      (point))
                  (save-excursion
@@ -671,17 +673,58 @@ Better colors.
   (setq imenu-generic-expression '(("tasks" "^[[:space:]]*-[[:space:]]name:[[:space:]]\\(.*\\)$" 1))))
 #+END_SRC
 
-  Manually setup ansible mode.
+  Special action to add/remove the tag "curr" to the selected task. Used for easy testing of tasks.
+  Currently this assumes a single task object, that is, it only works with the "t" object defined above.
 #+BEGIN_SRC emacs-lisp
-  (defun ansible-mode ()
-    (interactive)
-    ; base yaml mode
-    (yaml-mode)
-    ; task text object
-    (define-key evil-inner-text-objects-map "t" 'evil-i-ansible-task)
-    (define-key evil-outer-text-objects-map "t" 'evil-i-ansible-task)
-    ; enable task imenu
-    (setup-ansible-task-imenu))
+  ; for string manipulation
+  (require 's)
+
+  (evil-define-operator evil-ansible-tagging (beg end type)
+    (interactive "<R>")
+    (save-excursion
+      ; check if tag occurs inside the section
+      (if (not (save-excursion (search-forward "tags:" end t)))
+         ; no tags entry found, add one with "curr"
+         (progn
+            (end-of-line)
+            (open-line 1)
+            (forward-line)
+            (insert "tags: [curr]")
+            (indent-according-to-mode))
+         ; a tags entry was found, check if it's a single [curr]
+         (if (search-forward "tags: [curr]" end t)
+            ; a single curr tag, implying we have added it, now remove it
+            ; TODO: this impacts the kill ring, need a better method
+            (kill-whole-line)
+            ; else, a tags entry already exists with other tags
+            (progn
+               ; get to the tags line and extract the string inside []
+               (re-search-forward "tags: \\[\\(.*\\)\\]" end)
+               (let* ((taglist (s-split ", " (match-string-no-properties 1)))) ; convert to a list of strings
+                  ; if curr is in taglist
+                  (if (member "curr" taglist)
+                    ; remove it
+                    (delete "curr" taglist)
+                    ; or add it - to the end
+                    (add-to-list 'taglist "curr" t))
+                  ; join them back and replace into the substring
+                  (replace-match (s-join ", " taglist) nil nil nil 1)))))))
+#+END_SRC
+
+Manually setup ansible mode.
+#+BEGIN_SRC emacs-lisp
+    (defun ansible-mode ()
+      (interactive)
+      ; base yaml mode
+      (yaml-mode)
+      ; task text object
+      (define-key evil-inner-text-objects-map "t" 'evil-i-ansible-task)
+      (define-key evil-outer-text-objects-map "t" 'evil-i-ansible-task)
+      ; enable task imenu
+      (setup-ansible-task-imenu)
+      ; easily toggle "curr" tag
+      (evil-define-key 'operator global-map "gt" 'evil-ansible-tagging)
+  )
 #+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
