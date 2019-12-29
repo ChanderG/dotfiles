@@ -650,8 +650,7 @@ Better colors.
 #+BEGIN_SRC emacs-lisp
   (evil-define-text-object evil-i-ansible-task (count &optional beg end type)
      (evil-range (save-excursion
-                     ; TODO: fails if we are on the match word itself
-                     ; possible fix, go to the end of the current line and search backwards
+                     (end-of-line)
                      (search-backward "- name:")
                      (point))
                  (save-excursion
