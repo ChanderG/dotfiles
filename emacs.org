@@ -710,6 +710,15 @@ Better colors.
                   (replace-match (s-join ", " taglist) nil nil nil 1)))))))
 #+END_SRC
 
+  Special operator to get task name.
+#+BEGIN_SRC emacs-lisp
+  (evil-define-operator evil-ansible-get-task-name (beg end type)
+    (interactive "<R>")
+    (save-excursion
+       (re-search-forward "name: \\(.*\\)$" end)
+       (kill-new (match-string-no-properties 1))))
+#+END_SRC
+
 Manually setup ansible mode.
 #+BEGIN_SRC emacs-lisp
     (defun ansible-mode ()
@@ -723,6 +732,9 @@ Manually setup ansible mode.
       (setup-ansible-task-imenu)
       ; easily toggle "curr" tag
       (evil-define-key 'operator global-map "gt" 'evil-ansible-tagging)
+      (define-key evil-normal-state-map "gt" 'evil-ansible-tagging)
+      (evil-define-key 'operator global-map "gn" 'evil-ansible-get-task-name)
+      (define-key evil-normal-state-map "gn" 'evil-ansible-get-task-name)
   )
 #+END_SRC
 * Iron Helm of Dexterity [4, +5] (+3)
