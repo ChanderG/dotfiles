@@ -227,6 +227,50 @@ Bring in `use-package` here.
  #+END_SRC
 * Emacs rocks
   Assorted emacs packages and configurations too small to go as separate configurations.
+** Company
+   The issue here is that the evil completion functions don't have pop-ups. Company is it's own thing, does not
+   come with Vim like completion out of the box. This is an attempt to unify the two approaches into a more
+   Vim like experience.
+
+   Cycle through options like in Vim.
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "C-n") (lambda () (interactive) (company-complete-common-or-cycle 1)))
+  (define-key company-active-map (kbd "C-p") (lambda () (interactive) (company-complete-common-or-cycle -1))))
+#+END_SRC
+
+   Company backend to complete whole lines from the current buffer.
+#+BEGIN_SRC emacs-lisp
+  (require 'cl-lib)
+  (require 'company)
+  (require 's)
+
+  (defun company-whole-lines (command &optional arg &rest ignored)
+    "Complete whole lines from current buffer."
+    (interactive (list 'interactive))
+
+    (cl-case command
+      (interactive (company-begin-backend 'company-whole-lines))
+      (prefix (buffer-substring-no-properties (line-beginning-position) (point)))
+      (candidates
+        (cl-remove-if-not
+          (lambda (c) (s-starts-with? arg c))
+          (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")))))
+#+END_SRC
+
+   Setting up the backends to specific keys.
+#+BEGIN_SRC emacs-lisp
+(company-mode +1)
+; proper Vim like file completion
+(define-key evil-insert-state-map (kbd "C-x C-f") 'company-files)
+; whole line completion
+(define-key evil-insert-state-map (kbd "C-x C-l") 'company-whole-lines)
+; C-n and C-p now do the same thing: words from all buffers based on dabbrev
+; this is not exactly like in Vim, but it's a start
+(define-key evil-insert-state-map (kbd "C-n") 'company-dabbrev)
+(define-key evil-insert-state-map (kbd "C-p") 'company-dabbrev)
+#+END_SRC
+
 ** Magit
   Set default state for magit commit mode to normal.
 #+BEGIN_SRC emacs-lisp
