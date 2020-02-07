@@ -267,8 +267,8 @@ Bring in `use-package` here.
 (define-key evil-insert-state-map (kbd "C-x C-l") 'company-whole-lines)
 ; C-n and C-p now do the same thing: words from all buffers based on dabbrev
 ; this is not exactly like in Vim, but it's a start
-(define-key evil-insert-state-map (kbd "C-n") 'company-dabbrev)
-(define-key evil-insert-state-map (kbd "C-p") 'company-dabbrev)
+(define-key evil-insert-state-map (kbd "C-n") 'company-dabbrev-code)
+(define-key evil-insert-state-map (kbd "C-p") 'company-dabbrev-code)
 #+END_SRC
 
 ** Magit
