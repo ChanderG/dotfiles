@@ -1226,6 +1226,38 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 
   (exwm-input-set-key (kbd "M-l") 'helm-link-saves)
 #+END_SRC
+** Single Org file Blog generator
+
+#+BEGIN_SRC emacs-lisp
+(defvar cg/blog-output-folder "~/Sites/main/blog")
+
+(defmacro cg/blog-get-heading-text ()
+  '(org-no-properties (org-get-heading t t t t)))
+
+(defun cg/blog-process-entry (dir)
+  "Deal with the blog posts."
+  (if (eq 3 (nth 0 (org-heading-components)))
+    (let ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html")))
+      (rename-file (org-html-export-to-html nil t) output t))))
+
+(defun cg/blog-delve-secondlevel (dir)
+  "Recurse into second level headings creating folders."
+  (if (eq 2 (nth 0 (org-heading-components)))
+    (let ((subfolder (concat dir "/" (cg/blog-get-heading-text))))
+      (mkdir subfolder t)
+      (org-map-tree (lambda () (cg/blog-process-entry subfolder))))))
+
+(defun cg/blog-delve-toplevel ()
+  "Recurse into top level headings, creating top level folder."
+  (if (eq 1 (nth 0 (org-heading-components)))
+    (let ((topfolder (concat cg/blog-output-folder "/" (cg/blog-get-heading-text))))
+      (mkdir topfolder t)
+      (org-map-tree (lambda () (cg/blog-delve-secondlevel topfolder))))))
+
+(defun cg/blog-export ()
+  "Export 3rd level subtrees into individual files and the ones above as folders."
+  (org-map-entries 'cg/blog-delve-toplevel t 'file))
+#+END_SRC
 * Beauty is in the eye of the beholder
   Disable menu bar and tool bar.
 #+BEGIN_SRC emacs-lisp
