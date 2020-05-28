@@ -1269,9 +1269,9 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 (defun cg/blog-generate-tag-listing ()
   "Create a html page for each tag, with links to posts under the tag."
   (mkdir (concat cg/blog-output-folder "/tags") t)
+  (setq post-tag-mapping (remove nil (org-map-entries 'cg/blog-extract-posts-with-tags t 'file)))
   ; obtain the heading to tags mapping
   (let ((basedir (concat cg/blog-output-folder "/tags"))
-        (post-tag-mapping (remove nil (org-map-entries 'cg/blog-extract-posts-with-tags t 'file)))
         (all-tags (-flatten (org-get-buffer-tags))))
      (mkdir basedir t)
      ;; build up main index
@@ -1302,16 +1302,38 @@ javascript:location.href="link-save://<tag name here>,"+location.href
          ))
 ))
 
+(defun cg/blog-generate-entry-page ()
+  "Create an entry page."
+  (let ((all-tags (-flatten (org-get-buffer-tags)))
+        (recent-posts (reverse (nthcdr (- (length post-tag-mapping) 10) post-tag-mapping)))
+       )
+    (with-temp-file (concat cg/blog-output-folder "/index.html")
+        (insert "<h1>Blog</h1>")
+
+        (insert "View by Tag: ")
+        (dolist (tag (push "all" all-tags))
+            (insert (concat "<a href=tags/" tag ".html> " tag "</a>")))
+        (insert "<hr/>")
+
+        (insert "<h2>Recent Posts:</h2>")
+        (mapc (lambda (x)
+                 (let* ((title (nth 0 x))
+                       (path (nth 1 (assoc title name-to-path))))
+                   (insert (concat "<li>" "<a href=.." path ">" title "</a></li>")))) recent-posts)
+    )
+  ))
+
 (defun cg/blog-export ()
   "Generate blog from an orgmode file. Top 2 level headings are assumed to be Year/Month."
   ; alist from post title to filepath
   (setq name-to-path '())
+  (setq post-tag-mapping '())
   ;Export 3rd level subtrees into individual files and the ones above as folders.
   (org-map-entries 'cg/blog-delve-toplevel t 'file)
   ; generate tag -> post indexes
   (cg/blog-generate-tag-listing)
-  ;TODO: generate main page -> containing recent posts and pointers to the tag pages
-  )
+  ; generate main page -> containing recent posts and pointers to the tag pages
+  (cg/blog-generate-entry-page))
 
 #+END_SRC
 * Beauty is in the eye of the beholder
