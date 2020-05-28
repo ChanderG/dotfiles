@@ -1238,7 +1238,9 @@ javascript:location.href="link-save://<tag name here>,"+location.href
   "Deal with the blog posts."
   (if (eq 3 (nth 0 (org-heading-components)))
     (let ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html")))
-      (rename-file (org-html-export-to-html nil t) output t))))
+      (rename-file (org-html-export-to-html nil t) output t)
+      ; also add to mapping of posts to paths
+      (push `(,(cg/blog-get-heading-text) ,(s-chop-prefix cg/blog-output-folder output)) name-to-path))))
 
 (defun cg/blog-delve-toplevel ()
   "Deal with years."
@@ -1248,16 +1250,69 @@ javascript:location.href="link-save://<tag name here>,"+location.href
   "Deal with months."
   (cg/blog-delve 2 dir cg/blog-process-entry))
 
-(defmacro* cg/blog-delve (level dir func)
+(defmacro cg/blog-delve (level dir func)
   "At some level of the heading tree, create folder and delve - running func at each immediate subheading."
   `(if (eq ,level (nth 0 (org-heading-components)))
     (let ((nextdir (concat ,dir "/" (cg/blog-get-heading-text))))
       (mkdir nextdir t)
       (org-map-tree (lambda () (,func nextdir))))))
 
+(defun cg/blog-extract-posts-with-tags ()
+  "Used in cg/blog-generate-tag-listing to convert relevent headings to information needed for tag mgmt."
+  (let* ((comps (org-heading-components))
+          (lvl (nth 0 comps))
+          (hdline (nth 4 comps))
+          (tags (nth 5 comps)))
+      (if (eq 3 lvl)
+        `(,hdline ,tags))))
+
+(defun cg/blog-generate-tag-listing ()
+  "Create a html page for each tag, with links to posts under the tag."
+  (mkdir (concat cg/blog-output-folder "/tags") t)
+  ; obtain the heading to tags mapping
+  (let ((basedir (concat cg/blog-output-folder "/tags"))
+        (post-tag-mapping (remove nil (org-map-entries 'cg/blog-extract-posts-with-tags t 'file)))
+        (all-tags (-flatten (org-get-buffer-tags))))
+     (mkdir basedir t)
+     ;; build up main index
+     (with-temp-file (concat basedir "/all.html")
+         (insert (concat "<h1>All posts</h1>"))
+         (insert "<ul>")
+         (mapc (lambda (x)
+                 (let* ((title (nth 0 x))
+                       (path (nth 1 (assoc title name-to-path))))
+                   (insert (concat "<li>" "<a href=.." path ">" title "</a></li>")))) post-tag-mapping)
+         (insert "</ul>")
+     )
+     (dolist (tag all-tags)
+       ; process each tag sequentially
+       (with-temp-file (concat basedir "/" tag ".html")
+         (insert (concat "<h1>Posts tagged: " tag "</h1>"))
+         (insert "<ul>")
+         (mapc (lambda (x)
+                  (let* ((title (nth 0 x))
+                         (tags (nth 1 x))
+                         (taglist (s-split ":" tags)))
+                     (if (member tag taglist)
+                        (insert (concat "<li>"
+                                        "<a href=.."
+                                        (nth 1 (assoc title name-to-path))
+                                        ">" title "</a></li>"))))) post-tag-mapping)
+         (insert "</ul>")
+         ))
+))
+
 (defun cg/blog-export ()
-  "Export 3rd level subtrees into individual files and the ones above as folders."
-  (org-map-entries 'cg/blog-delve-toplevel t 'file))
+  "Generate blog from an orgmode file. Top 2 level headings are assumed to be Year/Month."
+  ; alist from post title to filepath
+  (setq name-to-path '())
+  ;Export 3rd level subtrees into individual files and the ones above as folders.
+  (org-map-entries 'cg/blog-delve-toplevel t 'file)
+  ; generate tag -> post indexes
+  (cg/blog-generate-tag-listing)
+  ;TODO: generate main page -> containing recent posts and pointers to the tag pages
+  )
+
 #+END_SRC
 * Beauty is in the eye of the beholder
   Disable menu bar and tool bar.
