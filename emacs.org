@@ -1240,19 +1240,20 @@ javascript:location.href="link-save://<tag name here>,"+location.href
     (let ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html")))
       (rename-file (org-html-export-to-html nil t) output t))))
 
-(defun cg/blog-delve-secondlevel (dir)
-  "Recurse into second level headings creating folders."
-  (if (eq 2 (nth 0 (org-heading-components)))
-    (let ((subfolder (concat dir "/" (cg/blog-get-heading-text))))
-      (mkdir subfolder t)
-      (org-map-tree (lambda () (cg/blog-process-entry subfolder))))))
-
 (defun cg/blog-delve-toplevel ()
-  "Recurse into top level headings, creating top level folder."
-  (if (eq 1 (nth 0 (org-heading-components)))
-    (let ((topfolder (concat cg/blog-output-folder "/" (cg/blog-get-heading-text))))
-      (mkdir topfolder t)
-      (org-map-tree (lambda () (cg/blog-delve-secondlevel topfolder))))))
+  "Deal with years."
+  (cg/blog-delve 1 cg/blog-output-folder cg/blog-delve-secondlevel))
+
+(defun cg/blog-delve-secondlevel (dir)
+  "Deal with months."
+  (cg/blog-delve 2 dir cg/blog-process-entry))
+
+(defmacro* cg/blog-delve (level dir func)
+  "At some level of the heading tree, create folder and delve - running func at each immediate subheading."
+  `(if (eq ,level (nth 0 (org-heading-components)))
+    (let ((nextdir (concat ,dir "/" (cg/blog-get-heading-text))))
+      (mkdir nextdir t)
+      (org-map-tree (lambda () (,func nextdir))))))
 
 (defun cg/blog-export ()
   "Export 3rd level subtrees into individual files and the ones above as folders."
