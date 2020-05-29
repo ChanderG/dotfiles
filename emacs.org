@@ -1237,10 +1237,27 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 (defun cg/blog-process-entry (dir)
   "Deal with the blog posts."
   (if (eq 3 (nth 0 (org-heading-components)))
-    (let ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html")))
+    (let* ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html"))
+           (date (org-entry-get (point) "SCHEDULED"))
+           (tags (org-get-tags))
+           (preamble (concat
+                        "<span><a href=\"../../\">Top</a></span>"
+                        "<span style=\"float:right;\"><a href=\"../../../\">Home</a></span>"
+                        "<hr/>"
+                        "<span class=\"org-src-container\">" date "</span>"
+                        "<span style=\"float:right;\" class=\"tag\">"
+                        (mapconcat (lambda (tag)
+                                     (concat "<a href=\"../../tags/" tag ".html\">"
+                                             "<span class=\"" tag "\">" tag "</span></a>"))
+                           tags "")
+                        "</span>"
+                        )))
+      ; add preamble with date, tags etc
+      (setq org-html-preamble-format `(("en" ,preamble)))
+      ; export and save file in the right place
       (rename-file (org-html-export-to-html nil t) output t)
       ; also add to mapping of posts to paths
-      (push `(,(cg/blog-get-heading-text) ,(s-chop-prefix cg/blog-output-folder output)) name-to-path))))
+      (push `(,(cg/blog-get-heading-text) ,(s-chop-prefix cg/blog-output-folder output) ,date) name-to-path))))
 
 (defun cg/blog-delve-toplevel ()
   "Deal with years."
@@ -1280,8 +1297,10 @@ javascript:location.href="link-save://<tag name here>,"+location.href
          (insert "<ul>")
          (mapc (lambda (x)
                  (let* ((title (nth 0 x))
-                       (path (nth 1 (assoc title name-to-path))))
-                   (insert (concat "<li>" "<a href=.." path ">" title "</a></li>")))) post-tag-mapping)
+                        (metadata (assoc title name-to-path))
+                        (path (nth 1 metadata))
+                        (date (nth 2 metadata)))
+                   (insert (concat "<li>" date "<a href=.." path ">" title "</a></li>")))) post-tag-mapping)
          (insert "</ul>")
      )
      (dolist (tag all-tags)
@@ -1294,10 +1313,14 @@ javascript:location.href="link-save://<tag name here>,"+location.href
                          (tags (nth 1 x))
                          (taglist (s-split ":" tags)))
                      (if (member tag taglist)
-                        (insert (concat "<li>"
-                                        "<a href=.."
-                                        (nth 1 (assoc title name-to-path))
-                                        ">" title "</a></li>"))))) post-tag-mapping)
+                        (let* ((metadata (assoc title name-to-path))
+                               (path (nth 1 metadata))
+                               (date (nth 2 metadata)))
+                            (insert (concat "<li>"
+                                            date
+                                            "<a href=.."
+                                            path
+                                            ">" title "</a></li>")))))) post-tag-mapping)
          (insert "</ul>")
          ))
 ))
@@ -1318,8 +1341,10 @@ javascript:location.href="link-save://<tag name here>,"+location.href
         (insert "<h2>Recent Posts:</h2>")
         (mapc (lambda (x)
                  (let* ((title (nth 0 x))
-                       (path (nth 1 (assoc title name-to-path))))
-                   (insert (concat "<li>" "<a href=.." path ">" title "</a></li>")))) recent-posts)
+                        (metadata (assoc title name-to-path))
+                        (path (nth 1 metadata))
+                        (date (nth 2 metadata)))
+                   (insert (concat "<li>" date "<a href=.." path ">" title "</a></li>")))) recent-posts)
     )
   ))
 
