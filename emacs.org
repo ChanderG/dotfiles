@@ -1344,7 +1344,7 @@ javascript:location.href="link-save://<tag name here>,"+location.href
                         (metadata (assoc title name-to-path))
                         (path (nth 1 metadata))
                         (date (nth 2 metadata)))
-                   (insert (concat "<li>" date "<a href=.." path ">" title "</a></li>")))) recent-posts)
+                   (insert (concat "<li>" date "<a href=." path ">" title "</a></li>")))) recent-posts)
     )
   ))
 
