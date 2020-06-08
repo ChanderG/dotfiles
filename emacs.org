@@ -1234,9 +1234,15 @@ javascript:location.href="link-save://<tag name here>,"+location.href
 (defmacro cg/blog-get-heading-text ()
   '(org-no-properties (org-get-heading t t t t)))
 
+(defmacro cg/blog-heading-publishable-p ()
+  '(let* ((heading-components (org-heading-components))
+          (lvl (nth 0 heading-components))
+          (todo (nth 2 heading-components)))
+     (and (eq lvl 3) (eq todo nil))))
+
 (defun cg/blog-process-entry (dir)
   "Deal with the blog posts."
-  (if (eq 3 (nth 0 (org-heading-components)))
+  (if (cg/blog-heading-publishable-p)
     (let* ((output (concat dir "/" (replace-regexp-in-string " " "-" (cg/blog-get-heading-text)) ".html"))
            (date (org-entry-get (point) "SCHEDULED"))
            (tags (org-get-tags))
@@ -1278,9 +1284,10 @@ javascript:location.href="link-save://<tag name here>,"+location.href
   "Used in cg/blog-generate-tag-listing to convert relevent headings to information needed for tag mgmt."
   (let* ((comps (org-heading-components))
           (lvl (nth 0 comps))
+          (todo (nth 2 comps))
           (hdline (nth 4 comps))
           (tags (nth 5 comps)))
-      (if (eq 3 lvl)
+      (if (and (eq 3 lvl) (eq nil todo))
         `(,hdline ,tags))))
 
 (defun cg/blog-generate-tag-listing ()
