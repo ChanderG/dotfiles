@@ -492,6 +492,30 @@ Better colors.
 (setq org-agenda-custom-commands
   '(("x" todo-tree "TODO")))
 #+END_SRC
+** Tables
+   When exporting data, mutli-row cells are a bit unwieldly. Best option is to create new rows, making it look like a pseudo cell.
+   You will then need to insert row separators.
+
+   After all this, the html export will look ugly, due to spacing issues. Use the below css to clean it up:
+#+BEGIN_SRC css
+td {
+  padding: 0px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+tbody::before{
+  content: '';
+  display: block;
+  height: 5px;
+}
+
+tbody::after{
+  content: '';
+  display: block;
+  height: 5px;
+}
+#+END_SRC
 * LaTeX setup
 
   Path setup for TeXLive binaries.
