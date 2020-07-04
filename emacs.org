@@ -1156,6 +1156,30 @@ Repeated invocations toggle between the two most recently open buffers."
                                   (interactive)
                                   (start-process-shell-command "terminator" nil "terminator")))
 #+END_SRC
+** Better Shell
+   How do we best use shells inside Emacs?
+   What are the options and the problems with them?
+
+   1. ~shell~
+      1. Tab autocomplete does not work.
+   2. ~ansi-term~ with bash
+      1. Throws an error everytime it sees Bash color codes.
+   3. ~term~ with bash
+      1. Same as 2.1
+   4. ~eshell~
+      1. "C-l" for clear does not work.
+      2. Looks like "~/.bashrc" is not evaled, custom aliases and shortcuts not available.
+      3. History comes from some strange place, not the bash history.
+      4. File tab completion is a bit strange due to completion hint popping in a separate split. However, the key focus is still in the prompt line, so that's good.
+      5. Interrupting requires a double `C-c` now, instead of a single one.
+      6. ~source~ seems to expect elisp files to source, not bash scripts. (*Maybe be unsolvable*: https://superuser.com/questions/273273/how-to-source-a-bash-script-in-emacs-eshell)
+
+Trying out vterm.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/emacs-libvterm")
+(require 'vterm)
+#+END_SRC
+
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
