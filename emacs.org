@@ -497,7 +497,7 @@ Better colors.
    You will then need to insert row separators.
 
    After all this, the html export will look ugly, due to spacing issues. Use the below css to clean it up:
-#+BEGIN_SRC css
+#+BEGIN_EXAMPLE
 td {
   padding: 0px;
   padding-right: 15px;
@@ -515,7 +515,7 @@ tbody::after{
   display: block;
   height: 5px;
 }
-#+END_SRC
+#+END_EXAMPLE
 * LaTeX setup
 
   Path setup for TeXLive binaries.
