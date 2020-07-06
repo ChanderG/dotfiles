@@ -563,6 +563,34 @@ tbody::after{
     (while (search-forward from nil t)
       (replace-match to))))
 #+END_SRC
+** Toggle boolean in line
+   Shamelessly taken from [[https://www.reddit.com/r/emacs/comments/4nq704/cycle_between_truefalse_and_other_arbitrary_pairs/d486xwn/][here]] and modified to work. Don't fully understand, may need to simplify one day.
+#+BEGIN_SRC emacs-lisp
+(defun cg/toggle-boolean ()
+  "Toggle any booleans found on the current line."
+  (interactive)
+  (let ((booleans (ht ("true" "false")
+                      ("false" "true")
+                      ("True" "False")
+                      ("False" "True"))))
+    (save-excursion
+      (save-restriction
+        (narrow-to-region (point-at-bol) (point-at-eol))
+        (setq toggle-boolean-re (-reduce (lambda (memo item) (format "%s\\|%s" memo item)) (ht-keys booleans)))
+        (goto-char (point-min))
+        (re-search-forward toggle-boolean-re nil t))
+      (let* ((thing2 (thing-at-point 'word))
+             (bounds (bounds-of-thing-at-point 'word))
+             (pos1 (car bounds))
+             (pos2 (cdr bounds)))
+        (setq replacement (ht-get booleans thing2 nil))
+        (when replacement
+          (delete-region pos1 pos2)
+          (insert replacement))))))
+
+; who uses - anyway
+(define-key evil-normal-state-map (kbd "-") 'cg/toggle-boolean)
+#+END_SRC
 * Elisp functions/snippets to smoothen workflows
   Custom function to delete all buffers.
 #+BEGIN_SRC emacs-lisp
