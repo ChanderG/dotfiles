@@ -563,6 +563,22 @@ tbody::after{
     (while (search-forward from nil t)
       (replace-match to))))
 #+END_SRC
+** TODO Anisble
+*** Run the task under the cursor. (Possible tag it using an unique tag and run ansible and then get back.)
+   1. Setup keybindings as a minor mode (maybe based on evil).
+   2. Pick up inventory file from nearest folder.
+   3. Tag the current set of tasks and add the tag to ansible command.
+   4. Run the file directly (???)
+   5. Untag the set of tasks.
+
+*** General transient based UI for Anisble to select tags etc
+    Can also take the tag/task under cursor directly if possible.
+*** Task/Play text objects
+** TODO Delete lines matching regex in entire project
+   1. flush-lines does this for a single file.
+   2. Interactive ways include:
+      - Run multi-occur and then occur-edit. There is no clear delete this line feature though.
+      - Run grep, then use wgrep mode to delete lines. (Need to pick up the wgrep related config from evil-collection to allow evil keybindings inside of the grep buffer.)
 ** Toggle boolean in line
    Shamelessly taken from [[https://www.reddit.com/r/emacs/comments/4nq704/cycle_between_truefalse_and_other_arbitrary_pairs/d486xwn/][here]] and modified to work. Don't fully understand, may need to simplify one day.
 #+BEGIN_SRC emacs-lisp
