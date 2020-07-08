@@ -607,6 +607,29 @@ tbody::after{
 ; who uses - anyway
 (define-key evil-normal-state-map (kbd "-") 'cg/toggle-boolean)
 #+END_SRC
+** Swap comment with main text
+   Oddly specific function that does only 1 thing under the most specific circumstances.
+   Assumes that you are on a line with the following line being commented out. What it does is, comment out the current line and uncomment the following line and switches them around.
+#+BEGIN_EXAMPLE
+# Initial state
+mode = "abc"
+# mode = "def"
+
+# With cursor anywhere on the first line, becomes
+mode = "def"
+# mode = "abc"
+#+END_EXAMPLE
+
+  Why is this important you ask? Meant for toggling between 2 options quickly, as it often happens in bash scripts and the like.
+
+#+BEGIN_SRC emacs-lisp
+(defun cg/transpose-and-toggle-comment ()
+  (interactive)
+  (save-excursion (comment-line 1) (comment-line 1))
+  (save-excursion (transpose-lines 1)))
+
+(define-key evil-normal-state-map "+" 'cg/transpose-and-toggle-comment)
+#+END_SRC
 * Elisp functions/snippets to smoothen workflows
   Custom function to delete all buffers.
 #+BEGIN_SRC emacs-lisp
