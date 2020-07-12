@@ -260,6 +260,7 @@ Bring in `use-package` here.
 
    Setting up the backends to specific keys.
 #+BEGIN_SRC emacs-lisp
+(add-hook 'after-init-hook 'global-company-mode)
 (company-mode +1)
 ; proper Vim like file completion
 (define-key evil-insert-state-map (kbd "C-x C-f") 'company-files)
@@ -288,6 +289,20 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'transient
     (transient-bind-q-to-quit))
+#+END_SRC
+** Dimnish
+   Manually dimnish modes until we get everything onto use-package.
+#+BEGIN_SRC emacs-lisp
+(use-package diminish
+  :ensure t
+  :config
+  (diminish 'helm-mode)
+  (diminish 'auto-revert-mode)
+  (diminish 'evil-org-mode)
+  (diminish 'undo-tree-mode)
+  (diminish 'global-undo-tree-mode)
+  (diminish 'git-gutter+-mode)
+  (diminish 'global-git-gutter+-mode))
 #+END_SRC
 ** Cyphejor
    Minimizing mode-line space wastage.
