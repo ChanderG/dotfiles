@@ -46,18 +46,21 @@ Bring in `use-package` here.
   
   Core install.
 #+BEGIN_SRC emacs-lisp
-(require 'evil)
-(evil-mode 1)
+(use-package evil
+  :ensure t
+  :config
+  (evil-mode 1))
 #+END_SRC
 
 ** Basic Vim compatibility
 
   Number control like in vim. Note how we bind decrement to C-S-a. Can't use C-x, that's why.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-numbers)
-
-(define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-(define-key evil-normal-state-map (kbd "C-S-a") 'evil-numbers/dec-at-pt)
+(use-package evil-numbers
+  :ensure t
+  :bind (:map evil-normal-state-map
+         ("C-a" . evil-numbers/inc-at-pt)
+	 ("C-S-a" . evil-numbers/dec-at-pt)))
 #+END_SRC
 
   Relative line numbering. Activate only for programming related buffers.
@@ -103,17 +106,19 @@ Bring in `use-package` here.
 ** For general editing
   Commentary available as `evil-commentary`.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-commentary)
-
-(define-key evil-normal-state-map "gc" 'evil-commentary)
-; yank and comment
-(define-key evil-normal-state-map "gy" 'evil-commentary-yank)
+(use-package evil-commentary
+  :ensure t
+  :bind (:map evil-normal-state-map
+         ("gc" . evil-commentary)
+         ("gy" . evil-commentary-yank)))
 #+END_SRC
 
   Quickscope port. Only activates upon pressing f/F/t/T.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-quickscope)
-(global-evil-quickscope-mode 1)
+(use-package evil-quickscope
+  :ensure t
+  :config
+  (global-evil-quickscope-mode 1))
 #+END_SRC
 
   Bindings for "flycheck".
@@ -136,9 +141,11 @@ Bring in `use-package` here.
 
   ReplaceWithRegister port. Works fine.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-replace-with-register)
-(setq evil-replace-with-register-key (kbd "gr"))
-(evil-replace-with-register-install)
+(use-package evil-replace-with-register
+  :ensure t
+  :config
+  (setq evil-replace-with-register-key (kbd "gr"))
+  (evil-replace-with-register-install))
 #+END_SRC
 
   Generic function text object. Not really tested with counts etc. Only have a "a" type. Inner/Outer seem to vary with language
@@ -157,43 +164,53 @@ Bring in `use-package` here.
 
   Function Arguments text object.
 #+BEGIN_SRC emacs-lisp
-  (require 'evil-args)
-
-  ;; bind evil-args text objects
-  (define-key evil-inner-text-objects-map "a" 'evil-inner-arg)
-  (define-key evil-outer-text-objects-map "a" 'evil-outer-arg)
-
-  ;; bind evil-forward/backward-args
-  (define-key evil-normal-state-map "]a" 'evil-forward-arg)
-  (define-key evil-normal-state-map "[a" 'evil-backward-arg)
+  (use-package evil-args
+     :ensure t
+     :bind (:map evil-inner-text-objects-map
+            ("a" . evil-inner-arg)
+	    :map evil-outer-text-objects-map
+            ("a" . evil-outer-arg)
+	    ;; bind evil-forward/backward-args
+	    :map evil-normal-state-map
+	    ("]a" . evil-forward-arg)
+	    ("[a" . evil-backward-arg)))
 #+END_SRC
 
   Indent based text object.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-indent-plus)
-(evil-indent-plus-default-bindings)
+(use-package evil-indent-plus
+  :ensure t
+  :config
+  (evil-indent-plus-default-bindings))
 #+END_SRC
 
   Using embrace for surround.
   TODO -> allow cancelling using 'esc
 #+BEGIN_SRC emacs-lisp
-(require 'embrace)
-(define-key evil-normal-state-map "s" #'embrace-commander)
+(use-package embrace
+  :ensure t
+  :bind (:map evil-normal-state-map
+         ("s" . embrace-commander)))
 #+END_SRC
 
   Exchange.
 #+BEGIN_SRC emacs-lisp
-(require 'evil-exchange)
-(evil-exchange-install)
+(use-package evil-exchange
+  :ensure t
+  :config
+  (evil-exchange-install))
 #+END_SRC
 ** Version Control
    
    Git gutter.
 #+BEGIN_SRC emacs-lisp
-(global-git-gutter+-mode)
-
-(define-key evil-normal-state-map (kbd "]c") 'git-gutter+-next-hunk)
-(define-key evil-normal-state-map (kbd "[c") 'git-gutter+-previous-hunk)
+(use-package git-gutter+
+  :ensure t
+  :config
+  (global-git-gutter+-mode)
+  :bind (:map evil-normal-state-map
+         ("]c" . git-gutter+-next-hunk)
+         ("[c" . git-gutter+-previous-hunk)))
 #+END_SRC 
 
   Hunk text object.
@@ -214,6 +231,11 @@ Bring in `use-package` here.
 #+END_SRC
 ** For Orgmode
 #+BEGIN_SRC emacs-lisp
+(use-package evil-org
+  :ensure t)
+(use-package s
+  :ensure t)
+
 (require 's)
 (require 'evil-org)
 (add-hook 'org-mode-hook 'evil-org-mode)
@@ -234,6 +256,8 @@ Bring in `use-package` here.
 
    Cycle through options like in Vim.
 #+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t)
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "C-n") (lambda () (interactive) (company-complete-common-or-cycle 1)))
   (define-key company-active-map (kbd "C-p") (lambda () (interactive) (company-complete-common-or-cycle -1))))
@@ -241,6 +265,9 @@ Bring in `use-package` here.
 
    Company backend to complete whole lines from the current buffer.
 #+BEGIN_SRC emacs-lisp
+  (use-package cl-lib
+    :ensure t)
+  
   (require 'cl-lib)
   (require 'company)
   (require 's)
@@ -307,6 +334,9 @@ Bring in `use-package` here.
 ** Cyphejor
    Minimizing mode-line space wastage.
 #+BEGIN_SRC emacs-lisp
+(use-package cyphejor
+  :ensure t)
+
 (setq
  cyphejor-rules
  '(:upcase
@@ -353,9 +383,9 @@ Bring in `use-package` here.
 
   Automatic trailing white-space management
 #+BEGIN_SRC emacs-lisp
-(require 'ws-butler)
-(add-hook 'prog-mode-hook #'ws-butler-mode)
-(add-hook 'org-mode-hook #'ws-butler-mode)
+  ;; (use-package ws-butler
+  ;;   :ensure t
+  ;;   :hook (prog-mode org-mode))
 #+END_SRC
 
   Complete at point.
@@ -365,11 +395,13 @@ Bring in `use-package` here.
 ** pdf-tools
    Enable pdf-tools.
 #+BEGIN_SRC emacs-lisp
-(pdf-tools-install)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-(define-key pdf-view-mode-map (kbd "C-G") 'pdf-view-first-page)
-(define-key pdf-view-mode-map (kbd "G") 'pdf-view-last-page)
+(use-package pdf-tools
+  :ensure t
+  :config
+  (pdf-tools-install)
+  :bind (:map pdf-view-mode-map
+         ("C-G" . pdf-view-first-page)
+         ("G" . pdf-view-last-page)))
 #+END_SRC
 ** Torus
   Enable tab bar, configure some shortcuts.
@@ -438,6 +470,11 @@ Bring in `use-package` here.
   Set agenda view sizes.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-window-frame-fractions '(0.25 . 0.40))
+#+END_SRC
+
+  For snippets.
+#+BEGIN_SRC emacs-lisp
+(require 'org-tempo)
 #+END_SRC
 
 ** Clocking
@@ -532,7 +569,7 @@ tbody::after{
 }
 #+END_EXAMPLE
 * LaTeX setup
-
+  
   Path setup for TeXLive binaries.
 #+BEGIN_SRC emacs-lisp
 (setenv "PATH" (concat (getenv "PATH") ":" (expand-file-name "/usr/local/texlive/2018/bin/x86_64-linux")))
@@ -890,8 +927,10 @@ Manually setup ansible mode.
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
-(require 'helm-config)
-(helm-mode 1)
+(use-package helm
+  :ensure t
+  :config
+  (helm-mode 1))
 #+END_SRC
 
   Bindings for M-x for evil and for all other modes (primarily exwm).
@@ -1019,11 +1058,14 @@ Manually setup ansible mode.
 
   Add "emacs-lisp" code block template.
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp
-?
-#+END_SRC"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 #+END_SRC
 
+  Swap the number row around.
+#+begin_src emacs-lisp
+ ;(keyboard-translate (kbd "1") (kbd "!"))
+ ;(keyboard-translate (kbd "!") (kbd "1"))
+#+end_src
 * EXWM: the next step to a Lisp Machine
 ** Switching workspaces                                            :SOURCEME:
 
@@ -1190,7 +1232,8 @@ Repeated invocations toggle between the two most recently open buffers."
   Manage init systems.
 #+BEGIN_SRC emacs-lisp
 (use-package daemons
-  :ensure daemons)
+  :ensure daemons
+  :requires s)
 #+END_SRC
 
   Lock/Suspend system. For Emacs buffers and for EXWM windows.
@@ -1258,8 +1301,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 Trying out vterm.
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/emacs-libvterm")
-(require 'vterm)
+  ;; (add-to-list 'load-path "~/.emacs.d/emacs-libvterm")
+  ;; (require 'vterm)
 #+END_SRC
 
 * Assorted QoL changes
@@ -1291,9 +1334,11 @@ Trying out vterm.
 
   Flash expression evaluations. TODO Need a better option than rebinding the core eval key.
 #+BEGIN_SRC emacs-lisp
-(require 'eval-sexp-fu)
-(turn-on-eval-sexp-fu-flash-mode)
-(define-key global-map (kbd "C-x C-e") 'eval-sexp-fu-eval-sexp-inner-list)
+(use-package eval-sexp-fu
+  :ensure t
+  :config 
+  (turn-on-eval-sexp-fu-flash-mode)
+  :bind (("C-x C-e" . eval-sexp-fu-eval-sexp-inner-list)))
 #+END_SRC
 
 * Custom Workflows
@@ -1624,8 +1669,10 @@ made unique when necessary."
 
   Font and size.
 #+BEGIN_SRC emacs-lisp
-(set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
-(set-face-attribute 'default nil :height 230)
+  ;; (set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
+  (add-to-list 'default-frame-alist
+    '(font . "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1"))
+  (set-face-attribute 'default nil :height 200)
 #+END_SRC
 
   If using Leuven theme, get the headlines size into control. DOES NOT WORK
