@@ -420,6 +420,16 @@ Bring in `use-package` here.
 
 (define-key evil-normal-state-map (kbd "<C-b>") 'torus-switch-location)
 #+END_SRC
+** Dired
+   Use ~dired-ranger~ to provide an intuitive and much simpler copy paste of files from dired. (Esp useful over Tramp)
+#+begin_src emacs-lisp
+(use-package dired-ranger
+  :ensure t
+  :bind (:map dired-mode-map
+              ("W" . dired-ranger-copy)
+              ("X" . dired-ranger-move)
+              ("Y" . dired-ranger-paste)))
+#+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
