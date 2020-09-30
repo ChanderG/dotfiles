@@ -430,6 +430,15 @@ Bring in `use-package` here.
               ("X" . dired-ranger-move)
               ("Y" . dired-ranger-paste)))
 #+end_src
+** Tramp
+   Use ssh config to pick Tramp targets. Uses external finder for now.
+#+begin_src emacs-lisp
+(defun cg/tramp-to ()
+  "Open tramp to remote host"
+  (interactive)
+  (let ((host (s-chomp (shell-command-to-string "grep ^Host ~/.ssh/config | awk '{print $2}' | dmenu -i -l 10 -p 'ssh to>'"))))
+    (find-file (concat "/ssh:" host ":"))))
+#+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
