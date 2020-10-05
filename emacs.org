@@ -439,6 +439,13 @@ Bring in `use-package` here.
   (let ((host (s-chomp (shell-command-to-string "grep ^Host ~/.ssh/config | awk '{print $2}' | dmenu -i -l 10 -p 'ssh to>'"))))
     (find-file (concat "/ssh:" host ":"))))
 #+end_src
+** WhichKey
+#+begin_src emacs-lisp
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+#+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
@@ -518,6 +525,15 @@ Bring in `use-package` here.
   (start-process "slock" nil "slock")
 )
 #+END_SRC
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<print>") (lambda ()
+			(interactive)
+			(if (org-clocking-p)
+			  (org-clock-out)
+			  (org-clock-in)
+			)))
+#+end_src
 ** Babel
   Active Babel languages.
 #+BEGIN_SRC emacs-lisp
