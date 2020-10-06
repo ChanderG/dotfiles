@@ -1309,13 +1309,27 @@ Repeated invocations toggle between the two most recently open buffers."
 
   New terminals. Works only from Emacs buffers.
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "<f5>") (lambda ()
-                                  (interactive)
-                                  (start-process-shell-command "st" nil "st")))
+(global-set-key (kbd "<f5>") 'cg/open-terminal)
 (global-set-key (kbd "<f6>") (lambda ()
                                   (interactive)
                                   (start-process-shell-command "terminator" nil "terminator")))
 #+END_SRC
+
+  Tramp aware terminal. If current buffer is remote, open st and ssh. If not, simply open st.
+#+begin_src emacs-lisp
+(defun cg/open-terminal ()
+  (interactive)
+  (let* ((curr-dir default-directory)
+         (is-remote (s-prefix? "/ssh:" curr-dir))
+         )
+    (if (not is-remote)
+      (start-process-shell-command "st" nil "st")
+      (let* ((parts (split-string curr-dir ":"))
+             (node (nth 1 parts))
+             (wd (nth 2 parts)))
+        ;; NOTE: does not cd to wd yet
+        (start-process-shell-command "st" nil (concat "st -e ssh " node))))))
+#+end_src
 ** Better Shell
    How do we best use shells inside Emacs?
    What are the options and the problems with them?
