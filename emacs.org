@@ -423,12 +423,13 @@ Bring in `use-package` here.
 ** Dired
    Use ~dired-ranger~ to provide an intuitive and much simpler copy paste of files from dired. (Esp useful over Tramp)
 #+begin_src emacs-lisp
-(use-package dired-ranger
-  :ensure t
-  :bind (:map dired-mode-map
-              ("W" . dired-ranger-copy)
-              ("X" . dired-ranger-move)
-              ("Y" . dired-ranger-paste)))
+  (use-package dired-ranger
+    :ensure t
+    :init (setq dired-dwim-target t)
+    :bind (:map dired-mode-map
+                ("W" . dired-ranger-copy)
+                ("X" . dired-ranger-move)
+                ("Y" . dired-ranger-paste)))
 #+end_src
 ** Tramp
    Use ssh config to pick Tramp targets. Uses external finder for now.
@@ -1096,11 +1097,6 @@ Manually setup ansible mode.
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 #+END_SRC
 
-  Swap the number row around.
-#+begin_src emacs-lisp
- ;(keyboard-translate (kbd "1") (kbd "!"))
- ;(keyboard-translate (kbd "!") (kbd "1"))
-#+end_src
 * EXWM: the next step to a Lisp Machine
 ** Switching workspaces                                            :SOURCEME:
 
@@ -1706,6 +1702,11 @@ made unique when necessary."
 #+BEGIN_SRC emacs-lisp
 (fringe-mode '(0 . 0))
 #+END_SRC
+
+  Set frame format for dwm to pick up for the smart key (smart-prefix).
+#+begin_src emacs-lisp
+(setq frame-title-format "emacs - %b")
+#+end_src
 
   Setup color. One time load.
 #+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
