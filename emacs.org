@@ -1250,7 +1250,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (if is-network-tools-open
       (progn
        (setq is-network-tools-open nil)
-       (start-process-shell-command "Tray" nil "trayer")
+       (start-process-shell-command "Tray" nil "trayer --edge left --height 42 --widthtype request --distance 10 --transparent true --alpha 127 --tint 0x55556666 --padding 10")
        (start-process-shell-command "NMApplet" nil "nm-applet"))
       (progn
        (setq is-network-tools-open t)
@@ -1707,6 +1707,13 @@ made unique when necessary."
 #+begin_src emacs-lisp
 (setq frame-title-format "emacs - %b")
 #+end_src
+
+  Make the header-line function as the mode-line.
+  #+begin_src emacs-lisp
+    (setq-default header-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position evil-mode-line-tag
+                                       (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
+    (setq-default mode-line-format nil)
+  #+end_src
 
   Setup color. One time load.
 #+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
