@@ -718,6 +718,33 @@ mode = "def"
 
 (define-key evil-normal-state-map "+" 'cg/transpose-and-toggle-comment)
 #+END_SRC
+** Convert lines into a double quoted list
+   #+begin_src emacs-lisp
+(defun lines-to-cslist (start end &optional arg)
+  (interactive "r\nP")
+  (let ((insertion
+         (mapconcat 
+          (lambda (x) (format "\"%s\"" x))
+          (split-string (buffer-substring start end)) ", ")))
+    (delete-region start end)
+    (insert insertion)
+    (when arg (forward-char (length insertion)))))
+   #+end_src
+** Randomize a list of comma separated items
+   #+begin_src emacs-lisp
+  (defun randomize-comma-separated-list (start end)
+    "Randomize order of the comma separated list in the region."
+    (interactive "r")
+    (let ((str (mapconcat 'identity
+			  (sort (split-string (replace-regexp-in-string
+					       "\\s-+" " "
+					       (buffer-substring start end))
+					      " ?, ?" t)
+				(lambda (a b) (= 1 (random 2))))
+			  ", ")))
+      (delete-region start end)
+      (insert str)))
+   #+end_src
 * Elisp functions/snippets to smoothen workflows
   Custom function to delete all buffers.
 #+BEGIN_SRC emacs-lisp
@@ -1708,11 +1735,28 @@ made unique when necessary."
 (setq frame-title-format "emacs - %b")
 #+end_src
 
-  Make the header-line function as the mode-line.
+  Make the header-line function as the mode-line. The mode-line is now replaced with a single line.
   #+begin_src emacs-lisp
     (setq-default header-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position evil-mode-line-tag
                                        (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
-    (setq-default mode-line-format nil)
+    (setq-default mode-line-format " ")
+    ; use the mode-line as a separator
+    (set-face-attribute 'mode-line nil :height 10)
+    (set-face-attribute 'header-line nil :height 220)
+  #+end_src
+
+  Set frame padding.
+  #+begin_src emacs-lisp
+    (add-to-list 'default-frame-alist '(internal-border-width . 40))
+  #+end_src
+
+  Enable all-the-icons in dired.
+  #+begin_src emacs-lisp
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode)
+  :config
+  (setq all-the-icons-dired-monochrome nil))
   #+end_src
 
   Setup color. One time load.
