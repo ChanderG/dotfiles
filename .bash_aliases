@@ -29,6 +29,17 @@ alias qa='q add $(find . | dmenu -l 10)'
 # related to emacs/orgmode
 alias omtodos="emacs -batch -l ~/.emacs -eval '(org-batch-agenda \"t\")' | tail -n+3"
 
+# related to syncing files
+
+alias sync_blog_dryrun="aws s3 sync --dryrun ./blog s3://www.chandergovind.org/blog/ --acl public-read --size-only"
+alias sync_blog="aws s3 sync ./blog s3://www.chandergovind.org/blog/ --acl public-read --size-only"
+alias sync_index="aws s3 cp ./index.html s3://www.chandergovind.org/index.html --acl public-read"
+alias sync_boty="aws s3 cp ./boty.html s3://www.chandergovind.org/boty.html --acl public-read"
+alias sync_readings="aws s3 cp ./readings.html s3://www.chandergovind.org/readings.html --acl public-read"
+alias sync_quotes="aws s3 cp ./quotes.html s3://www.chandergovind.org/quotes.html --acl public-read"
+
+alias sync_writings="aws s3 cp ./Writings.zip s3://writings.chandergovind.org/"
+
 # general settings
 if [ -f ~/.shell_options ]; then
   source ~/.shell_options
