@@ -1,3 +1,4 @@
+!! Use this to toggle the Num row, so that special characters are input by default
 keycode  10 = exclam 1 exclam 1
 keycode  11 = at 2 at 2
 keycode  12 = numbersign 3 numbersign 3
@@ -9,16 +10,18 @@ keycode  17 = asterisk 8 asterisk 8
 keycode  18 = parenleft 9 parenleft 9
 keycode  19 = parenright 0 parenright 0
 
-keycode  67 = 1 F1 1 F1
-keycode  68 = 2 F2 2 F2
-keycode  69 = 3 F3 3 F3
-keycode  70 = 4 F4 4 F4
-keycode  71 = 5 F5 5 F5
-keycode  72 = 6 F6 6 F6
-keycode  73 = 7 F7 7 F7
-keycode  74 = 8 F8 8 F8
-keycode  75 = 9 F9 9 F9
-keycode  76 = 0 F10 0 F10
+!! Use this to Toggle the Function Key row into a Num row (where Fn can be accessed with Shift)
+! keycode  67 = 1 F1 1 F1
+! keycode  68 = 2 F2 2 F2
+! keycode  69 = 3 F3 3 F3
+! keycode  70 = 4 F4 4 F4
+! keycode  71 = 5 F5 5 F5
+! keycode  72 = 6 F6 6 F6
+! keycode  73 = 7 F7 7 F7
+! keycode  74 = 8 F8 8 F8
+! keycode  75 = 9 F9 9 F9
+! keycode  76 = 0 F10 0 F10
 
-! replace Caps_Lock with Shift_Lock
-keycode 66 = Shift_Lock
+!! Use this to replace Caps_Lock with Shift_Lock
+!! Usually Caps is completely useless, but now I use it for toggling input modes, so not usiing this
+!keycode 66 = Shift_Lock
