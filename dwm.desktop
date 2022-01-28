@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Dwm
+Comment=Dwm plus extras
+Exec=/home/chandergovind/bin/dwm-extras
+TryExec=/home/chandergovind/bin/dwm-extras
+Type=Application
