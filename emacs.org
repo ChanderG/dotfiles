@@ -447,6 +447,13 @@ Bring in `use-package` here.
   :config
   (which-key-mode))
 #+end_src
+** Dumb Jump
+#+begin_src
+(use-package dumb-jump
+  :ensure t
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+#+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
@@ -513,27 +520,33 @@ Bring in `use-package` here.
   Functions for Pomodoro with tasks.
 #+BEGIN_SRC emacs-lisp
 (defun pomodoro-start ()
-  "Starts and automatically clocks out a Pomodoro unit of 20 minutes."
+  "Starts and automatically clocks out a Pomodoro unit of x minutes."
   (interactive)
-  (org-clock-in)
-  (message "Starting pomodoro cycle of 20 minutes.")
-  (set-process-sentinel (start-process "sleep" nil "sleep" "20m") 'pomodoro-end)
-)
+  (if (org-clocking-p)
+    (if (get-process "pomodoro")
+      (kill-process "pomodoro")
+      (org-clock-out))
+    (progn
+        (org-clock-in)
+        (let ((x (read-string "Time (in min): ")))
+            (message (format "Starting pomodoro cycle of %s minutes." x))
+            (set-process-sentinel (start-process "pomodoro" nil "sleep" (format "%sm" x)) 'pomodoro-end)))))
+
+(global-set-key (kbd "<print>") 'pomodoro-start)
 
 (defun pomodoro-end (process event)
   (org-clock-out)
-  (message "Stopping pomodoro cycle of 20 minutes.")
-  (start-process "slock" nil "slock")
-)
+  (message "Stopping pomodoro cycle.")
+  (start-process "herbe" nil "herbe" "Pomodoro done."))
 #+END_SRC
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "<print>") (lambda ()
-			(interactive)
-			(if (org-clocking-p)
-			  (org-clock-out)
-			  (org-clock-in)
-			)))
+;; (global-set-key (kbd "<print>") (lambda ()
+;; 			(interactive)
+;; 			(if (org-clocking-p)
+;; 			  (org-clock-out)
+;; 			  (org-clock-in)
+;; 			)))
 #+end_src
 ** Babel
   Active Babel languages.
@@ -765,6 +778,7 @@ mode = "def"
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'exec-path (expand-file-name "~/thirdparty/go/bin"))
 (add-to-list 'exec-path (substitute-in-file-name "$GOPATH/bin"))
+(add-to-list 'exec-path (expand-file-name "~/go/bin"))
 #+END_SRC
 
   Using flycheck (w/ go-metalinter) for linting.
@@ -804,6 +818,33 @@ mode = "def"
   "}" > \n)
 
 #+END_SRC
+
+  Alternative Setup
+  #+begin_src emacs-lisp
+    (use-package go-mode
+      :mode "\\.go\\'"
+      :config
+      (defun my/go-mode-setup ()
+        "Basic Go mode setup."
+      (add-hook 'before-save-hook #'lsp-format-buffer t t)
+      (add-hook 'before-save-hook #'lsp-organize-imports t t))
+      (add-hook 'go-mode-hook #'my/go-mode-setup))
+
+    (use-package lsp-mode
+      :ensure t
+      :commands (lsp lsp-mode lsp-deferred)
+      :hook ((rust-mode python-mode go-mode) . lsp-deferred)
+      :config
+      (setq lsp-prefer-flymake nil
+            lsp-enable-indentation nil
+            lsp-enable-on-type-formatting nil
+            lsp-rust-server 'rust-analyzer)
+      ;; for filling args placeholders upon function completion candidate selection
+      ;; lsp-enable-snippet and company-lsp-enable-snippet should be nil with
+      ;; yas-minor-mode is enabled: https://emacs.stackexchange.com/q/53104
+      (lsp-modeline-code-actions-mode)
+      (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration))
+  #+end_src
 ** Erlang
 #+BEGIN_SRC emacs-lisp
 (add-hook 'erlang-mode-hook '(lambda() (setq indent-tabs-mode nil)))
@@ -1110,6 +1151,11 @@ Manually setup ansible mode.
 #+BEGIN_SRC emacs-lisp
 (define-key evil-normal-state-map (kbd ";f") 'find-file)
 #+END_SRC
+
+   Switch to alternate file.
+   #+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd "ga") 'ff-find-other-file)
+   #+end_src
 * Say NO to RSI
   General key bindings.
 
@@ -1773,7 +1819,7 @@ made unique when necessary."
   ;; (set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
   (add-to-list 'default-frame-alist
     '(font . "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1"))
-  (set-face-attribute 'default nil :height 200)
+  (set-face-attribute 'default nil :height 220)
 #+END_SRC
 
   If using Leuven theme, get the headlines size into control. DOES NOT WORK
@@ -1788,5 +1834,5 @@ made unique when necessary."
 * Configure
     Enable/Disable EXWM. Edit this as needed.
 #+BEGIN_SRC emacs-lisp
-(load "~/.emacs.d/exwm.el")
+;;(load "~/.emacs.d/exwm.el")
 #+END_SRC
