@@ -247,6 +247,41 @@ Bring in `use-package` here.
 (evil-ex-define-cmd "q" 'kill-this-buffer)
 (evil-ex-define-cmd "Q" 'evil-quit)
  #+END_SRC
+* Leader Key-like
+  These are assorted one shot shortcuts prefixed using ";".
+
+  Shortcut for `find-file`.
+#+BEGIN_SRC emacs-lisp
+(define-key evil-normal-state-map (kbd ";f") 'find-file)
+#+END_SRC
+
+  Switch to alternate file.
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd "ga") 'ff-find-other-file)
+#+end_src
+
+  Easier keys for the in-built bookmarking system. Mainly used to jump between projects.
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd ";b") 'bookmark-jump)
+(define-key evil-normal-state-map (kbd ";B") 'bookmark-set)
+#+end_src
+
+  Custom shortcuts for important files:
+#+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd ";t") (lambda () (interactive) (find-file "~/orgmode/todo.org")))
+(define-key evil-normal-state-map (kbd ";c") (lambda () (interactive) (find-file "~/Customization/dotfiles/emacs.org")))
+#+end_src
+
+  Easily access `remember-mode`:
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd ";r") 'remember)
+  (define-key evil-visual-state-map (kbd ";r") (lambda ()
+                                                  (interactive)
+                                                  (let ((current-prefix-arg 4))
+                                                    (call-interactively 'remember))))
+
+  (define-key evil-normal-state-map (kbd ";R") 'remember-notes)
+#+end_src
 * Emacs rocks
   Assorted emacs packages and configurations too small to go as separate configurations.
 ** Company
@@ -300,6 +335,12 @@ Bring in `use-package` here.
 #+END_SRC
 
 ** Magit
+
+   Easier bind to access `magit-status` panel:
+   #+begin_src emacs-lisp
+   (define-key evil-normal-state-map (kbd ";g") 'magit-status)
+   #+end_src
+
   Set default state for magit commit mode to normal.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'git-commit-mode-hook 'evil-normal-state)
@@ -1141,16 +1182,6 @@ Manually setup ansible mode.
                     (interactive)
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
 #+END_SRC
-** File Opening
-   Shortcut for `find-file`.
-#+BEGIN_SRC emacs-lisp
-(define-key evil-normal-state-map (kbd ";f") 'find-file)
-#+END_SRC
-
-   Switch to alternate file.
-   #+begin_src emacs-lisp
-(define-key evil-normal-state-map (kbd "ga") 'ff-find-other-file)
-   #+end_src
 * Say NO to RSI
   General key bindings.
 
