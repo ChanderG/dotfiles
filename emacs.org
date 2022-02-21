@@ -490,6 +490,35 @@ Bring in `use-package` here.
   :config
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 #+end_src
+** Projectile
+
+   Base configuration.
+ #+begin_src emacs-lisp
+   (use-package projectile
+     :ensure t
+     :init
+     (projectile-mode +1)
+     (setq projectile-switch-project-action #'projectile-dired)
+     :bind (:map projectile-mode-map
+            ("M-p" . projectile-command-map)))
+#+end_src
+
+  Add `helm-projectile`.
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t)
+#+end_src
+
+  One-shot keybindings
+#+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "'p") 'projectile-switch-project)
+  (define-key evil-normal-state-map (kbd "'P") 'projectile-add-known-project)
+
+  (define-key evil-normal-state-map (kbd "'f") 'helm-projectile-find-file)
+  (define-key evil-normal-state-map (kbd "'b") 'helm-projectile-switch-to-buffer)
+
+  (define-key evil-normal-state-map (kbd "'g") 'helm-projectile-grep)
+#+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
