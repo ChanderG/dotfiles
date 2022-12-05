@@ -247,6 +247,15 @@ Bring in `use-package` here.
 (evil-ex-define-cmd "q" 'kill-this-buffer)
 (evil-ex-define-cmd "Q" 'evil-quit)
  #+END_SRC
+** Disable evil for special buffers
+   #+begin_src emacs-lisp
+   (evil-set-initial-state 'xref--xref-buffer-mode 'emacs)
+   #+end_src
+
+   For process mode:
+   #+begin_src
+   (evil-set-initial-state 'process-mode 'emacs)
+   #+end_src
 * Leader Key-like
   These are assorted one shot shortcuts prefixed using ";".
 
@@ -392,6 +401,7 @@ Bring in `use-package` here.
    ("text"        "ξ")
    ("wdired"      "↯δ")
    ("company"     "⇔")
+   ("projectile"  "P")
    ("helm"        "H")))
    
 (cyphejor-mode 1)
@@ -401,15 +411,30 @@ Bring in `use-package` here.
 
    Find references or definition. Better than the vim version.
 #+BEGIN_SRC emacs-lisp
-(define-key evil-normal-state-map (kbd "C-]") 'ggtags-find-tag-dwim)
+;;(define-key evil-normal-state-map (kbd "C-]") 'ggtags-find-tag-dwim)
 #+END_SRC
-** Emacs is good for editing too!
-  Emacs paradigms for editing.
+   Deprecated in favor of dumb-jump.
+** Occur
 
   Easier occur.
 #+BEGIN_SRC emacs-lisp
 (define-key evil-normal-state-map (kbd "C-l") 'occur)
 #+END_SRC
+
+  Allow easy copying of lines from the Occur buffer.
+#+begin_src emacs-lisp
+(defun occur/copy-curr-line ()
+   (interactive)
+   (let* ((rawline (buffer-substring-no-properties (line-beginning-position) (line-beginning-position 2)))
+          (line (string-trim-left rawline "[ 0-9]+:")))
+     (kill-new line)
+     (message "Copied current line.")))
+
+(define-key occur-mode-map "y" 'occur/copy-curr-line)
+#+end_src
+
+** Emacs is good for editing too!
+  Emacs paradigms for editing.
 
   Configuring tabs.
 #+BEGIN_SRC emacs-lisp
@@ -428,6 +453,12 @@ Bring in `use-package` here.
 #+BEGIN_SRC emacs-lisp
 (define-key evil-insert-state-map (kbd "C-/") 'completion-at-point)
 #+END_SRC
+
+  Undo in visually selected region:
+#+begin_src emacs-lisp
+(define-key evil-visual-state-map (kbd "u") 'undo)
+#+end_src
+
 ** pdf-tools
    Enable pdf-tools.
 #+BEGIN_SRC emacs-lisp
@@ -484,11 +515,13 @@ Bring in `use-package` here.
   (which-key-mode))
 #+end_src
 ** Dumb Jump
-#+begin_src
+#+begin_src emacs-lisp
 (use-package dumb-jump
   :ensure t
   :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  (define-key evil-normal-state-map (kbd "C-]") 'xref-find-definitions)
+)
 #+end_src
 ** Projectile
 
