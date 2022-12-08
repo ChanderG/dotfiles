@@ -462,14 +462,35 @@ Bring in `use-package` here.
 ** pdf-tools
    Enable pdf-tools.
 #+BEGIN_SRC emacs-lisp
-(use-package pdf-tools
-  :ensure t
-  :config
-  (pdf-tools-install)
-  :bind (:map pdf-view-mode-map
-         ("C-G" . pdf-view-first-page)
-         ("G" . pdf-view-last-page)))
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-tools-install)
+    :bind (:map pdf-view-mode-map
+           ("C-G" . pdf-view-first-page)
+           ("G" . pdf-view-last-page)
+           ("^" . switch-to-prev-buffer)
+           ("t" . image-bob)
+           ("S" . pdftools/search-in-scholar)
+           ("y" . pdf-view-kill-ring-save)
+           ("hh" . pdf-annot-add-highlight-markup-annotation)
+           ("hs" . pdf-annot-add-squiggly-markup-annotation)
+           ("hu" . pdf-annot-add-underline-markup-annotation)
+           ("hc" . pdf-annot-add-strikethrough-markup-annotation)
+           ("T" . pdf-annot-add-text-annotation)
+  ))
 #+END_SRC
+
+  Search the selected text on google scholar - useful only in references section.
+#+begin_src emacs-lisp
+(defun pdftools/search-in-scholar ()
+  "Search selected text on Google scholar."
+  (interactive)
+  (let* ((phrase (car (pdf-view-active-region-text)))
+         (query (url-encode-url phrase))
+         (url (concat "https://scholar.google.com/scholar?hl=en&q=" query)))
+    (browse-url url)))
+#+end_src
 ** Torus
   Enable tab bar, configure some shortcuts.
 #+BEGIN_SRC emacs-lisp
@@ -497,6 +518,12 @@ Bring in `use-package` here.
                 ("W" . dired-ranger-copy)
                 ("X" . dired-ranger-move)
                 ("Y" . dired-ranger-paste)))
+#+end_src
+
+   Bind simple "e" to go into wdired.
+#+begin_src emacs-lisp
+(eval-after-load 'dired-mode
+  '(define-key dired-mode-map "e" 'wdired-change-to-wdired-mode))
 #+end_src
 ** Tramp
    Use ssh config to pick Tramp targets. Uses external finder for now.
