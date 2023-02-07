@@ -525,6 +525,21 @@ Bring in `use-package` here.
 (eval-after-load 'dired-mode
   '(define-key dired-mode-map "e" 'wdired-change-to-wdired-mode))
 #+end_src
+
+   Quick download files from dired.
+#+begin_src emacs-lisp
+  (defun dired/download-file (url name)
+    (interactive (list
+                   (read-string "Url: " (substring-no-properties (gui-get-selection)))
+                   (read-string "Save as: " ".pdf")
+                  ))
+    (url-copy-file url name)
+    (revert-buffer)
+  )
+
+  (eval-after-load 'dired-mode
+    '(define-key dired-mode-map "p" 'dired/download-file))
+#+end_src
 ** Tramp
    Use ssh config to pick Tramp targets. Uses external finder for now.
 #+begin_src emacs-lisp
@@ -1213,6 +1228,11 @@ Manually setup ansible mode.
   (define-key evil-normal-state-map (kbd "C-y") 'helm-mini)
   (define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
 #+END_SRC
+
+  Kill buffer in-line from ~helm-mini~:
+#+begin_src emacs-lisp
+  (define-key helm-buffer-map (kbd "`") 'helm-buffer-run-kill-persistent)
+#+end_src
 
  Using `helm-ls-git` to get open buffers in current git project. Haven't found myself using this at all.
 #+BEGIN_SRC emacs-lisp
