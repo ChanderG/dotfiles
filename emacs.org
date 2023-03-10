@@ -350,6 +350,17 @@ Bring in `use-package` here.
    (define-key evil-normal-state-map (kbd ";g") 'magit-status)
    #+end_src
 
+   Also bind a simple key for single file dispatch:
+   #+begin_src emacs-lisp
+      (define-key evil-normal-state-map (kbd ";G") 'magit-file-dispatch)
+      (define-key evil-visual-state-map (kbd ";G") 'magit-file-dispatch)
+   #+end_src
+
+   Easy access to commit history of specific lines:
+   #+begin_src emacs-lisp
+     (define-key evil-visual-state-map (kbd ";gl") 'magit-log-buffer-file)
+   #+end_src
+
   Set default state for magit commit mode to normal.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'git-commit-mode-hook 'evil-normal-state)
