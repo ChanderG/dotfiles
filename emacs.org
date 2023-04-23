@@ -247,6 +247,11 @@ Bring in `use-package` here.
 (evil-ex-define-cmd "q" 'kill-this-buffer)
 (evil-ex-define-cmd "Q" 'evil-quit)
  #+END_SRC
+
+   Unbind "M-." which is used for finding definitions (esp useful in Slime):
+   #+begin_src emacs-lisp
+  (define-key evil-normal-state-map (kbd "M-.") nil)
+   #+end_src
 ** Disable evil for special buffers
    #+begin_src emacs-lisp
    (evil-set-initial-state 'xref--xref-buffer-mode 'emacs)
@@ -1179,6 +1184,12 @@ Manually setup ansible mode.
       (define-key evil-normal-state-map "gn" 'evil-ansible-get-task-name)
   )
 #+END_SRC
+** Common Lisp
+   Just use sbcl.
+   #+begin_src emacs-lisp
+   (setq inferior-lisp-program "sbcl")
+   #+end_src
+
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
