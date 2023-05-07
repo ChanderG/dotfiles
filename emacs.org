@@ -861,8 +861,8 @@ tbody::after{
           (delete-region pos1 pos2)
           (insert replacement))))))
 
-; who uses - anyway
-(define-key evil-normal-state-map (kbd "-") 'cg/toggle-boolean)
+; who uses - or _ anyway
+(define-key evil-normal-state-map (kbd "_") 'cg/toggle-boolean)
 #+END_SRC
 ** Swap comment with main text
    Oddly specific function that does only 1 thing under the most specific circumstances.
@@ -1338,6 +1338,39 @@ Manually setup ansible mode.
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 #+END_SRC
+
+  Super simplified window switching:
+  #+begin_src emacs-lisp
+    (define-key evil-normal-state-map (kbd "!`") 'delete-other-windows)
+    (define-key evil-normal-state-map (kbd "!@") 'split-window-below)
+    (define-key evil-normal-state-map (kbd "!#") 'split-window-right)
+    (define-key evil-normal-state-map (kbd "!q") 'delete-window)
+    (define-key evil-normal-state-map (kbd "!!") 'other-window)
+  #+end_src
+
+  One shot keys for the important ones.
+  This approach is a massive hack. Unfortunately, the cleaner options don't seem to work due to the way prefix keys work in emacs.
+  #+begin_src emacs-lisp
+    ; see if we can manipulate the events variable - instead of setting it appending to it after removing items?
+    (defmacro single-prefix-key (map key orig)
+      `(define-key ,map (kbd ,key) (lambda ()
+                               (interactive)
+                               (setq unread-command-events
+                                     (listify-key-sequence (kbd ,orig))))))
+
+    (single-prefix-key evil-normal-state-map "," "C-c")
+
+    ; what to do about this? very ugly and won't work for one more level of nesting
+    (single-prefix-key evil-normal-state-map "C-c ," "C-c C-c")
+    (single-prefix-key mode-specific-map "C-h" "C-c C-h")
+
+    (single-prefix-key ctl-x-map "," "C-x C-c")
+    (single-prefix-key help-map "," "C-h C-c")
+    (single-prefix-key mode-specific-map "," "C-c C-c")
+
+    (single-prefix-key evil-normal-state-map "-" "C-x")
+    (single-prefix-key evil-normal-state-map "\\" "C-h")
+   #+end_src
 
 * EXWM: the next step to a Lisp Machine
 ** Switching workspaces                                            :SOURCEME:
@@ -1954,10 +1987,10 @@ made unique when necessary."
   #+begin_src emacs-lisp
     (setq-default header-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position evil-mode-line-tag
                                        (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
-    (setq-default mode-line-format " ")
+    (setq-default mode-line-format '(" "))
     ; use the mode-line as a separator
-    (set-face-attribute 'mode-line nil :height 10)
-    (set-face-attribute 'header-line nil :height 220)
+    (set-face-attribute 'mode-line nil :height 10 :background "black")
+    (set-face-attribute 'header-line nil :height 220 :foreground "black" :background "Gold2")
   #+end_src
 
   Set frame padding.
@@ -1998,7 +2031,7 @@ made unique when necessary."
 
   Good background for light color themes.
 #+BEGIN_SRC emacs-lisp
-
+(set-background-color "#F4F4E8")
 #+END_SRC
 * Configure
     Enable/Disable EXWM. Edit this as needed.
