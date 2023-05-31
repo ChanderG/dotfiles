@@ -1189,7 +1189,11 @@ Manually setup ansible mode.
    #+begin_src emacs-lisp
    (setq inferior-lisp-program "sbcl")
    #+end_src
-
+** PlantUMML
+   #+begin_src emacs-lisp
+(setq plantuml-jar-path "~/bin/plantuml.jar")
+(setq plantuml-default-exec-mode 'jar)
+   #+end_src
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
@@ -1985,12 +1989,12 @@ made unique when necessary."
 
   Make the header-line function as the mode-line. The mode-line is now replaced with a single line.
   #+begin_src emacs-lisp
-    (setq-default header-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position evil-mode-line-tag
-                                       (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
-    (setq-default mode-line-format '(" "))
+    (setq-default header-line-format '("%e" mode-line-front-space mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position evil-mode-line-tag (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
     ; use the mode-line as a separator
+    (setq-default mode-line-format '(" "))
     (set-face-attribute 'mode-line nil :height 10 :background "black")
-    (set-face-attribute 'header-line nil :height 220 :foreground "black" :background "Gold2")
+    (set-face-attribute 'header-line nil :height 220 :box '(:color "black" :line-width 2) :slant 'italic :background "#F4F4E8")
+    (setq x-underline-at-descent-line nil)
   #+end_src
 
   Set frame padding.
