@@ -475,6 +475,30 @@ Bring in `use-package` here.
 (define-key evil-visual-state-map (kbd "u") 'undo)
 #+end_src
 
+** eww
+   Is just awesome.
+
+   Always put it in Readable mode.
+   #+begin_src emacs-lisp
+   (with-eval-after-load 'eww
+     (add-hook 'eww-after-render-hook 'eww-readable))
+   #+end_src
+
+   Special binding to download to directory of the last buffer.
+   #+begin_src emacs-lisp
+     (defun cg/eww-download-local ()
+       (interactive)
+       (let* ((pbuffer (other-buffer (current-buffer) t))
+              (dir (with-current-buffer pbuffer default-directory))
+              )
+         (setq eww-download-directory dir)
+         (eww-download)
+         (dired dir)
+         ))
+
+     (with-eval-after-load 'eww
+       (define-key eww-mode-map (kbd "D") 'cg/eww-download-local))
+   #+end_src
 ** pdf-tools
    Enable pdf-tools.
 #+BEGIN_SRC emacs-lisp
@@ -497,15 +521,23 @@ Bring in `use-package` here.
   ))
 #+END_SRC
 
+Force use of pdf-tools when opening from eww:
+#+begin_src emacs-lisp
+(add-to-list 'mailcap-user-mime-data
+               '((type . "application/pdf")
+                 (viewer . pdf-view-mode)))
+#+end_src
+
   Search the selected text on google scholar - useful only in references section.
 #+begin_src emacs-lisp
-(defun pdftools/search-in-scholar ()
-  "Search selected text on Google scholar."
-  (interactive)
-  (let* ((phrase (car (pdf-view-active-region-text)))
-         (query (url-encode-url phrase))
-         (url (concat "https://scholar.google.com/scholar?hl=en&q=" query)))
-    (browse-url url)))
+  (defun pdftools/search-in-scholar ()
+    "Search selected text on Google scholar."
+    (interactive)
+    (let* ((phrase (car (pdf-view-active-region-text)))
+           (query (url-encode-url phrase))
+           (url (concat "https://scholar.google.com/scholar?hl=en&q=" query)))
+      (select-frame (make-frame))
+      (eww url)))
 #+end_src
 ** Torus
   Enable tab bar, configure some shortcuts.
