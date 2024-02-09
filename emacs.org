@@ -478,10 +478,18 @@ Bring in `use-package` here.
 ** eww
    Is just awesome.
 
-   Always put it in Readable mode.
+   Setup Readable mode for some websites.
    #+begin_src emacs-lisp
-   (with-eval-after-load 'eww
-     (add-hook 'eww-after-render-hook 'eww-readable))
+     (with-eval-after-load 'eww
+       (add-hook 'eww-after-render-hook 'cg/eww-readable))
+   #+end_src
+
+   #+begin_src emacs-lisp
+     (defun cg/eww-readable ()
+       (let ((url (eww-current-url)))
+         (cond ((string-match "scholar.google.com" url)
+         )
+       )
    #+end_src
 
    Special binding to download to directory of the last buffer.
@@ -642,6 +650,10 @@ Force use of pdf-tools when opening from eww:
 
   (define-key evil-normal-state-map (kbd "'g") 'helm-projectile-grep)
 #+end_src
+** Ediff
+   #+begin_src emacs-lisp
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+   #+end_src
 * Organizing Org
   
   Global calls. Need to revisit and clean up.
@@ -746,8 +758,14 @@ Force use of pdf-tools when opening from eww:
    (dot . t)
    (C . t)
    (shell . t)
+   (gnuplot . t)
    ))
 #+END_SRC
+
+  Setup python3.
+  #+begin_src emacs-lisp
+  (setq org-babel-python-command "python3")
+  #+end_src
 
   Disable confirmation upon C-c C-c.
 #+BEGIN_SRC emacs-lisp
@@ -1696,6 +1714,11 @@ Trying out vterm.
   (turn-on-eval-sexp-fu-flash-mode)
   :bind (("C-x C-e" . eval-sexp-fu-eval-sexp-inner-list)))
 #+END_SRC
+
+  Enable autoreloads of files.
+  #+begin_src emacs-lisp
+(global-auto-revert-mode t)
+  #+end_src
 
 * Custom Workflows
 ** Project specific link/bookmark management
