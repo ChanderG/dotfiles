@@ -261,6 +261,13 @@ Bring in `use-package` here.
    #+begin_src
    (evil-set-initial-state 'process-mode 'emacs)
    #+end_src
+
+   For shells:
+   #+begin_src 
+(evil-set-initial-state 'shell-mode 'emacs)
+(evil-set-initial-state 'eshell-mode 'emacs)
+(evil-set-initial-state 'vterm-mode 'emacs)
+   #+end_src
 * Leader Key-like
   These are assorted one shot shortcuts prefixed using ";".
 
@@ -489,7 +496,7 @@ Bring in `use-package` here.
        (let ((url (eww-current-url)))
          (cond ((string-match "scholar.google.com" url)
          )
-       )
+       )))
    #+end_src
 
    Special binding to download to directory of the last buffer.
@@ -823,6 +830,17 @@ tbody::after{
   height: 5px;
 }
 #+END_EXAMPLE
+** Orgish
+
+   #+begin_src emacs-lisp
+     (load "~/Documents/Dabblings/orgish/orgish")
+   #+end_src
+** Org-download
+   #+begin_src 
+(require 'org-download)
+(setq org-download-method 'attach)
+(setq org-image-actual-width '(600))
+   #+end_src
 * LaTeX setup
   
   Path setup for TeXLive binaries.
@@ -1635,9 +1653,7 @@ Repeated invocations toggle between the two most recently open buffers."
   New terminals. Works only from Emacs buffers.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<f5>") 'cg/open-terminal)
-(global-set-key (kbd "<f6>") (lambda ()
-                                  (interactive)
-                                  (start-process-shell-command "terminator" nil "terminator")))
+(global-set-key (kbd "<f6>") 'cg/open-vterm-frame)
 #+END_SRC
 
   Tramp aware terminal. If current buffer is remote, open st and ssh. If not, simply open st.
@@ -1654,6 +1670,13 @@ Repeated invocations toggle between the two most recently open buffers."
              (wd (nth 2 parts)))
         ;; NOTE: does not cd to wd yet
         (start-process-shell-command "st" nil (concat "st -e ssh " node))))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (defun cg/open-vterm-frame ()
+    (interactive)
+    (with-selected-frame (make-frame '((internal-border-width . 10)))
+      (vterm)))
 #+end_src
 ** Better Shell
    How do we best use shells inside Emacs?
@@ -1673,12 +1696,21 @@ Repeated invocations toggle between the two most recently open buffers."
       5. Interrupting requires a double `C-c` now, instead of a single one.
       6. ~source~ seems to expect elisp files to source, not bash scripts. (*Maybe be unsolvable*: https://superuser.com/questions/273273/how-to-source-a-bash-script-in-emacs-eshell)
 
-Trying out vterm.
-#+BEGIN_SRC emacs-lisp
-  ;; (add-to-list 'load-path "~/.emacs.d/emacs-libvterm")
-  ;; (require 'vterm)
-#+END_SRC
+   ~vterm~ may solve all of these problems, in pieces.
+** vterm
+   Evil object for an entire input/output section in vterm.
+   
+   #+begin_src emacs-lisp
+(evil-define-text-object evil-vterm-command (count &optional beg end type)
+     (evil-range (save-excursion
+                   (vterm-previous-prompt 1) (point))
+                 (save-excursion
+                   (vterm-next-prompt 1) (forward-line -1) (point))
+                 ; force line-wise mode
+                 'line))
 
+  (define-key evil-outer-text-objects-map "c" 'evil-vterm-command)
+   #+end_src
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
