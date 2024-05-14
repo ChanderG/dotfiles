@@ -195,11 +195,17 @@ Bring in `use-package` here.
 
   Exchange.
 #+BEGIN_SRC emacs-lisp
-(use-package evil-exchange
-  :ensure t
-  :config
-  (evil-exchange-install))
+  (use-package evil-exchange
+    :ensure t
+    :config
+    (evil-exchange-install))
 #+END_SRC
+
+  Expand region from Visual.
+  #+begin_src emacs-lisp
+(define-key evil-visual-state-map (kbd "v") 'er/expand-region)
+  #+end_src
+  
 ** Version Control
    
    Git gutter.
