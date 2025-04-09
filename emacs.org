@@ -264,15 +264,21 @@ Bring in `use-package` here.
    #+end_src
 
    For process mode:
-   #+begin_src
+   #+begin_src emacs-lisp
    (evil-set-initial-state 'process-mode 'emacs)
    #+end_src
 
    For shells:
-   #+begin_src 
+   #+begin_src emacs-lisp
 (evil-set-initial-state 'shell-mode 'emacs)
 (evil-set-initial-state 'eshell-mode 'emacs)
 (evil-set-initial-state 'vterm-mode 'emacs)
+   #+End_src
+
+   For other buffers:
+   #+begin_src emacs-lisp
+(evil-set-initial-state 'eww-mode 'emacs)
+(evil-set-initial-state 'eww-buffers-mode 'emacs)
    #+end_src
 * Leader Key-like
   These are assorted one shot shortcuts prefixed using ";".
@@ -1003,6 +1009,11 @@ mode = "def"
   (message (buffer-file-name)))
 #+END_SRC
 * Programming language/platform specifics
+** C
+#+begin_src emacs-lisp
+  (evil-define-key 'normal 'c-mode-map (kbd "'c") 'recompile)
+
+#+end_src
 ** Golang
    Get go related binaries into path.
 #+BEGIN_SRC emacs-lisp
@@ -1262,6 +1273,12 @@ Manually setup ansible mode.
    Just use sbcl.
    #+begin_src emacs-lisp
    (setq inferior-lisp-program "sbcl")
+   #+end_src
+
+   Better key bindings:
+   #+begin_src emacs-lisp
+     (evil-define-key 'normal 'lisp-mode-map (kbd "'x") 'slime-eval-defun)
+     (evil-define-key 'normal 'lisp-mode-map (kbd "'e") 'slime-eval-last-expression)
    #+end_src
 ** PlantUMML
    #+begin_src emacs-lisp
@@ -1670,7 +1687,7 @@ Repeated invocations toggle between the two most recently open buffers."
          (is-remote (s-prefix? "/ssh:" curr-dir))
          )
     (if (not is-remote)
-      (start-process-shell-command "st" nil "st")
+      (start-process-shell-command "vex" nil "vex")
       (let* ((parts (split-string curr-dir ":"))
              (node (nth 1 parts))
              (wd (nth 2 parts)))
@@ -1717,6 +1734,40 @@ Repeated invocations toggle between the two most recently open buffers."
 
   (define-key evil-outer-text-objects-map "c" 'evil-vterm-command)
    #+end_src
+
+   Direct output to vterm. Adapted from:
+   https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/
+   #+begin_src emacs-lisp
+     (defun cg/vterm-execute-region-or-current-line ()
+       "Insert text of current line in vterm and execute."
+       (interactive)
+       (require 'vterm)
+       (eval-when-compile (require 'subr-x))
+       (let ((command (if (region-active-p)
+                          (string-trim (buffer-substring
+                                        (save-excursion (region-beginning))
+                                        (save-excursion (region-end))))
+                        (string-trim (buffer-substring (save-excursion
+                                                         (beginning-of-line)
+                                                         (point))
+                                                       (save-excursion
+                                                         (end-of-line)
+                                                         (point)))))))
+         (save-excursion
+           (unless (get-buffer vterm-buffer-name)
+             (vterm))
+           (with-current-buffer vterm-buffer-name
+             (vterm--goto-line -1)
+             (message command)
+             (vterm-send-string command)
+             (vterm-send-return)))))
+
+     (global-set-key "\C-cv" 'cg/vterm-execute-region-or-current-line)
+   #+end_src
+
+   #+RESULTS:
+   : cg/vterm-execute-region-or-current-line
+
 * Assorted QoL changes
   Save buffers automatically when possible.
 #+BEGIN_SRC emacs-lisp
@@ -2033,7 +2084,7 @@ made unique when necessary."
 
   Set frame padding.
   #+begin_src emacs-lisp
-    (add-to-list 'default-frame-alist '(internal-border-width . 40))
+    (add-to-list 'default-frame-alist '(internal-border-width . 10))
   #+end_src
 
   Enable all-the-icons in dired.
@@ -2058,7 +2109,7 @@ made unique when necessary."
 #+BEGIN_SRC emacs-lisp
   ;; (set-default-font "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1")
   (add-to-list 'default-frame-alist
-    '(font . "-PfEd-Fantasque Sans Mono-normal-normal-normal-*-*-*-*-*-m-0-iso10646-1"))
+    '(font . "-IBM -IBM Plex Mono-regular-normal-normal-*-29-*-*-*-m-0-iso10646-1"))
   (set-face-attribute 'default nil :height 220)
 #+END_SRC
 
