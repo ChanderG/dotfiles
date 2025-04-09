@@ -1285,6 +1285,12 @@ Manually setup ansible mode.
 (setq plantuml-jar-path "~/bin/plantuml.jar")
 (setq plantuml-default-exec-mode 'jar)
    #+end_src
+** Lisp
+  Enable parinfer for all Lisps.
+#+begin_src emacs-lisp
+(use-package parinfer-rust-mode
+  :hook lisp-mode scheme-mode)
+#+end_src
 * Iron Helm of Dexterity [4, +5] (+3)
   Install Helm.
 #+BEGIN_SRC emacs-lisp
