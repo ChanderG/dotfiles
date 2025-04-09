@@ -1375,16 +1375,12 @@ Manually setup ansible mode.
   (define-key evil-normal-state-map (kbd "C-p") 'cg-helm-git-ls-files)
 #+END_SRC
 
- Switch easily between open dired buffers.
+ Switch easily between locations.
  #+begin_src emacs-lisp
-(defun cg/helm-dired ()
-  (interactive)
-  (helm :sources
-        (helm-build-sync-source "Dired buffers"
-          :candidates dired-buffers
-          :action '(("Switch to buffer" . switch-to-buffer)))
-        :buffer "*helm-dired*"))
-(define-key evil-normal-state-map (kbd "C-d") 'cg/helm-dired)
+   (use-package consult-dir
+     :ensure t
+     :bind (("C-x C-d" . consult-dir))
+     :config (define-key evil-normal-state-map (kbd "C-d") 'consult-dir))
  #+end_src
 
 ** In Buffer switching
