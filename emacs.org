@@ -315,6 +315,16 @@ Bring in `use-package` here.
 
   (define-key evil-normal-state-map (kbd ";R") 'remember-notes)
 #+end_src
+
+  Buffer jumper.
+  #+begin_src emacs-lisp
+    (use-package jumper.el
+      :load-path "~/Customization/jumper.el/"
+      :bind (("C-c j" . jumper-trigger)
+             :map evil-normal-state-map
+             ("j" . jumper-trigger)))
+  #+end_src
+
 * Emacs rocks
   Assorted emacs packages and configurations too small to go as separate configurations.
 ** Company
