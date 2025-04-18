@@ -994,6 +994,35 @@ mode = "def"
       (delete-region start end)
       (insert str)))
    #+end_src
+* LLMs
+
+Emacs setup for LLMs!
+#+begin_src emacs-lisp
+  (use-package gptel
+    :bind (("C-c g" . gptel-send)
+           ("C-c r" . gptel-rewrite))
+    :config (setq gptel-backend (gptel-make-openai "rits"
+                 :stream t
+                 :protocol "http"
+                 :host "localhost:11435"
+                 :models '(ibm-granite/granite-3.1-8b-instruct
+                           mistralai/mixtral-8x22B-instruct-v0.1
+                           meta-llama/llama-3-3-70b-instruct))))
+#+end_src
+
+Voice Transcription. Perfect combination with LLMs.
+#+begin_src emacs-lisp
+  (use-package whisper
+    :load-path "/home/chandergovind/thirdparty/whisper.el"
+    :bind ("S-<print>" . whisper-run)
+    :config
+    (setq whisper-install-directory "/home/chandergovind/thirdparty/whisper/"
+          whisper-model "base"
+          whisper-language "en"
+          whisper-translate nil
+          whisper-use-threads (/ (num-processors) 2)))
+#+end_src
+
 * Elisp functions/snippets to smoothen workflows
   Custom function to delete all buffers.
 #+BEGIN_SRC emacs-lisp
