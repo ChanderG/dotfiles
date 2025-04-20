@@ -684,7 +684,7 @@ Force use of pdf-tools when opening from eww:
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
    #+end_src
 * Organizing Org
-  
+
   Global calls. Need to revisit and clean up.
 #+BEGIN_SRC emacs-lisp
 (global-set-key "\C-cl" 'org-store-link)
@@ -1336,12 +1336,12 @@ Manually setup ansible mode.
 (use-package helm
   :ensure t
   :config
-  (helm-mode 1))
+  (helm-mode 0))
 #+END_SRC
 
   Bindings for M-x for evil and for all other modes (primarily exwm).
 #+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map " " 'helm-M-x)
+  ;(define-key evil-normal-state-map " " 'helm-M-x)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle "~/.emacs.d/exwm.el"
@@ -1387,13 +1387,13 @@ Manually setup ansible mode.
   
   Helm mini.
 #+BEGIN_SRC emacs-lisp
-  (define-key evil-normal-state-map (kbd "C-y") 'helm-mini)
-  (define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
+  ;(define-key evil-normal-state-map (kbd "C-y") 'helm-mini)
+  ;(define-key evil-emacs-state-map (kbd "C-y") 'helm-mini)
 #+END_SRC
 
   Kill buffer in-line from ~helm-mini~:
 #+begin_src emacs-lisp
-  (define-key helm-buffer-map (kbd "`") 'helm-buffer-run-kill-persistent)
+  ;(define-key helm-buffer-map (kbd "`") 'helm-buffer-run-kill-persistent)
 #+end_src
 
  Using `helm-ls-git` to get open buffers in current git project. Haven't found myself using this at all.
@@ -1460,6 +1460,35 @@ Manually setup ansible mode.
   (exwm-input-set-key (kbd "M-y") (lambda ()
                     (interactive)
                     (exwm-workspace-switch-to-buffer (helm-exwm))))
+#+END_SRC
+* We don't need Helms?
+
+Vertical completions.
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure t
+    :init (vertico-mode))
+#+end_src
+
+Now add Descriptions.
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :ensure t
+    :init (marginalia-mode))
+#+end_src
+
+Now add better search.
+#+begin_src emacs-lisp
+(use-package orderless
+  :ensure t
+  :config
+  (setq completion-styles '(orderless basic)
+        completion-category-overrides '((file (styles basic partial-completion)))))
+#+end_src
+
+  Personal bindings:
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map " " 'execute-extended-command)
 #+END_SRC
 * Say NO to RSI
   General key bindings.
