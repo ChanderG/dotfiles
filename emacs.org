@@ -1196,6 +1196,11 @@ Voice Transcription. Perfect combination with LLMs.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'kubernetes-overview-mode-hook 'evil-emacs-state)
 #+END_SRC
+
+ Bind to leader key.
+ #+begin_src emacs-lisp
+(define-key evil-normal-state-map (kbd ";k") 'kubernetes-overview)
+ #+end_src
 ** Java
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-java
@@ -1486,9 +1491,25 @@ Now add better search.
         completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
+Preview results and more:
+#+begin_src emacs-lisp
+  (use-package consult
+    :ensure t)
+#+end_src
+
+Save history of these commands:
+#+begin_src emacs-lisp
+(use-package savehist
+  :init
+  (savehist-mode))
+#+end_src
+
   Personal bindings:
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map " " 'execute-extended-command)
+  (define-key evil-normal-state-map (kbd "C-p") 'project-find-file)
+  (define-key evil-normal-state-map (kbd "'p") 'project-switch-project)
+  (global-set-key (kbd "M-i") 'consult-imenu)
 #+END_SRC
 * Say NO to RSI
   General key bindings.
