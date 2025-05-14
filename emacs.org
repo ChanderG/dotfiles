@@ -1475,6 +1475,14 @@ Save history of these commands:
   (savehist-mode))
 #+end_src
 
+Embark!
+#+begin_src emacs-lisp
+  (use-package embark
+    :ensure t
+    :bind (("C-x ." . embark-act)
+           ("C-." . embark-act)))
+#+end_src
+
   Personal bindings:
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map " " 'execute-extended-command)
